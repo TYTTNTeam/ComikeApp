@@ -1,8 +1,6 @@
 package com.example.comikeapp
 
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +8,8 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -20,21 +20,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 
-val colorHex = 0xFF66CC8F
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun DeleteMapDialog(mapName:String,
                     onYes: () -> Unit,
                     onNo: () -> Unit) {
     Dialog(onDismissRequest = { onYes() }) {
 
-    Box(modifier = Modifier.fillMaxSize(),
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(8.dp),
         contentAlignment = Alignment.Center) {
         Box(                                //外枠の緑
             modifier = Modifier
                 .size(325.dp, 208.dp)
-                .background(Color(colorHex))
-                .padding(16.dp),
+                .background(Color(0xFF66CC8F))
+                .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
             val roundedShape = RoundedCornerShape(16.dp)
@@ -55,22 +56,30 @@ fun DeleteMapDialog(mapName:String,
                 color = Color.Black,
                 fontSize = 24.sp
             )
-                TextButton(
+                Button(
                     onClick = { onYes() },
-                    modifier = Modifier.offset(x = 10.dp, y = 8.dp),
-
+                    modifier = Modifier
+                        .offset(x = (-70).dp, y = 40.dp),
+                        colors = ButtonDefaults
+                            .buttonColors(
+                                containerColor = Color.Red,),
+                                shape = RoundedCornerShape(8.dp)
                     ) {
-                    /*Text(
+                    Text(
                         text = "はい",
-                        Sytle = TextStyle(fontSize = 24.sp)
-                    )*/
-
+                        color = Color.White,
+                        fontSize = 18.sp
+                    )
                 }
                 TextButton(
                     onClick = { onNo() },
-                    modifier = Modifier.padding(8.dp),
+                    modifier = Modifier.offset(x = 70.dp,y = 40.dp),
                 ) {
-                    Text("いいえ")
+                    Text("いいえ",
+                        style = androidx.compose.ui.text.TextStyle(color = Color.Black),
+                        fontSize = 18.sp
+                    )
+
                 }
             }
         }
