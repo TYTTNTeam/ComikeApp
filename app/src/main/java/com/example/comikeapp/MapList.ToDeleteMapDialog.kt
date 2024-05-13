@@ -1,5 +1,6 @@
 package com.example.comikeapp
 
+import android.util.Log
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -11,8 +12,8 @@ fun MapList(name: String) {
     Text(text = "Map Name: $name")
     ComikeAppTheme {
         DeleteMapDialog("地図1",
-                        onYes= {},
-                        onNo = {})
+                        onYes= {Log.d("test", "onYes")},
+                        onNo = {Log.d("test", "onNo")})
     }
 }
 
