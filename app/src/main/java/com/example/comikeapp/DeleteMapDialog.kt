@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -33,8 +34,8 @@ fun DeleteMapDialog(mapName:String,
         contentAlignment = Alignment.Center) {
         Box(                                //外枠の緑
             modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
                 .size(325.dp, 208.dp)
-                .background(Color(0xFF66CC8F))
                 .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -42,12 +43,12 @@ fun DeleteMapDialog(mapName:String,
             Box(                            //内側の白
                 modifier = Modifier
                     .size(310.dp, 192.dp)
-                    .background(Color.White, shape = roundedShape)
+                    .background(MaterialTheme.colorScheme.surface, shape = roundedShape)
             )
             Text(
                 text = "本当に消しますか？",
                 modifier = Modifier.offset(y = (-50).dp), // 上部に余白を追加
-                color = Color.Red,
+                color = MaterialTheme.colorScheme.secondary,
                 fontSize = 24.sp
             )
             Text(
@@ -62,7 +63,7 @@ fun DeleteMapDialog(mapName:String,
                         .offset(x = (-70).dp, y = 40.dp),
                         colors = ButtonDefaults
                             .buttonColors(
-                                containerColor = Color.Red,),
+                                containerColor = MaterialTheme.colorScheme.secondary,),
                                 shape = RoundedCornerShape(8.dp)
                     ) {
                     Text(
