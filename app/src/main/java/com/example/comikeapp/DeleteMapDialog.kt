@@ -16,7 +16,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -34,7 +33,7 @@ fun DeleteMapDialog(mapName:String,
         contentAlignment = Alignment.Center) {
         Box(                                //外枠の緑
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.background)
+                .background(MaterialTheme.colorScheme.primaryContainer)
                 .size(325.dp, 208.dp)
                 .padding(8.dp),
             contentAlignment = Alignment.Center
@@ -43,18 +42,17 @@ fun DeleteMapDialog(mapName:String,
             Box(                            //内側の白
                 modifier = Modifier
                     .size(310.dp, 192.dp)
-                    .background(MaterialTheme.colorScheme.surface, shape = roundedShape)
+                    .background(MaterialTheme.colorScheme.background, shape = roundedShape)
             )
             Text(
                 text = "本当に消しますか？",
                 modifier = Modifier.offset(y = (-50).dp), // 上部に余白を追加
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.error,
                 fontSize = 24.sp
             )
             Text(
                 text = mapName,
                 modifier = Modifier.offset(y = (-10).dp),
-                color = Color.Black,
                 fontSize = 24.sp
             )
                 Button(
@@ -63,13 +61,13 @@ fun DeleteMapDialog(mapName:String,
                         .offset(x = (-70).dp, y = 40.dp),
                         colors = ButtonDefaults
                             .buttonColors(
-                                containerColor = MaterialTheme.colorScheme.secondary,),
+                                containerColor = MaterialTheme.colorScheme.error,),
                                 shape = RoundedCornerShape(8.dp)
                     ) {
                     Text(
                         text = "はい",
-                        color = Color.White,
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.background
                     )
                 }
                 TextButton(
@@ -77,7 +75,7 @@ fun DeleteMapDialog(mapName:String,
                     modifier = Modifier.offset(x = 70.dp,y = 40.dp),
                 ) {
                     Text("いいえ",
-                        style = androidx.compose.ui.text.TextStyle(color = Color.Black),
+                        style = androidx.compose.ui.text.TextStyle(color = MaterialTheme.colorScheme.onBackground),
                         fontSize = 18.sp
                     )
 
