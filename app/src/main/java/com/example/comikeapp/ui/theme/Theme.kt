@@ -18,7 +18,7 @@ import androidx.core.view.WindowCompat
 
 private val LightColorScheme = darkColorScheme(
     primary = Color(0xFF00FF66),
-    secondary = Color(0xFF66CC8F),
+    primaryContainer = Color(0xFF66CC8F),
     background = Color(0xFFFFFBFE),
     onBackground = Color(0xFF000000),
     error = Color(0xFFFF0000),

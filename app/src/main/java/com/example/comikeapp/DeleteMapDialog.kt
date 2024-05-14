@@ -33,7 +33,7 @@ fun DeleteMapDialog(mapName:String,
         contentAlignment = Alignment.Center) {
         Box(                                //外枠の緑
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(MaterialTheme.colorScheme.primaryContainer)
                 .size(325.dp, 208.dp)
                 .padding(8.dp),
             contentAlignment = Alignment.Center
