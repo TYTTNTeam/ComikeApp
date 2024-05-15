@@ -13,7 +13,7 @@ fun ToMapList() {
 @Preview(showBackground = true)
 @Composable
 fun ToMapListPreview() {
-    MapListItem(mapName = "   地図地図",
+    MapListItem(mapName = "地図地図",
         onNameChange = {},
         onDelete = {})
     }

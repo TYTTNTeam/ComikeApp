@@ -37,7 +37,7 @@ fun MapListItem(mapName:String,
     ) {
         Box(
             modifier = Modifier
-                .size(width = 330.dp, height = 200.dp)
+                .size(width = 330.dp, height = 210.dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.Top,
@@ -57,6 +57,7 @@ fun MapListItem(mapName:String,
                         modifier = Modifier.fillMaxSize()
                     ) {
                         Text(
+                            modifier = Modifier.padding(20.dp, 0.dp),
                             text = mapName,  //地図の名前の引数(mapname)
                             textAlign = TextAlign.Start,
                             style = TextStyle(color = Color.White),
@@ -67,7 +68,7 @@ fun MapListItem(mapName:String,
                             imageVector = Icons.Filled.Menu,
                             contentDescription = "メニュー",
                             modifier = Modifier
-                                .size(90.dp)
+                                .size(60.dp)
                                 .padding(8.dp)
                                 .clickable {
                                     // ボックスがクリックされたときに正方形の表示をトグルする
@@ -84,12 +85,12 @@ fun MapListItem(mapName:String,
             if (isSquareVisible) {
                 Box(
                     modifier = Modifier
-                        .padding(vertical = 13.dp, horizontal = 8.dp)
+                        .padding(vertical = 13.dp, horizontal = 6.dp)
                         .size(width = 153.dp, height = 190.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(12.dp))
                         .background(color = Color(0xFF66CC8F))
                         .align(Alignment.TopEnd)
-                        .shadow(1.dp, shape = RoundedCornerShape(2.dp))
+                        .shadow(elevation = 2.dp, shape = RoundedCornerShape(4.dp))
                         .let {
                             if (isSquareVisible) it else Modifier.size(0.dp) // isSquareVisibleがfalseの場合は高さと幅を0に設定して非表示にする
                         }
@@ -120,7 +121,8 @@ fun MapListItem(mapName:String,
                         Button(
                             onClick = { onNameChange() },
                             modifier = Modifier
-                                .padding(horizontal = 16.dp),
+                                .padding(horizontal = 6.dp)
+                                .align(Alignment.Start),
                             colors = ButtonDefaults
                                 .buttonColors(
                                     containerColor = Color(0xFF66CC8F)
@@ -129,7 +131,7 @@ fun MapListItem(mapName:String,
                             Text(
                                 "名前変更",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
+                                fontSize = 22.sp,
                             )
                         }
                         // 下線
@@ -145,16 +147,17 @@ fun MapListItem(mapName:String,
                         Button(
                             onClick = { onDelete() },
                             modifier = Modifier
-                                .padding(horizontal = 16.dp),
+                                .padding(horizontal = 6.dp)
+                                .align(Alignment.Start),
                             colors = ButtonDefaults
                                 .buttonColors(
                                     containerColor = Color(0xFF66CC8F)
                                 )
                         ) {
                             Text(
-                                "削除",
+                                "削除　　",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp
+                                fontSize = 22.sp,
                             )
                         }
                         // 下線
