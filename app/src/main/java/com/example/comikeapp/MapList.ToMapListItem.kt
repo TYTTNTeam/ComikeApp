@@ -2,18 +2,23 @@ package com.example.comikeapp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.comikeapp.ui.theme.ComikeAppTheme
 
 @Composable
 fun ToMapList() {
-    MapListItem(mapName = "   地図地図",
-        onNameChange = {},
-        onDelete = {})
+    ComikeAppTheme(darkTheme = false) {
+        MapListItem(mapName = "   地図地図",
+            onNameChange = {},
+            onDelete = {})
     }
+}
 
 @Preview(showBackground = true)
 @Composable
 fun ToMapListPreview() {
-    MapListItem(mapName = "地図地図",
-        onNameChange = {},
-        onDelete = {})
+    ComikeAppTheme(darkTheme = false) {
+        MapListItem(mapName = "地図地図",
+            onNameChange = {},
+            onDelete = {})
     }
+}
