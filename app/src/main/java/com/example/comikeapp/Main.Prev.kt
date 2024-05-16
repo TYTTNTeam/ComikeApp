@@ -5,12 +5,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.comikeapp.ui.theme.ComikeAppTheme
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, heightDp = 500)
 @Composable
 fun GreetingPreview() {
     ComikeAppTheme {
-        BottomBar(onChange = { index ->
-            println("Selected index: $index")
-        })
+        Top()
     }
 }
