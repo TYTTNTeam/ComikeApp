@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.zIndex
 
 @Composable
 fun MapListItem(
@@ -35,135 +36,130 @@ fun MapListItem(
 
     var isSquareVisible by remember { mutableStateOf(false) }
 
-    Column(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxHeight()
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp)
+            .zIndex(if (isSquareVisible) 1f else 0f)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Column(
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxSize()
+            Spacer(modifier = Modifier.height(16.dp))
+            // スクリーン幅に応じてサイズを調整
+            val boxWidth = if (screenWidth >= 600.dp) screenWidth else screenWidth - 32.dp
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(width = boxWidth, height = screenHeight)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer)
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
-                // スクリーン幅に応じてサイズを調整
-                val boxWidth = if (screenWidth >= 600.dp) screenWidth else screenWidth - 32.dp
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .size(width = boxWidth, height = screenHeight)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(start = 20.dp),
-                            text = mapName,
-                            textAlign = TextAlign.Start,
-                            style = TextStyle(MaterialTheme.colorScheme.background),
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 32.sp
-                        )
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "メニュー",
-                            modifier = Modifier
-                                .size(60.dp)
-                                .padding(8.dp)
-                                .clickable {
-                                    isSquareVisible = !isSquareVisible
-                                },
-                            tint = MaterialTheme.colorScheme.background
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.padding(start = 20.dp),
+                        text = mapName,
+                        textAlign = TextAlign.Start,
+                        style = TextStyle(MaterialTheme.colorScheme.background),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 32.sp
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.Menu,
+                        contentDescription = "メニュー",
+                        modifier = Modifier
+                            .size(60.dp)
+                            .padding(8.dp)
+                            .clickable {
+                                isSquareVisible = !isSquareVisible
+                            },
+                        tint = MaterialTheme.colorScheme.background
+                    )
                 }
             }
+        }
 
-            if (isSquareVisible) {
-                Box(
-                    modifier = Modifier
-                        .padding(vertical = 13.dp, horizontal = 6.dp)
-                        .size(width = 153.dp, height = 190.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer)
-                        .align(Alignment.TopEnd)
-                        .shadow(elevation = 2.dp, shape = RoundedCornerShape(4.dp))
+        if (isSquareVisible) {
+            Box(
+                modifier = Modifier
+                    .padding(vertical = 13.dp, horizontal = 6.dp)
+                    .size(width = 153.dp, height = 190.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .align(Alignment.TopEnd)
+                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(4.dp))
+                    .zIndex(1f)
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Column(
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxSize()
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Close",
+                        tint = MaterialTheme.colorScheme.background,
+                        modifier = Modifier
+                            .size(60.dp)
+                            .align(Alignment.End)
+                            .padding(8.dp)
+                            .clickable {
+                                isSquareVisible = !isSquareVisible
+                            }
+                    )
+
+                    Button(
+                        onClick = onNameChange,
+                        modifier = Modifier
+                            .padding(horizontal = 6.dp)
+                            .align(Alignment.Start),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        )
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "Close",
-                            tint = MaterialTheme.colorScheme.background,
-                            modifier = Modifier
-                                .size(60.dp)
-                                .align(Alignment.End)
-                                .padding(8.dp)
-                                .clickable {
-                                    isSquareVisible = !isSquareVisible
-                                }
-                        )
-
-                        Button(
-                            onClick = onNameChange,
-                            modifier = Modifier
-                                .padding(horizontal = 6.dp)
-                                .align(Alignment.Start),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer
-                            )
-                        ) {
-                            Text(
-                                "名前変更",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 22.sp,
-                                style = TextStyle(MaterialTheme.colorScheme.background),
-                            )
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .width(110.dp)
-                                .height(3.dp)
-                                .background(MaterialTheme.colorScheme.background)
-                        )
-
-                        Button(
-                            onClick = onDelete,
-                            modifier = Modifier
-                                .padding(horizontal = 6.dp)
-                                .align(Alignment.Start),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primaryContainer
-                            )
-                        ) {
-                            Text(
-                                "削除　　",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 22.sp,
-                                style = TextStyle(MaterialTheme.colorScheme.background),
-                            )
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .width(110.dp)
-                                .height(3.dp)
-                                .background(MaterialTheme.colorScheme.background)
+                        Text(
+                            "名前変更",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 22.sp,
+                            style = TextStyle(MaterialTheme.colorScheme.background),
                         )
                     }
+
+                    Box(
+                        modifier = Modifier
+                            .width(110.dp)
+                            .height(3.dp)
+                            .background(MaterialTheme.colorScheme.background)
+                    )
+
+                    Button(
+                        onClick = onDelete,
+                        modifier = Modifier
+                            .padding(horizontal = 6.dp)
+                            .align(Alignment.Start),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    ) {
+                        Text(
+                            "削除　　",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 22.sp,
+                            style = TextStyle(MaterialTheme.colorScheme.background),
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .width(110.dp)
+                            .height(3.dp)
+                            .background(MaterialTheme.colorScheme.background)
+                    )
                 }
             }
         }
