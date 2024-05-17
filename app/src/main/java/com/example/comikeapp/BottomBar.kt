@@ -19,22 +19,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun BottomBar(onChange : (Int) ->Unit) {
+fun BottomBar(onChange: (Int) -> Unit) {
     val selectedIndex = remember { mutableStateOf(0) }
-    // onClickラムダ式を定義
     val onClick: (Int) -> Unit = { index ->
         selectedIndex.value = index
-        onChange(index)}
-    val customColor = Color(android.graphics.Color.parseColor("#00FF66"))
+        onChange(index)
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .background(customColor)
+            .background(MaterialTheme.colorScheme.primary)
     )
     {
         Row(
@@ -51,15 +51,20 @@ fun BottomBar(onChange : (Int) ->Unit) {
                     .padding(horizontal = 8.dp)
                     .clickable { onClick(0) },
                 contentAlignment = Alignment.Center
-            ) {Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(3.dp)
-                    .background(if (selectedIndex.value == 0) MaterialTheme.colorScheme.background.copy(0.5f) else Color.Transparent)
-                    .align(Alignment.BottomCenter)
-            )
-                Icon(Icons.Filled.Check, contentDescription = "Localized description",
-                    modifier = Modifier.size(48.dp))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(3.dp)
+                        .background(if (selectedIndex.value == 0) MaterialTheme.colorScheme.background else Color.Transparent)
+                        .align(Alignment.BottomCenter)
+                )
+                Icon(
+                    Icons.Filled.Check, contentDescription = "Localized description",
+                    modifier = Modifier
+                        .size(48.dp)
+                        .alpha(if (selectedIndex.value == 0) 1f else 0.5f)
+                )
             }
 
             Box(
@@ -68,18 +73,23 @@ fun BottomBar(onChange : (Int) ->Unit) {
                     .padding(horizontal = 8.dp)
                     .clickable { onClick(1) },
                 contentAlignment = Alignment.Center
-            ) {Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(3.dp)
-                    .background(if (selectedIndex.value == 1) MaterialTheme.colorScheme.background.copy(0.5f) else Color.Transparent)
-                    .align(Alignment.BottomCenter)
-            )
-                Icon(Icons.Filled.Edit, contentDescription = "Localized description",
-                    modifier = Modifier.size(48.dp))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(3.dp)
+                        .background(if (selectedIndex.value == 1) MaterialTheme.colorScheme.background else Color.Transparent)
+                        .align(Alignment.BottomCenter)
+                )
+                Icon(
+                    Icons.Filled.Edit, contentDescription = "Localized description",
+                    modifier = Modifier
+                        .size(48.dp)
+                        .alpha(if (selectedIndex.value == 1) 1f else 0.5f)
+                )
             }
         }
 
     }
-    }
+}
 

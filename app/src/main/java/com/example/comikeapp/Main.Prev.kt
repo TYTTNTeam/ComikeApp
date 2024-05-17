@@ -5,10 +5,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.comikeapp.ui.theme.ComikeAppTheme
 
 
-@Preview(showBackground = true, heightDp = 500)
+@Preview(showBackground = true, heightDp = 600, widthDp = 320)
 @Composable
 fun GreetingPreview() {
-    ComikeAppTheme {
+    ComikeAppTheme(darkTheme = false) {
         Top()
     }
 }

@@ -14,8 +14,7 @@ fun Top() {
     var screenID by remember { mutableStateOf(0) }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter
     ) {
         BottomBar { index ->
             Log.d("aaa", "Top index: $index")
