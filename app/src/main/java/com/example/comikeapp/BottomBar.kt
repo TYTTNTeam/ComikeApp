@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+val BottomBarHeightDp = 56.dp
 @Composable
 fun BottomBar(onChange: (Int) -> Unit) {
     val selectedIndex = remember { mutableStateOf(0) }
@@ -33,7 +34,7 @@ fun BottomBar(onChange: (Int) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(BottomBarHeightDp)
             .background(MaterialTheme.colorScheme.primary)
     )
     {

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 @Composable
 fun Top() {
@@ -24,7 +23,7 @@ fun Top() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 56.dp)
+            .padding(bottom = BottomBarHeightDp)
     ) {
         Content(screenID = screenID)
     }
