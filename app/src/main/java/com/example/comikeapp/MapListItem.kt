@@ -1,7 +1,14 @@
 package com.example.comikeapp
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -22,7 +29,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import androidx.compose.ui.zIndex
 
 @Composable
@@ -33,14 +46,20 @@ fun MapListItem(
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val screenHeight = 64.dp
+    val color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
 
-    var isSquareVisible by remember { mutableStateOf(false) }
+    var isMenuOpen by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp)
-            .zIndex(if (isSquareVisible) 1f else 0f)
+            .pointerInput(Unit) {
+                detectTapGestures { // 外側の領域をタップした場合の処理
+                    if (isMenuOpen) {
+                        isMenuOpen = false
+                    }
+                }
+            }
     ) {
         Column(
             verticalArrangement = Arrangement.Top,
@@ -48,13 +67,14 @@ fun MapListItem(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             // スクリーン幅に応じてサイズを調整
-            val boxWidth = if (screenWidth >= 600.dp) screenWidth else screenWidth - 32.dp
+            val boxWidth = if (screenWidth >= 600.dp) screenWidth else screenWidth
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .size(width = boxWidth, height = screenHeight)
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer)
+                    .padding(start = 16.dp, end = 16.dp)
             ) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -76,90 +96,131 @@ fun MapListItem(
                             .size(60.dp)
                             .padding(8.dp)
                             .clickable {
-                                isSquareVisible = !isSquareVisible
+                                isMenuOpen = !isMenuOpen
                             },
                         tint = MaterialTheme.colorScheme.background
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
-        if (isSquareVisible) {
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 13.dp, horizontal = 6.dp)
-                    .size(width = 153.dp, height = 190.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .align(Alignment.TopEnd)
-                    .shadow(elevation = 2.dp, shape = RoundedCornerShape(4.dp))
-                    .zIndex(1f)
+        if (isMenuOpen) {
+            Popup(
+                alignment = Alignment.Center,
+                properties = PopupProperties(focusable = false)
             ) {
-                Column(
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "Close",
-                        tint = MaterialTheme.colorScheme.background,
-                        modifier = Modifier
-                            .size(60.dp)
-                            .align(Alignment.End)
-                            .padding(8.dp)
-                            .clickable {
-                                isSquareVisible = !isSquareVisible
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            detectTapGestures { // 外側の領域をタップした場合の処理
+                                if (isMenuOpen) {
+                                    isMenuOpen = false
+                                }
                             }
+                        }
+                ){}
+            }
+            //ポップアップ表示にする
+            Popup(
+                alignment = Alignment.TopEnd,
+                offset = IntOffset(x = 0, y = 0),
+                properties = PopupProperties(focusable = false)
+            ) {
+                AnimatedVisibility(
+                    visible = isMenuOpen,
+                    enter = expandVertically(
+                        animationSpec = tween(
+                            durationMillis = 100,
+                            easing = LinearOutSlowInEasing
+                        )
+                    ),
+                    exit = shrinkVertically(
+                        animationSpec = tween(
+                            durationMillis = 100,
+                            easing = FastOutLinearInEasing
+                        )
                     )
-
-                    Button(
-                        onClick = onNameChange,
-                        modifier = Modifier
-                            .padding(horizontal = 6.dp)
-                            .align(Alignment.Start),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        )
-                    ) {
-                        Text(
-                            "名前変更",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 22.sp,
-                            style = TextStyle(MaterialTheme.colorScheme.background),
-                        )
-                    }
-
+                ) {
                     Box(
                         modifier = Modifier
-                            .width(110.dp)
-                            .height(3.dp)
-                            .background(MaterialTheme.colorScheme.background)
-                    )
-
-                    Button(
-                        onClick = onDelete,
-                        modifier = Modifier
-                            .padding(horizontal = 6.dp)
-                            .align(Alignment.Start),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        )
+                            .padding(vertical = 13.dp, horizontal = 6.dp)
+                            .size(width = 153.dp, height = 190.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.primaryContainer)
+                            .align(Alignment.TopEnd)
+                            .zIndex(1f),
                     ) {
-                        Text(
-                            "削除　　",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 22.sp,
-                            style = TextStyle(MaterialTheme.colorScheme.background),
-                        )
-                    }
+                        Column(
+                            verticalArrangement = Arrangement.Top,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Close",
+                                tint = MaterialTheme.colorScheme.background,
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .align(Alignment.End)
+                                    .padding(8.dp)
+                                    .clickable {
+                                        if (isMenuOpen) {
+                                            isMenuOpen = false
+                                        }
+                                    }
+                            )
 
-                    Box(
-                        modifier = Modifier
-                            .width(110.dp)
-                            .height(3.dp)
-                            .background(MaterialTheme.colorScheme.background)
-                    )
+                            Button(
+                                onClick = onNameChange,
+                                modifier = Modifier
+                                    .padding(horizontal = 6.dp)
+                                    .align(Alignment.Start),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                                )
+                            ) {
+                                Text(
+                                    "名前変更",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 22.sp,
+                                    style = TextStyle(MaterialTheme.colorScheme.background),
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .width(110.dp)
+                                    .height(3.dp)
+                                    .background(MaterialTheme.colorScheme.background)
+                            )
+
+                            Button(
+                                onClick = onDelete,
+                                modifier = Modifier
+                                    .padding(horizontal = 6.dp)
+                                    .align(Alignment.Start),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                                )
+                            ) {
+                                Text(
+                                    "削除　　",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 22.sp,
+                                    style = TextStyle(MaterialTheme.colorScheme.background),
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .width(110.dp)
+                                    .height(3.dp)
+                                    .background(MaterialTheme.colorScheme.background)
+                            )
+                        }
+                    }
                 }
             }
         }
