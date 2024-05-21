@@ -29,9 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.window.Popup
@@ -46,7 +44,6 @@ fun MapListItem(
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val screenHeight = 64.dp
-    val color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
 
     var isMenuOpen by remember { mutableStateOf(false) }
 
@@ -132,13 +129,13 @@ fun MapListItem(
                     visible = isMenuOpen,
                     enter = expandVertically(
                         animationSpec = tween(
-                            durationMillis = 100,
+                            durationMillis = 200,
                             easing = LinearOutSlowInEasing
                         )
                     ),
                     exit = shrinkVertically(
                         animationSpec = tween(
-                            durationMillis = 100,
+                            durationMillis = 200,
                             easing = FastOutLinearInEasing
                         )
                     )
@@ -146,11 +143,12 @@ fun MapListItem(
                     Box(
                         modifier = Modifier
                             .padding(vertical = 13.dp, horizontal = 6.dp)
-                            .size(width = 153.dp, height = 190.dp)
+                            .shadow(8.dp, shape = RoundedCornerShape(12.dp))
                             .clip(RoundedCornerShape(12.dp))
+                            .size(width = 153.dp, height = 190.dp)
                             .background(MaterialTheme.colorScheme.primaryContainer)
                             .align(Alignment.TopEnd)
-                            .zIndex(1f),
+                            .zIndex(1f)
                     ) {
                         Column(
                             verticalArrangement = Arrangement.Top,
