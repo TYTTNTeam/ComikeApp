@@ -1,12 +1,11 @@
 package com.example.comikeapp
 
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -16,69 +15,62 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 
-
 @Composable
 fun DeleteMapDialog(mapName:String,
                     onYes: () -> Unit,
-                    onNo: () -> Unit) {
-    Dialog(onDismissRequest = { onYes() }) {
+                    onNo: () -> Unit){
+    Dialog(onDismissRequest = { onNo() }) {
+        DialogBox (onNo = onNo){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(8.dp),
-        contentAlignment = Alignment.Center) {
-        Box(                                //外枠の緑
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .size(325.dp, 208.dp)
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            val roundedShape = RoundedCornerShape(16.dp)
-            Box(                            //内側の白
-                modifier = Modifier
-                    .size(310.dp, 192.dp)
-                    .background(MaterialTheme.colorScheme.background, shape = roundedShape)
-            )
-            Text(
-                text = "本当に消しますか？",
-                modifier = Modifier.offset(y = (-50).dp), // 上部に余白を追加
-                color = MaterialTheme.colorScheme.error,
-                fontSize = 24.sp
-            )
-            Text(
-                text = mapName,
-                modifier = Modifier.offset(y = (-10).dp),
-                fontSize = 24.sp
-            )
-                Button(
-                    onClick = { onYes() },
-                    modifier = Modifier
-                        .offset(x = (-70).dp, y = 40.dp),
-                        colors = ButtonDefaults
-                            .buttonColors(
-                                containerColor = MaterialTheme.colorScheme.error,),
-                                shape = RoundedCornerShape(8.dp)
-                    ) {
-                    Text(
-                        text = "はい",
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.background
-                    )
-                }
-                TextButton(
-                    onClick = { onNo() },
-                    modifier = Modifier.offset(x = 70.dp,y = 40.dp),
+                Text(
+                    text = "本当に消しますか？",
+                    modifier = Modifier.padding(top = 10.dp),
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 24.sp
+                )
+                Text(
+                    text = mapName,
+                    modifier = Modifier.padding(10.dp),
+                    fontSize = 24.sp
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("いいえ",
-                        style = androidx.compose.ui.text.TextStyle(color = MaterialTheme.colorScheme.onBackground),
-                        fontSize = 18.sp
-                    )
-
+                    Button(
+                        onClick = { onYes() },
+                        modifier = Modifier.padding(horizontal = 15.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "はい",
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.background
+                        )
+                    }
+                    TextButton(
+                        onClick = { onNo() },
+                        modifier = Modifier.padding(vertical = 10.dp,horizontal = 15.dp)
+                    ) {
+                        Text(
+                            "いいえ",
+                            style = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+                            fontSize = 18.sp
+                        )
+                    }
                 }
             }
         }
