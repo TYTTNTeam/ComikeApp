@@ -1,6 +1,5 @@
 package com.example.comikeapp
 
-import android.graphics.LightingColorFilter
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,11 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import com.example.comikeapp.ui.theme.ComikeAppTheme
 
 @Composable
 fun ChangeMapNameDialog(mapName:String,
@@ -37,88 +33,78 @@ fun ChangeMapNameDialog(mapName:String,
     var text by remember {
         mutableStateOf(TextFieldValue(""))
     }
-    var bottonEnalsed by remember {
+    var buttonPenalised by remember {
         mutableStateOf(false)
     }
-
-    Dialog(onDismissRequest = { onNo() }) {
-        DialogBox {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxSize()
+    DialogBox(onNo = onNo) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Text(
+                text = "名前の変更",
+                modifier = Modifier.padding(start = 10.dp, top = 10.dp),
+                fontSize = 32.sp
+            )
+            Text(
+                text = mapName,
+                fontSize = 18.sp,
+                modifier = Modifier.padding(start = 10.dp),
+                )
+            TextField(
+                value = text,
+                onValueChange = {
+                    text = it
+                    buttonPenalised = it.text.isNotEmpty()
+                                },
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(0.2f),
+                    focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(0.2f),
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    cursorColor = MaterialTheme.colorScheme.onBackground
+                ),
+                modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp),
+                textStyle = TextStyle(fontSize = 24.sp),
+                singleLine = true,
+                placeholder = {
+                    Text(
+                        text = "新しい名前",
+                        style = TextStyle(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)),
+                        fontSize = 24.sp
+                    )
+                              },
+                )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "名前の変更",
-                    modifier = Modifier.padding(start = 10.dp,top = 10.dp),
-                    fontSize = 32.sp
-                )
-                Text(
-                    text = mapName,
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(start = 10.dp),
-                )
-                TextField(
-                    value = text,
-                    onValueChange = {
-                        text = it
-                        bottonEnalsed = it.text.isNotEmpty()
-                    },
-                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp),
-                    textStyle = TextStyle(fontSize = 24.sp),
-                    singleLine = true,
-                    placeholder = {
-                        Text(
-                            text = "新しい名前",
-                            style = TextStyle(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)),
-                            fontSize = 24.sp
-                        )
-                    },
-
-                )
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Button(
+                    onClick = { onYes(text.text) },
+                    enabled = buttonPenalised,
+                    modifier = Modifier.padding(start = 30.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                    ) {
+                    Text(
+                        text = "決定",
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.background
+                    )
+                    }
+                TextButton(
+                    onClick = onNo,
+                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp)
                 ) {
-                    Button(
-                        onClick = { onYes(text.text) },
-                        enabled = bottonEnalsed,
-                        modifier = Modifier.padding(start = 30.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(
-                            text = "決定",
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.background
-                        )
-                    }
-                    TextButton(
-                        onClick = { onNo() },
-                        modifier = Modifier.padding(vertical = 10.dp,horizontal = 15.dp)
-                    ) {
-                        Text(
-                            "キャンセル",
-                            style = TextStyle(color = MaterialTheme.colorScheme.onBackground),
-                            fontSize = 18.sp
-                        )
-                    }
+                    Text(
+                        "キャンセル",
+                        style = TextStyle(color = MaterialTheme.colorScheme.onBackground),
+                        fontSize = 18.sp
+                    )
                 }
             }
         }
-    }
-}
-
-
-
-
-@Preview(showBackground = true, widthDp = 320, heightDp = 1000)
-@Composable
-fun PreviewChangeMapNameDialog() {
-    ComikeAppTheme(darkTheme = false) {
-        ChangeMapNameDialog(mapName = "地図1",
-            onYes = { /* 確認ボタンが押された時の動作 */ },
-            onNo = { /* キャンセルボタンが押された時の動作 */ })
     }
 }
