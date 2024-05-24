@@ -31,6 +31,6 @@ fun Content(screenID: Int) {
                 .size(width = 15.dp, height = 15.dp)
                 .background(color = Color.Blue)
         )
-
+        FilePickerButton()
     }
 }
