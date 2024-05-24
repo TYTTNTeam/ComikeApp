@@ -29,7 +29,7 @@ fun MapView() {
                     contentPadding = PaddingValues(0.dp)
         ) {
             Image(
-                painter = painterResource(R.drawable.buttonchangemapshortcut),
+                painter = painterResource(R.drawable.button_change_map_shortcut),
                 contentDescription = "BottomBarIcon"
             )
         }
