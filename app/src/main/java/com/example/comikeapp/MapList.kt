@@ -81,7 +81,7 @@ fun MapList() {
                     }
                 }
                 selectedFileUri?.let { uri ->
-                    //MapMapRegistDialog()
+                    //MapRegistDialog()
                 }
                 Image(painter = painterResource(R.drawable.buttonaddmap),
                     contentDescription = "BottomBarIcon",
@@ -90,14 +90,6 @@ fun MapList() {
                         .clickable { launcher.launch(pickFileIntent) }
                         .align(Alignment.BottomEnd)
                         .zIndex(1f)
-                )
-                Box(
-                    modifier = Modifier
-                        .padding(vertical = 13.dp, horizontal = 9.dp)
-                        .clip(CircleShape)
-                        .shadow(8.dp, shape = CircleShape)
-                        .size(86.dp, 86.dp)
-                        .align(Alignment.BottomEnd)
                 )
             }
         }
