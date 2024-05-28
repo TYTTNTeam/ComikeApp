@@ -72,7 +72,7 @@ fun MapRegistDialog(
                         //もう一度ファイルを選択ボタンを押した際の処理を入れてください
                     }) {
                     Image(
-                        painter = painterResource(R.drawable.buttonselectagain),
+                        painter = painterResource(R.drawable.button_select_again),
                         contentDescription = "リソースIDに対応する画像表示"
                     )
                 }
