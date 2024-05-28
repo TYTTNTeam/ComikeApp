@@ -1,5 +1,6 @@
 package com.example.comikeapp
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,11 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 val BottomBarHeightDp = 56.dp
@@ -60,11 +57,9 @@ fun BottomBar(onChange: (Int) -> Unit) {
                         .background(if (selectedIndex.value == 0) MaterialTheme.colorScheme.background else Color.Transparent)
                         .align(Alignment.BottomCenter)
                 )
-                Icon(
-                    Icons.Filled.Check, contentDescription = "Localized description",
-                    modifier = Modifier
-                        .size(48.dp)
-                        .alpha(if (selectedIndex.value == 0) 1f else 0.5f)
+                Image(painter = painterResource(R.drawable.button_map_view_screen),
+                    contentDescription = "BottomBarIcon",
+                    Modifier.alpha(if (selectedIndex.value == 0) 1f else 0.5f)
                 )
             }
 
@@ -82,15 +77,11 @@ fun BottomBar(onChange: (Int) -> Unit) {
                         .background(if (selectedIndex.value == 1) MaterialTheme.colorScheme.background else Color.Transparent)
                         .align(Alignment.BottomCenter)
                 )
-                Icon(
-                    Icons.Filled.Edit, contentDescription = "Localized description",
-                    modifier = Modifier
-                        .size(48.dp)
-                        .alpha(if (selectedIndex.value == 1) 1f else 0.5f)
+                Image(painter = painterResource(R.drawable.button_menu_screen),
+                    contentDescription = "BottomBarIcon",
+                    Modifier.alpha(if (selectedIndex.value == 1) 1f else 0.5f)
                 )
             }
         }
-
     }
 }
-
