@@ -78,10 +78,8 @@ suspend fun convert(uri: Uri, context: Context): File?{
 
             val fileOut = FileOutputStream(renderFile)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOut)
-            fileOut.close()
 
             Log.d("convert", "Successful rendering into $renderFile from $uri")
-            pfd.close()
             return renderFile
         }else {
             Log.d("convert", "Method couldn't get a PDF file.")
