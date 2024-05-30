@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Rect
+import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
@@ -21,10 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
-import com.tom_roush.pdfbox.pdmodel.PDDocument
-import com.tom_roush.pdfbox.rendering.ImageType
-import com.tom_roush.pdfbox.rendering.PDFRenderer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -65,23 +63,30 @@ fun FilePickerButton() {
 
 suspend fun convert(uri: Uri, context: Context): File?{
     try{
-        PDFBoxResourceLoader.init(context)
+        val pfd = context.contentResolver.openFileDescriptor(uri, "r")
+        if(pfd != null){
+            val renderer = PdfRenderer(pfd)
+            val page = renderer.openPage(0)
 
-        val document = PDDocument.load(context.contentResolver.openInputStream(uri))
-        val render = PDFRenderer(document)
-        val image = render.renderImage(0, 1f, ImageType.RGB)
+            val bitmap = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888)
+            page.render(bitmap, Rect(0, 0, 1000, 1000), null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
-        val topDir = context.filesDir
-        val mapsDir = File(topDir, "maps")
-        mapsDir.mkdir()
-        val renderFile = File(mapsDir, "test")
+            val topDir = context.filesDir
+            val mapsDir = File(topDir, "maps")
+            mapsDir.mkdir()
+            val renderFile = File(mapsDir, "test")
 
-        val fileOut = FileOutputStream(renderFile)
-        image.compress(Bitmap.CompressFormat.JPEG, 100, fileOut)
-        fileOut.close()
+            val fileOut = FileOutputStream(renderFile)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOut)
+            fileOut.close()
 
-        Log.d("convert", "Successful rendering into $fileOut from $uri")
-        return renderFile
+            Log.d("convert", "Successful rendering into $renderFile from $uri")
+            pfd.close()
+            return renderFile
+        }else {
+            Log.d("convert", "Method couldn't get a PDF file.")
+            return null
+        }
     } catch (e: IOException) {
         Log.e("convert", "Exception thrown while rendering file", e)
         return null
