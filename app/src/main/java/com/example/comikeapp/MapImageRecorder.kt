@@ -6,15 +6,14 @@ import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
-import kotlin.math.floor
 
 class MapImageRecorder(private val context: Context) {
-    val dir: File = File(context.filesDir, "maps").apply {
+    private val dir: File = File(context.filesDir, "maps").apply {
         if (!exists()) {
             mkdir()
         }
     }
-    var renderFIle = this.dir
+    private var renderFIle = this.dir
 
     fun render(uri: Uri, fileName: String): File?{
         context.contentResolver.openFileDescriptor(uri, "r")?.let { pfd ->
@@ -52,8 +51,13 @@ class MapImageRecorder(private val context: Context) {
             val fileOut = FileOutputStream(this.renderFIle)
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOut)
             fileOut.close()
+
             return this.renderFIle
         }
         return null
+    }
+
+    fun rollback(){
+        renderFIle.delete()
     }
 }
