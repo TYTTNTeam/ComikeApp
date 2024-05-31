@@ -34,11 +34,13 @@ import java.io.IOException
 @Composable
 fun FilePickerButton() {
     var pickedImageUri by remember { mutableStateOf<ImageBitmap?>(null) }
+    var fileName by remember { mutableStateOf("")}
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         val uri = it.data?.data
         if (uri != null) {
+            uri.path?.let {path -> fileName = File(path).name }
             coroutineScope.launch(Dispatchers.IO) {
                 try {
                     val file = convert(uri, context)
@@ -53,6 +55,7 @@ fun FilePickerButton() {
         }
     }
 
+    Text(text = fileName)
     Button(
         onClick = {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
@@ -77,12 +80,21 @@ fun convert(uri: Uri, context: Context): File?{
             val renderer = PdfRenderer(pfd)
             val page = renderer.openPage(0)
             // 空のBitmapインスタンスを生成
-            val bitmap = Bitmap.createBitmap(1000, 1000, Bitmap.Config.ARGB_8888)
+            val width = page.width
+            val height = page.height
+            val bitmapScale :Int = if(width < height){
+                2400 / height
+            }else{
+                2400 / width
+            }
+            val bitmap = Bitmap.createBitmap(width * bitmapScale, height * bitmapScale, Bitmap.Config.ARGB_8888)
             // Pageのメソッドで、Bitmapにレンダリングするよう依頼
-            page.render(bitmap, Rect(0, 0, 1000, 1000), null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+            page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
             page.close()
             pfd.close()
+
+
             // ディレクトリと空のファイルのインスタンスを生成
             val topDir = context.filesDir
             val mapsDir = File(topDir, "maps")
@@ -96,7 +108,7 @@ fun convert(uri: Uri, context: Context): File?{
             Log.d("convert", "Successful rendering into $renderFile from $uri")
             return renderFile
         }else {
-            Log.d("convert", "Method couldn't get a PDF file.")
+            Log.e("convert", "Method couldn't get a PDF file.")
             return null
         }
     } catch (e: IOException) {
