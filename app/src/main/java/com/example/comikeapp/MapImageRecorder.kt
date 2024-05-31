@@ -6,6 +6,7 @@ import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.floor
 
 class MapImageRecorder(private val context: Context) {
     val dir: File = File(context.filesDir, "maps").apply {
@@ -23,14 +24,15 @@ class MapImageRecorder(private val context: Context) {
             // 空のBitmapインスタンスを生成
             val width = page.width
             val height = page.height
-            val bitmapScale: Int = if (width < height) {
-                2400 / height
+            val maxSize = 2400.0
+            val bitmapScale: Double = if (width < height) {
+                maxSize / height
             } else {
-                2400 / width
+                maxSize / width
             }
             val bitmap = Bitmap.createBitmap(
-                width * bitmapScale,
-                height * bitmapScale,
+                (width * bitmapScale).toInt(),
+                (height * bitmapScale).toInt(),
                 Bitmap.Config.ARGB_8888
             )
             // Pageのメソッドで、Bitmapにレンダリングするよう依頼
