@@ -13,7 +13,7 @@ class MapImageRecorder(private val context: Context) {
             mkdir()
         }
     }
-    private var renderFIle = this.dir
+    var renderFIle = this.dir
 
     fun render(uri: Uri, fileName: String): File?{
         context.contentResolver.openFileDescriptor(uri, "r")?.let { pfd ->
@@ -55,9 +55,5 @@ class MapImageRecorder(private val context: Context) {
             return this.renderFIle
         }
         return null
-    }
-
-    fun rollback(){
-        renderFIle.delete()
     }
 }
