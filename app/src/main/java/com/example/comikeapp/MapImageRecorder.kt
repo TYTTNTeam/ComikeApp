@@ -13,10 +13,13 @@ class MapImageRecorder(private val context: Context) {
             mkdir()
         }
     }
-    var renderFIle = this.dir
+    private var targetFile: File? = this.dir
 
     fun render(uri: Uri, fileName: String): File?{
-        context.contentResolver.openFileDescriptor(uri, "r")?.let { pfd ->
+        /*
+        uriが正しく読み込めた場合にFile型を返し、そうでない場合はnullを返します。レンダリング中の失敗はエラーが送出されます。
+         */
+        this.context.contentResolver.openFileDescriptor(uri, "r")?.let { pfd ->
             // PDFの1ページ目のインスタンスを生成
             val renderer = PdfRenderer(pfd)
             val page = renderer.openPage(0)
@@ -46,14 +49,37 @@ class MapImageRecorder(private val context: Context) {
             pfd.close()
 
             // 空のファイルのインスタンスを生成
-            this.renderFIle = File(this.dir, fileName)
+            this.targetFile = File(this.dir, fileName)
             // Bitmapのメソッドで、画像を圧縮しつつ空のファイルに保存するよう依頼
-            val fileOut = FileOutputStream(this.renderFIle)
+            val fileOut = FileOutputStream(this.targetFile)
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOut)
             fileOut.close()
 
-            return this.renderFIle
+            return this.targetFile
         }
         return null
+    }
+
+    fun rollback(): Boolean {
+        /*
+        成功した場合はtrueを返します。先にレンダリングしていない場合はfalseを返します。
+         */
+        this.targetFile?.let { file ->
+            file.delete()
+            return true
+        }
+        return false
+    }
+
+    fun getRecordFile(fileName: String): File?{
+        /*
+        fileNameが正しい時場合はFile型を返し、そうでない場合はnullを返します。
+         */
+        val file = File(dir, fileName)
+        return if(file.isFile) {
+            file
+        }else{
+            null
+        }
     }
 }
