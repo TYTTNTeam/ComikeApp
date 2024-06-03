@@ -1,9 +1,9 @@
 package com.example.comikeapp
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -23,7 +23,10 @@ import androidx.compose.ui.zIndex
 fun MapView() {
     var showDialog by remember { mutableStateOf(false) }
     var selectedMapId by remember{ mutableStateOf<Int?>(null)}
-    Box {
+    Box (
+        modifier = Modifier
+            .fillMaxSize()
+    ){
         Button(
             onClick = { showDialog = true }, // ボタンがクリックされたときにダイアログを表示する
             modifier = Modifier
