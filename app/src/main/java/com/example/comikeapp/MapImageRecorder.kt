@@ -13,7 +13,7 @@ class MapImageRecorder(private val context: Context) {
             mkdir()
         }
     }
-    private var targetFile: File? = this.dir
+    private var targetFile: File? = null
 
     fun render(uri: Uri, fileName: String): File?{
         /*
