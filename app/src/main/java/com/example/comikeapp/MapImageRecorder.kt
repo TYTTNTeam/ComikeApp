@@ -15,9 +15,9 @@ class MapImageRecorder(private val context: Context) {
     }
     private var targetFile: File? = null
 
-    fun render(uri: Uri, fileName: String): File?{
+    fun render(uri: Uri, fileName: String): File{
         /*
-        uriが正しく読み込めた場合にFile型を返し、そうでない場合はnullを返します。レンダリング中の失敗はエラーが送出されます。
+        レンダリング中の失敗はエラーが送出されます。
          */
         this.context.contentResolver.openFileDescriptor(uri, "r")?.let { pfd ->
             // PDFの1ページ目のインスタンスを生成
@@ -55,9 +55,9 @@ class MapImageRecorder(private val context: Context) {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOut)
             fileOut.close()
 
-            return this.targetFile
+            return this.targetFile!!
         }
-        return null
+        throw ContentResolverCrashException()
     }
 
     fun rollback(): Boolean {
@@ -83,3 +83,5 @@ class MapImageRecorder(private val context: Context) {
         }
     }
 }
+
+class ContentResolverCrashException: Exception("ContentResolverがクラッシュしました。Uriが正しくない可能性があります。")
