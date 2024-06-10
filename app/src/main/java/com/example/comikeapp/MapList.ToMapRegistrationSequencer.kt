@@ -20,12 +20,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun Stub() {
+fun MapListToMapRegistrationSequencer() {
     val isProgressing = booleanArrayOf(false, true, false, true)
     var sequence by remember { mutableStateOf(0) }
     var list by remember { mutableStateOf<List<Database>?>(null) }
 
-    var manager by remember { mutableStateOf(MapRegistrationSequencer())}
+    var manager by remember { mutableStateOf(MapRegistrationSequencer())} // インスタンスは途中で失われないようにします
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -36,8 +36,7 @@ fun Stub() {
             sequence = 2
             scope.launch(Dispatchers.IO) {
                 try {
-                    manager.register(this, context, uri
-                    ) { newList ->
+                    manager.register(this, context, uri) { newList ->
                         launch(Dispatchers.Main) {
                             list = newList
                             sequence = 0
@@ -52,7 +51,7 @@ fun Stub() {
             sequence = 0
         }
     }
-    LaunchedEffect(key1 = sequence) {
+    LaunchedEffect(key1 = sequence) {// 処理をやり直すときは初期化します
         if(sequence == 0){
             manager = MapRegistrationSequencer()
         }
