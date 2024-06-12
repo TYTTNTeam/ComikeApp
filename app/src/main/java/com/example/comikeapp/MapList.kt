@@ -8,12 +8,16 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -71,8 +76,8 @@ fun MapList() {
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    items(mapNames.size) { mapName ->
-                        MapListItem(mapName = newName,
+                    items(mapNames.size) { index ->
+                        MapListItem(mapName = "地図$index",
                             onNameChange = {},
                             onDelete = {})
                     }
@@ -80,14 +85,28 @@ fun MapList() {
                 selectedFileUri?.let { uri ->
                     //MapRegistDialog()
                 }
-                Image(painter = painterResource(R.drawable.button_add_map),
-                    contentDescription = "BottomBarIcon",
+                Column(
                     modifier = Modifier
-                        .padding(8.dp)
-                        .clickable { launcher.launch(pickFileIntent) }
                         .align(Alignment.BottomEnd)
-                        .zIndex(1f)
-                )
+                        .padding(bottom = 10.dp, end = 10.dp)
+                ){
+                    // NOTE このBoxは影を濃くするためだけにあります。
+                    Box(modifier = Modifier
+                        .height(5.dp)
+                        .width(50.dp)
+                        .shadow(20.dp)
+                    )
+                    FloatingActionButton(
+                        onClick = { launcher.launch(pickFileIntent) },
+                        shape = CircleShape,
+                        modifier = Modifier.zIndex(1f)
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.button_add_map),
+                            contentDescription = "Add new map.",
+                        )
+                    }
+                }
             }
         }
     }
