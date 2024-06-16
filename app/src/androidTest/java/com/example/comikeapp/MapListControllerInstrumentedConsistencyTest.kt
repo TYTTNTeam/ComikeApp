@@ -14,7 +14,7 @@ import org.junit.Assert.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class MapListControllerConsistencyInstrumentedTest {
+class MapListControllerInstrumentedConsistencyTest {
     private val db: MapListRepository
     init {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
