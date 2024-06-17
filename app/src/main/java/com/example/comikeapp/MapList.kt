@@ -35,6 +35,7 @@ import androidx.compose.ui.zIndex
 @Composable
 fun MapList() {
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+    val boolean = remember { mutableStateOf(false)}
     val mapNames = listOf("地図1", "地図2", "地図3", "地図4", "地図5", "地図6", "地図7", "地図8", "地図9", "地図10")
 
     // ランチャーを定義
