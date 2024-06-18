@@ -3,11 +3,16 @@ package com.example.comikeapp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,9 +27,9 @@ import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun ChangList(
-    onChangMapId: (Int) -> Unit,
-    onNo : () -> Unit){
+fun ChangeList(
+    mapList: List<MapList>, onNo: () -> Unit
+) {
     var contentSize by remember { mutableStateOf(Size.Zero) }
 
     Dialog(onDismissRequest = onNo) {
@@ -48,8 +53,21 @@ fun ChangList(
                         .height(50.dp)
                         .background(MaterialTheme.colorScheme.background, shape = roundedShape)
                         .onGloballyPositioned { coordinates ->
-                            contentSize = coordinates.size.toSize()}
-                )
+                            contentSize = coordinates.size.toSize()
+                        }) {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(mapList) { mapItem ->
+                            Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                                //ボタン押処理
+                            }) {
+                                Text(text = if (mapItem.mapName != null){
+                                    mapItem.mapName!!
+                                }else{"mapNameがありません。"}
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
