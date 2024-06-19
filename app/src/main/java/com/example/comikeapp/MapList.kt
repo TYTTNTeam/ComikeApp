@@ -14,16 +14,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,15 +33,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
 fun MapList() {
+    var showNameChangeDialog by remember { mutableStateOf(false) }
+    var showMapDeleteDialog by remember { mutableStateOf(false) }
+    var showMapRegistDialog by remember { mutableStateOf(false) }
+    var newName by remember { mutableStateOf("") }
+    var indexToDelete by remember { mutableIntStateOf(-1) }
+    var loading by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val repository by remember {
         mutableStateOf(
@@ -52,17 +57,19 @@ fun MapList() {
         )
     }
     val coroutineScope = rememberCoroutineScope()
-    var mapList: List<MapList> by remember { mutableStateOf(emptyList()) }
+    var mapList: List<MapList>? by remember { mutableStateOf(null) }
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
 
-    LaunchedEffect(Unit) {
-        coroutineScope.launch(Dispatchers.IO) {
-            this.coroutineContext
-            val dataList = repository.getAll()
-            withContext(Dispatchers.Main) {
-                mapList = dataList
-            }
+    LaunchedEffect(Unit, Dispatchers.Main) {
+        if(mapList == null){
+            loading = true
         }
+        val dataList: List<MapList>
+        withContext(Dispatchers.IO){
+            dataList = repository.getAll()
+        }
+        mapList = dataList
+        loading = false
     }
 
 
@@ -73,6 +80,7 @@ fun MapList() {
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
                 selectedFileUri = uri
+                showMapRegistDialog = true
             }
         }
     }
@@ -80,13 +88,6 @@ fun MapList() {
     val pickFileIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
         type = "*/*"
     }
-
-    var showNameChangeDialog by remember { mutableStateOf(false) }
-    var showMapDeleteDialog by remember { mutableStateOf(false) }
-    var showMapRegistDialog by remember { mutableStateOf(false) }
-    val newName by remember { mutableStateOf("") }
-    var index by remember { mutableStateOf(-1) }
-    var loading by remember { mutableStateOf(false)}
 
 
     Box(
@@ -109,23 +110,24 @@ fun MapList() {
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    items(mapList.size) { mapItem ->
-                        MapListItem(mapName = mapList[mapItem].mapName!!,
-                            onNameChange = {
-                                showNameChangeDialog = true
-                                index = mapItem
-                            },
-                            onDelete = {
-                                showMapDeleteDialog = true
-                                //index = mapList.indexOf(mapItem)
-                            }
-
-                        )
+                    mapList?.let {
+                        items(it.size) { index ->
+                            MapListItem(mapName = it[index].mapName!!,
+                                onNameChange = {
+                                    newName = it[index].mapName!!
+                                    showNameChangeDialog = true
+                                    indexToDelete = index
+                                },
+                                onDelete = {
+                                    showMapDeleteDialog = true
+                                    indexToDelete = index
+                                    newName = it[index].mapName!!
+                                }
+                            )
+                        }
                     }
                 }
-                selectedFileUri?.let { uri ->
-                    showMapRegistDialog = true
-                }
+
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -151,81 +153,70 @@ fun MapList() {
                 }
             }
         }
+        if (loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background.copy(alpha = 0.5f))
+            )
+
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .width(64.dp)
+                    .align(Alignment.Center)
+                //trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            )
+        }
     }
 
-    if (showNameChangeDialog) {
-        ChangeMapNameDialog(
-            mapName = newName,
-            onYes = {
-                coroutineScope.launch(Dispatchers.IO) {
-                   // mapList[index].mapName = ,
-                    if (mapList[index].mapName != null) {
+    mapList?.let {
+        if (showNameChangeDialog) {
+            ChangeMapNameDialog(
+                mapName = newName,
+                onYes = { changeName ->
+                    loading = true
+                    showNameChangeDialog = false
+                    coroutineScope.launch(Dispatchers.IO) {
                         val data = repository.updateAndGetAll(
-                            mapList[index].mapId,
-                            mapList[index].mapName!!
+                            it[indexToDelete].mapId,
+                            changeName
                         )
                         withContext(Dispatchers.Main) {
                             mapList = data
+                            loading = false
                         }
-                    } else {
-                      //  Text(text = "")
                     }
-                }
-            },
-            onNo = { showNameChangeDialog = false }
-        )
-    }
+                },
+                onNo = { showNameChangeDialog = false }
+            )
+        }
 
-    if(loading){
-        CircularProgressIndicator(
-            modifier = Modifier
-                .width(64.dp)
-                .fillMaxSize(),
-            color = MaterialTheme.colorScheme.secondary,
-            trackColor = MaterialTheme.colorScheme.surfaceVariant,
-        )
-    }
-
-    if (showMapDeleteDialog) {
-        DeleteMapDialog(
-            mapName = newName,
-            onYes = {
-                loading = true
-                coroutineScope.launch(Dispatchers.IO) {
-                    val data = repository.deleteAndGetAll(mapList[index].mapId)
-                    withContext(Dispatchers.Main) {
-                        mapList = data
+        if (showMapDeleteDialog) {
+            DeleteMapDialog(
+                mapName = newName,
+                onYes = {
+                    loading = true
+                    showMapDeleteDialog = false
+                    coroutineScope.launch(Dispatchers.IO) {
+                        val data = repository.deleteAndGetAll(it[indexToDelete].mapId)
+                        withContext(Dispatchers.Main) {
+                            mapList = data
+                            loading = false
+                        }
                     }
-                }
-            },
-            onNo = { showMapDeleteDialog = false })
-    }
+                },
+                onNo = { showMapDeleteDialog = false }
+            )
+        }
 
-    if (showMapRegistDialog) {
-        MapRegistDialog(
-            pdfsName = newName,
-            onYes = {
+        if (showMapRegistDialog) {
+            MapRegistDialog( /* TODO insertしてね */
+                pdfsName = newName,
+                onYes = {
 
-            },
-            onNo = { showMapRegistDialog = false })
+                },
+                onNo = { showMapRegistDialog = false }
+            )
+        }
     }
 }
-
-
-
-@Composable
-fun ErrorMessage(){
-    Box(
-        modifier = Modifier
-        .fillMaxSize()
-    ){
-        Text(text = "mapListControllerでエラーが発生しました")
-    }
-}
-
-
-
-
-
-
-
