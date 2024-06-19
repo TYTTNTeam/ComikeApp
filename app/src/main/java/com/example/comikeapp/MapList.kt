@@ -58,9 +58,9 @@ fun MapList() {
     LaunchedEffect(Unit) {
         coroutineScope.launch(Dispatchers.IO) {
             this.coroutineContext
-            val data = repository.getAll()
+            val dataList = repository.getAll()
             withContext(Dispatchers.Main) {
-                mapList = data
+                mapList = dataList
             }
         }
     }
@@ -86,6 +86,7 @@ fun MapList() {
     var showMapRegistDialog by remember { mutableStateOf(false) }
     val newName by remember { mutableStateOf("") }
     var index by remember { mutableStateOf(-1) }
+    var loading by remember { mutableStateOf(false)}
 
 
     Box(
@@ -108,16 +109,18 @@ fun MapList() {
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    items(mapList) { mapItem ->
-                        MapListItem(mapName = "名前${mapItem.mapName}",
+                    items(mapList.size) { mapItem ->
+                        MapListItem(mapName = mapList[mapItem].mapName!!,
                             onNameChange = {
                                 showNameChangeDialog = true
-                                index = mapList.indexOf(mapItem)
+                                index = mapItem
                             },
                             onDelete = {
-                                index = mapList.indexOf(mapItem)
                                 showMapDeleteDialog = true
-                            })
+                                //index = mapList.indexOf(mapItem)
+                            }
+
+                        )
                     }
                 }
                 selectedFileUri?.let { uri ->
@@ -155,6 +158,7 @@ fun MapList() {
             mapName = newName,
             onYes = {
                 coroutineScope.launch(Dispatchers.IO) {
+                   // mapList[index].mapName = ,
                     if (mapList[index].mapName != null) {
                         val data = repository.updateAndGetAll(
                             mapList[index].mapId,
@@ -171,13 +175,22 @@ fun MapList() {
             onNo = { showNameChangeDialog = false }
         )
     }
-    CircularProgressIndicator(
 
-        progress = 1F)
+    if(loading){
+        CircularProgressIndicator(
+            modifier = Modifier
+                .width(64.dp)
+                .fillMaxSize(),
+            color = MaterialTheme.colorScheme.secondary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+        )
+    }
+
     if (showMapDeleteDialog) {
         DeleteMapDialog(
             mapName = newName,
             onYes = {
+                loading = true
                 coroutineScope.launch(Dispatchers.IO) {
                     val data = repository.deleteAndGetAll(mapList[index].mapId)
                     withContext(Dispatchers.Main) {
@@ -197,6 +210,8 @@ fun MapList() {
             onNo = { showMapRegistDialog = false })
     }
 }
+
+
 
 @Composable
 fun ErrorMessage(){
