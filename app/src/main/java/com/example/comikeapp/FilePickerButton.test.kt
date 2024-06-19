@@ -1,12 +1,12 @@
 package com.example.comikeapp
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.material3.Button
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,8 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,31 +23,36 @@ import java.io.File
 
 @Composable
 fun FilePickerButton() {
-    var pickedImageUri by remember { mutableStateOf<ImageBitmap?>(null) }
     var fileName by remember { mutableStateOf("")}
+    var filePath by remember { mutableStateOf("")}
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    SnackbarHost(snackbarHostState)
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         val uri = it.data?.data
         if (uri != null) {
             uri.path?.let {path -> fileName = File(path).name }
+
             coroutineScope.launch(Dispatchers.IO) {
                 try {
                     val newMap = MapImageRecorder(context)
-                    val file = newMap.render(uri, "test")
-                    newMap.rollback()
-                    val filePicker = MapImageRecorder(context)
-                    val pickedFile = filePicker.getRecordFile("test")
-                    val bitmap = BitmapFactory.decodeFile(pickedFile?.path)?.asImageBitmap()
+                    val file = newMap.render(uri, fileName)
+                    val gotFile = File(filePath)
                     withContext(Dispatchers.Main) {
-                        pickedImageUri = bitmap
+                        filePath = file.path // この状態でデータベースに格納
                     }
+
                 } catch (e: Exception) {
-                    // エラー処理
+                    // エラー表示
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("エラーが発生しました")
+                    }
                 }
             }
         }
     }
+
 
     Text(text = fileName)
     Button(
@@ -62,8 +65,7 @@ fun FilePickerButton() {
     ) {
         Text("Select")
     }
-    pickedImageUri?.let {
-        Text(it.toString())
-        Image(bitmap = it, contentDescription = "test image")
-    }
+    RotatableMap(imagePath = filePath)
 }
+
+
