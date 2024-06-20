@@ -49,6 +49,7 @@ fun MapList() {
     var indexToDelete by remember { mutableIntStateOf(-1) }
     var loading by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    var list by remember { mutableStateOf<List<MapList>?>(null) }
     val repository by remember {
         mutableStateOf(
             MapListRepository(
@@ -56,6 +57,8 @@ fun MapList() {
             )
         )
     }
+    val manager by remember { mutableStateOf(MapRegistrationSequencer()) }
+    //manager.register(null,null,null, onComplete = uri)
     val coroutineScope = rememberCoroutineScope()
     var mapList: List<MapList>? by remember { mutableStateOf(null) }
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
@@ -81,6 +84,7 @@ fun MapList() {
             result.data?.data?.let { uri ->
                 selectedFileUri = uri
                 showMapRegistDialog = true
+
             }
         }
     }
@@ -210,10 +214,24 @@ fun MapList() {
         }
 
         if (showMapRegistDialog) {
-            MapRegistDialog( /* TODO insertしてね */
+            MapRegistDialog(
                 pdfsName = newName,
-                onYes = {
+                onYes = {newName ->
+                    loading = true
+                    showMapRegistDialog = false
+                    coroutineScope.launch(Dispatchers.IO) {
+                        val data = repository.insertAndGetAll(newName,"pathが入る")
+                        withContext(Dispatchers.Main){
+                            mapList = data
+                            loading = false
+                           /*manager.register(this, context, uri) { newList ->
+                                launch(Dispatchers.Main) {
+                                    list = newList
+                                }
+                            }*/
 
+                        }
+                    }
                 },
                 onNo = { showMapRegistDialog = false }
             )
