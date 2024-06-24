@@ -65,18 +65,6 @@ class MapImageRecorder(context: Context) : MapImageOperateable(context) {
         }
         return false
     }
-
-    fun getRecordFile(fileName: String): File?{
-        /*
-        fileNameが正しい時場合はFile型を返し、そうでない場合はnullを返します。
-         */
-        val file = File(dir, fileName)
-        return if(file.isFile) {
-            file
-        }else{
-            null
-        }
-    }
 }
 
 class ContentResolverCrashException: Exception("ContentResolverがクラッシュしました。Uriが正しくない可能性があります。")
