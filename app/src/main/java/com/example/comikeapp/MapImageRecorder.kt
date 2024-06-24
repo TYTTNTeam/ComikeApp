@@ -7,12 +7,7 @@ import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
 
-class MapImageRecorder(private val context: Context) {
-    private val dir: File = File(context.filesDir, "maps").apply {
-        if (!exists()) {
-            mkdir()
-        }
-    }
+class MapImageRecorder(context: Context) : MapImageOperateable(context) {
     private var targetFile: File? = null
 
     fun render(uri: Uri, fileName: String): File{
