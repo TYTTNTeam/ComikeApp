@@ -3,6 +3,7 @@ package com.example.comikeapp
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -36,12 +37,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
 fun MapList() {
+    var access by remember { mutableStateOf(false) }
     var showNameChangeDialog by remember { mutableStateOf(false) }
     var showMapDeleteDialog by remember { mutableStateOf(false) }
     var showMapRegistDialog by remember { mutableStateOf(false) }
@@ -49,7 +50,6 @@ fun MapList() {
     var indexToDelete by remember { mutableIntStateOf(-1) }
     var loading by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    var list by remember { mutableStateOf<List<MapList>?>(null) }
     val repository by remember {
         mutableStateOf(
             MapListRepository(
@@ -57,24 +57,22 @@ fun MapList() {
             )
         )
     }
-    val manager by remember { mutableStateOf(MapRegistrationSequencer()) }
-    //manager.register(null,null,null, onComplete = uri)
+    var manager by remember { mutableStateOf(MapRegistrationSequencer()) }
     val coroutineScope = rememberCoroutineScope()
     var mapList: List<MapList>? by remember { mutableStateOf(null) }
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
 
     LaunchedEffect(Unit, Dispatchers.Main) {
-        if(mapList == null){
+        if (mapList == null) {
             loading = true
         }
         val dataList: List<MapList>
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             dataList = repository.getAll()
         }
         mapList = dataList
         loading = false
     }
-
 
     // ランチャーを定義
     val launcher = rememberLauncherForActivityResult(
@@ -84,7 +82,18 @@ fun MapList() {
             result.data?.data?.let { uri ->
                 selectedFileUri = uri
                 showMapRegistDialog = true
-
+                coroutineScope.launch(Dispatchers.IO) {
+                    try {
+                        manager.register(this, context, uri) { newList ->
+                            coroutineScope.launch(Dispatchers.Main) {
+                                mapList = newList
+                                Log.d("test", mapList.toString())
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("test", e.toString())
+                    }
+                }
             }
         }
     }
@@ -92,6 +101,7 @@ fun MapList() {
     val pickFileIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
         type = "*/*"
     }
+
 
 
     Box(
@@ -144,8 +154,11 @@ fun MapList() {
                             .width(50.dp)
                             .shadow(20.dp)
                     )
-                    FloatingActionButton(
-                        onClick = { launcher.launch(pickFileIntent) },
+                    FloatingActionButton(//
+                        onClick = {//ここでファイルピッカーにアクセスでしょ
+                            access = true//
+                                launcher.launch(pickFileIntent)
+                        },
                         shape = CircleShape,
                         modifier = Modifier.zIndex(1f)
                     ) {
@@ -156,6 +169,7 @@ fun MapList() {
                     }
                 }
             }
+
         }
         if (loading) {
             Box(
@@ -172,6 +186,7 @@ fun MapList() {
             )
         }
     }
+
 
     mapList?.let {
         if (showNameChangeDialog) {
@@ -215,25 +230,23 @@ fun MapList() {
 
         if (showMapRegistDialog) {
             MapRegistDialog(
-                pdfsName = newName,
-                onYes = {newName ->
+                pdfsName = selectedFileUri.toString(),
+                onYes = { newName ->
                     loading = true
                     showMapRegistDialog = false
-                    coroutineScope.launch(Dispatchers.IO) {
-                        val data = repository.insertAndGetAll(newName,"pathが入る")
-                        withContext(Dispatchers.Main){
-                            mapList = data
-                            loading = false
-                           /*manager.register(this, context, uri) { newList ->
-                                launch(Dispatchers.Main) {
-                                    list = newList
-                                }
-                            }*/
-
-                        }
-                    }
+                    manager.confirmName(newName, true)
+                    loading = false
+                    manager = MapRegistrationSequencer()
                 },
-                onNo = { showMapRegistDialog = false }
+                onNo = {
+                    showMapRegistDialog = false
+                    manager.confirmName("", false)
+                    manager = MapRegistrationSequencer()
+                },
+                onAccess = {
+                    manager = MapRegistrationSequencer()
+                    launcher.launch(pickFileIntent)
+                }
             )
         }
     }

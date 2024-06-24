@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun MapRegistDialog(
-    pdfsName: String, onYes: (String) -> Unit, onNo: () -> Unit
+    pdfsName: String, onYes: (String) -> Unit, onNo: () -> Unit,onAccess :() -> Unit
 ) {
 
     var text by remember {
@@ -42,6 +42,7 @@ fun MapRegistDialog(
     var buttonPenalised by remember {
         mutableStateOf(false)
     }
+
     DialogBox(onNo = onNo) {
         Column(
             verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()
@@ -69,7 +70,7 @@ fun MapRegistDialog(
                 Box(modifier = Modifier
                     .padding(end = 30.dp)
                     .clickable {
-                        //もう一度ファイルを選択ボタンを押した際の処理を入れてください
+                        onAccess()
                     }) {
                     Image(
                         painter = painterResource(R.drawable.button_select_again),
