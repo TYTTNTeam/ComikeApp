@@ -44,7 +44,7 @@ class MapImageRecorder(context: Context) : MapImageOperateable(context) {
             pfd.close()
 
             // 空のファイルのインスタンスを生成
-            this.targetFile = File(this.dir, fileName)
+            this.targetFile = File(this.mapImagesDirectory, fileName)
             // Bitmapのメソッドで、画像を圧縮しつつ空のファイルに保存するよう依頼
             val fileOut = FileOutputStream(this.targetFile)
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOut)
