@@ -5,6 +5,7 @@ import android.net.Uri
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 class MapRegistrationSequencer {
@@ -32,6 +33,12 @@ class MapRegistrationSequencer {
             val list = db.insertAndGetAll(name, imageFile.path)
 
             onComplete(list)
+
+            scope.launch {
+                val paths = list.map { it.imagePath!! }
+                val cleaner = MapImageCleaner(appContext)
+                cleaner.clean(paths)
+            }
         }
     }
 
