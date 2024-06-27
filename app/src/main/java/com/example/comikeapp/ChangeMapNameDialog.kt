@@ -56,15 +56,18 @@ fun ChangeMapNameDialog(
                 value = text,
                 onValueChange = {
                     text = it
-                    if(it.text.length < 31){
-                        check = false
+                    buttonPenalised = it.text.isNotEmpty()
+                    if(it.text.isNotEmpty()) {
                         buttonPenalised = true
-                    } else {
-                        check = true
+                        if (it.text.length < 31) {
+                            check = false
+                        } else {
+                            check = true
+                            buttonPenalised = false
+                        }
+                    }else {
                         buttonPenalised = false
                     }
-                    buttonPenalised = it.text.isNotEmpty()
-
                 },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(0.2f),
