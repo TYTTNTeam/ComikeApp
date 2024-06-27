@@ -3,7 +3,6 @@ package com.example.comikeapp
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -20,6 +19,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -61,6 +64,7 @@ fun MapList() {
     val coroutineScope = rememberCoroutineScope()
     var mapList: List<MapList>? by remember { mutableStateOf(null) }
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit, Dispatchers.Main) {
         if (mapList == null) {
@@ -78,20 +82,21 @@ fun MapList() {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+           if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
                 selectedFileUri = uri
                 showMapRegistDialog = true
+                newName =  getFileNameFromUri(context, uri) ?: uri.toString()
                 coroutineScope.launch(Dispatchers.IO) {
                     try {
                         manager.register(this, context, uri) { newList ->
                             coroutineScope.launch(Dispatchers.Main) {
                                 mapList = newList
-                                Log.d("test", mapList.toString())
+                                loading = false
                             }
                         }
                     } catch (e: Exception) {
-                        Log.e("test", e.toString())
+                        snackBarHostState.showSnackbar("地図の追加に失敗しました")
                     }
                 }
             }
@@ -101,8 +106,6 @@ fun MapList() {
     val pickFileIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
         type = "*/*"
     }
-
-
 
     Box(
         modifier = Modifier
@@ -169,7 +172,6 @@ fun MapList() {
                     }
                 }
             }
-
         }
         if (loading) {
             Box(
@@ -186,7 +188,6 @@ fun MapList() {
             )
         }
     }
-
 
     mapList?.let {
         if (showNameChangeDialog) {
@@ -230,12 +231,11 @@ fun MapList() {
 
         if (showMapRegistDialog) {
             MapRegistDialog(
-                pdfsName = selectedFileUri.toString(),
+                pdfsName = getFileNameFromUri(context, selectedFileUri!!) ?: "Unknown",
                 onYes = { newName ->
                     loading = true
                     showMapRegistDialog = false
                     manager.confirmName(newName, true)
-                    loading = false
                     manager = MapRegistrationSequencer()
                 },
                 onNo = {
@@ -249,5 +249,14 @@ fun MapList() {
                 }
             )
         }
+    }
+
+    SnackbarHost(hostState = snackBarHostState) {  errorBer->
+        Snackbar(
+            snackbarData = errorBer,
+            shape = RoundedCornerShape(8.dp),
+            containerColor = Color.Red,
+            contentColor = Color.White
+        )
     }
 }
