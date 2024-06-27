@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -30,8 +31,8 @@ fun MapView() {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
-    var imagePathState by remember{ mutableStateOf<String?>(null)}//nullableなStringになる
-    var mapList: List<MapList> by remember { mutableStateOf(emptyList()) }
+    var imagePathState by remember { mutableStateOf<String?>(null) }
+    var mapList: List<MapList>? by remember { mutableStateOf(null) }
     val repository by remember {
         mutableStateOf(
             MapListRepository(
@@ -39,26 +40,27 @@ fun MapView() {
             )
         )
     }
-    LaunchedEffect(Unit, Dispatchers.IO) {
-        val data = repository.getAll()
-        withContext(Dispatchers.Main) {
-            mapList = data
-            imagePathState = mapList[0].imagePath// TODO
+    LaunchedEffect(mapList) {
+        if (mapList == null) {
+            var data : List<MapList>
+            withContext(Dispatchers.IO){
+                data = repository.getAll()
+                //delay(10000)
+            }
+            withContext(Dispatchers.Main) {
+                mapList = data
+                imagePathState = data[0].imagePath
+            }
         }
     }
-    imagePathState?.let { RotatableMap (imagePath = it) }
+
+    imagePathState?.let { RotatableMap(imagePath = it) }
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         Button(
             onClick = {
                 showDialog = true
-                coroutineScope.launch(Dispatchers.IO) {
-                    val data = repository.getAll()
-                    withContext(Dispatchers.Main) {
-                        mapList = data
-                    }
-                }
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -75,10 +77,12 @@ fun MapView() {
             )
         }
         if (showDialog) {
-            ChangeList(
-                mapList = mapList,
-                onNo = { showDialog = false } // ダイアログを閉じる
-            )
+            ChangeList(mapList = mapList,
+                onNo = { showDialog = false },
+                passImagePath = { newImagePath ->
+                    imagePathState = newImagePath
+                    showDialog = false
+                })
         }
     }
 }
