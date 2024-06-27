@@ -9,7 +9,9 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Clear
@@ -78,8 +80,12 @@ fun MapListItem(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    val horizontalScrollState = rememberScrollState()
                     Text(
-                        modifier = Modifier.padding(start = 20.dp),
+                        modifier = Modifier
+                            .padding(start = 20.dp)
+                            .width(240.dp)
+                            .horizontalScroll(horizontalScrollState),
                         text = mapName,
                         textAlign = TextAlign.Start,
                         style = TextStyle(MaterialTheme.colorScheme.background),
