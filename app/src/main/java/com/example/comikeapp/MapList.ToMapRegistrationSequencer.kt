@@ -5,7 +5,9 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,16 +17,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.util.stream.Collectors
 
 @Composable
 fun MapListToMapRegistrationSequencer() {
     val isProgressing = booleanArrayOf(false, true, false, true)
     var sequence by remember { mutableStateOf(0) }
     var list by remember { mutableStateOf<List<MapList>?>(null) }
-
+    var dummyFilePath by remember { mutableStateOf<String?>(null) }
     var manager by remember { mutableStateOf(MapRegistrationSequencer()) } // インスタンスは途中で失われないようにします
 
     val scope = rememberCoroutineScope()
@@ -56,8 +64,23 @@ fun MapListToMapRegistrationSequencer() {
             manager = MapRegistrationSequencer()
         }
     }
+    val fileName = "dummy.png"
+    val dir = MapImageRecorder(context).mapImagesDirectory
+    LaunchedEffect(key1 = sequence) {
+        val foundFiles = Files.list(dir.toPath())
+            .filter { Files.isRegularFile(it) }
+            .map(Path::toFile)
+            .collect(Collectors.toList())
+        dummyFilePath = foundFiles.toString()
+        Log.d("test", "list update")
+    }
 
     Column {
+        Row(Modifier.background(Color.Gray)) {
+            dummyFilePath?.let {
+                Text(text = it)
+            }
+        }
         Button(
             onClick = {
                 sequence = 1
