@@ -8,7 +8,9 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -33,6 +35,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
@@ -46,8 +50,13 @@ fun MapListItem(
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val screenHeight = 64.dp
-
     var isMenuOpen by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
+    var isScrolledToEnd by remember { mutableStateOf(false) }
+
+    LaunchedEffect(scrollState.maxValue, scrollState.value) {
+        isScrolledToEnd = scrollState.value == scrollState.maxValue
+    }
 
     Box(
         modifier = Modifier
@@ -81,17 +90,27 @@ fun MapListItem(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     val horizontalScrollState = rememberScrollState()
+                    isScrolledToEnd = horizontalScrollState.canScrollForward
                     Text(
                         modifier = Modifier
                             .padding(start = 20.dp)
-                            .width(240.dp)
+                            .width(200.dp)
                             .horizontalScroll(horizontalScrollState),
                         text = mapName,
                         textAlign = TextAlign.Start,
                         style = TextStyle(MaterialTheme.colorScheme.background),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 32.sp
+                        fontSize = 32.sp,
+
                     )
+
+                    if (isScrolledToEnd) {
+                        Text(
+                            text = "...",
+                            fontSize = 34.sp,
+                           style = TextStyle(MaterialTheme.colorScheme.background)
+                        )
+                    }
                     Icon(
                         imageVector = Icons.Filled.Menu,
                         contentDescription = "メニュー",
