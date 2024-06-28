@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,16 +27,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ChangeMapNameDialog(mapName:String,
-                        onYes: (String) -> Unit,
-                        onNo: () -> Unit){
+fun ChangeMapNameDialog(
+    mapName: String,
+    onYes: (String) -> Unit,
+    onNo: () -> Unit
+) {
 
-    var text by remember {
-        mutableStateOf(TextFieldValue(""))
-    }
-    var buttonPenalised by remember {
-        mutableStateOf(false)
-    }
+    var text by remember { mutableStateOf(TextFieldValue("")) }
+    var buttonPenalised by remember { mutableStateOf(false) }
+    var check by remember { mutableStateOf(false) }
+
     DialogBox(onNo = onNo) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -50,13 +51,24 @@ fun ChangeMapNameDialog(mapName:String,
                 text = mapName,
                 fontSize = 18.sp,
                 modifier = Modifier.padding(start = 10.dp),
-                )
+            )
             TextField(
                 value = text,
                 onValueChange = {
                     text = it
                     buttonPenalised = it.text.isNotEmpty()
-                                },
+                    if(it.text.isNotEmpty()) {
+                        buttonPenalised = true
+                        if (it.text.length < 31) {
+                            check = false
+                        } else {
+                            check = true
+                            buttonPenalised = false
+                        }
+                    }else {
+                        buttonPenalised = false
+                    }
+                },
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(0.2f),
                     focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(0.2f),
@@ -73,8 +85,19 @@ fun ChangeMapNameDialog(mapName:String,
                         style = TextStyle(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)),
                         fontSize = 24.sp
                     )
-                              },
+                },
+            )
+            if(check){
+                Text(
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .width(200.dp),
+                    fontSize = 16.sp,
+                    text = "地図の名前は30文字以下にしてください。"
                 )
+            }
+
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -87,13 +110,13 @@ fun ChangeMapNameDialog(mapName:String,
                         containerColor = MaterialTheme.colorScheme.primary
                     ),
                     shape = RoundedCornerShape(8.dp)
-                    ) {
+                ) {
                     Text(
                         text = "決定",
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.background
                     )
-                    }
+                }
                 TextButton(
                     onClick = onNo,
                     modifier = Modifier.padding(vertical = 10.dp, horizontal = 15.dp)
