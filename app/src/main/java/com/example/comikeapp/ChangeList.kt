@@ -30,30 +30,26 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 
 @Composable
-//画面外押したらonNo
 fun ChangeList(
-    mapList: List<MapList>?,
-    onNo: () -> Unit,
-    passImagePath: (String?) -> Unit
+    mapList: List<MapList>?, onNo: () -> Unit, passImagePath: (String?) -> Unit
 ) {
     val maxVisibleItems = 8
     val userScrollEnabled = if (mapList == null) false else mapList.size >= maxVisibleItems
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
-    Dialog(
-        onDismissRequest = onNo,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(5.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(5.dp)
-                .padding(bottom = 56.dp)
-                .clickable(onClick = onNo),
-            contentAlignment = Alignment.BottomEnd
+        Popup(
+            alignment = Alignment.BottomEnd,
+            onDismissRequest = onNo
         ) {
             Box(
                 modifier = Modifier
@@ -64,23 +60,19 @@ fun ChangeList(
             ) {
                 val roundedShape = RoundedCornerShape(16.dp)
                 Box(
-                    modifier = Modifier
-                        .background(
-                            MaterialTheme.colorScheme.background,
-                            shape = roundedShape
-                        )
+                    modifier = Modifier.background(
+                        MaterialTheme.colorScheme.background,
+                        shape = roundedShape
+                    )
                 ) {
                     if (mapList != null) {
                         Column(//勝手にfillMaxsizeしてる
-                            modifier = Modifier
-                                .padding(10.dp)
+                            modifier = Modifier.padding(10.dp)
                         ) {
                             LazyColumn(
                                 modifier = if (userScrollEnabled) {
-                                    Modifier
-                                        .height(screenHeight * (1 / 2f))
-                                } else Modifier,
-                                userScrollEnabled = userScrollEnabled
+                                    Modifier.height(screenHeight * (1 / 2f))
+                                } else Modifier, userScrollEnabled = userScrollEnabled
                             ) {
                                 items(mapList) { mapItem ->
                                     Button(modifier = Modifier.fillMaxWidth(),
@@ -127,9 +119,9 @@ fun ChangeList(
                             )
                         }
                     }
-
                 }
             }
         }
     }
 }
+
