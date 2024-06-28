@@ -27,7 +27,6 @@ import kotlinx.coroutines.withContext
 @Composable
 fun MapView() {
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     var imagePathState by remember { mutableStateOf<String?>(null) }
     var mapList: List<MapList>? by remember { mutableStateOf(null) }

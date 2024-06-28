@@ -2,7 +2,6 @@ package com.example.comikeapp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,10 +27,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 
 @Composable
 fun ChangeList(
@@ -66,7 +62,7 @@ fun ChangeList(
                     )
                 ) {
                     if (mapList != null) {
-                        Column(//勝手にfillMaxsizeしてる
+                        Column(
                             modifier = Modifier.padding(10.dp)
                         ) {
                             LazyColumn(
