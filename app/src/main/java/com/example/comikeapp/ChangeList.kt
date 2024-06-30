@@ -66,9 +66,10 @@ fun ChangeList(
                             modifier = Modifier.padding(10.dp)
                         ) {
                             LazyColumn(
-                                modifier = if (userScrollEnabled) {
+                                modifier = (if (userScrollEnabled) {
                                     Modifier.height(screenHeight * (1 / 2f))
-                                } else Modifier, userScrollEnabled = userScrollEnabled
+                                } else Modifier).fillMaxWidth(),
+                                userScrollEnabled = userScrollEnabled
                             ) {
                                 items(mapList) { mapItem ->
                                     Button(modifier = Modifier.fillMaxWidth(),
