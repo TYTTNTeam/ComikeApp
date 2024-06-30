@@ -5,6 +5,8 @@ import android.net.Uri
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import java.util.UUID
+
 class MapRegistrationSequencer {
     private val confirmName = CompletableDeferred<String?>()
 
@@ -12,12 +14,12 @@ class MapRegistrationSequencer {
         scope: CoroutineScope,
         appContext: Context,
         pdf: Uri,
-        onComplete: (List<Database>) -> Unit
+        onComplete: (List<MapList>) -> Unit
     ){
         val mir = MapImageRecorder(appContext)
         val renderImage = scope.async{
-            val id = "0" /* TODO 利用可能な最小の地図IDを地図リストコントローラから取得 */
-            val newMap = mir.render(pdf, id)
+            val uuid = UUID.randomUUID()
+            val newMap = mir.render(pdf, uuid.toString())
             newMap
         }
 
@@ -26,8 +28,8 @@ class MapRegistrationSequencer {
         if(name == null){
             mir.rollback()
         }else {
-            val newItem = Database(imageFile, name) /* TODO 地図リストコントローラに新しいデータを挿入 */
-            val list = listOf(newItem) /* TODO 地図リストコントローラからリスト全体を取得 */
+            val db = MapListRepository(MapListDatabaseProvider.getDatabase(appContext).mapListDao())
+            val list = db.insertAndGetAll(name, imageFile.path)
 
             onComplete(list)
         }

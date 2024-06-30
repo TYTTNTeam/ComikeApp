@@ -171,7 +171,7 @@ fun MapListItem(
                             )
 
                             Button(
-                                onClick = onNameChange,
+                                onClick = { onNameChange(); isMenuOpen = false },
                                 modifier = Modifier
                                     .padding(horizontal = 6.dp)
                                     .align(Alignment.Start),
@@ -195,7 +195,7 @@ fun MapListItem(
                             )
 
                             Button(
-                                onClick = onDelete,
+                                onClick = { onDelete(); isMenuOpen = false },
                                 modifier = Modifier
                                     .padding(horizontal = 6.dp)
                                     .align(Alignment.Start),

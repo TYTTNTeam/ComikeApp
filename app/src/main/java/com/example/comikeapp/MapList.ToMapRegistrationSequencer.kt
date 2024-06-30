@@ -23,9 +23,9 @@ import kotlinx.coroutines.launch
 fun MapListToMapRegistrationSequencer() {
     val isProgressing = booleanArrayOf(false, true, false, true)
     var sequence by remember { mutableStateOf(0) }
-    var list by remember { mutableStateOf<List<Database>?>(null) }
+    var list by remember { mutableStateOf<List<MapList>?>(null) }
 
-    var manager by remember { mutableStateOf(MapRegistrationSequencer())} // インスタンスは途中で失われないようにします
+    var manager by remember { mutableStateOf(MapRegistrationSequencer()) } // インスタンスは途中で失われないようにします
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -88,8 +88,6 @@ fun MapListToMapRegistrationSequencer() {
         }
         list?.let {
             Text(text = it.toString())
-            Text(text = it[0].name)
-            Text(text = it[0].mapFile.name)
         }
     }
 }
