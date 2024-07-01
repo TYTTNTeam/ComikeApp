@@ -9,7 +9,9 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Clear
@@ -31,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
@@ -44,8 +47,13 @@ fun MapListItem(
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val screenHeight = 64.dp
-
     var isMenuOpen by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
+    var isScrolledToEnd by remember { mutableStateOf(false) }
+
+    LaunchedEffect(scrollState.maxValue, scrollState.value) {
+        isScrolledToEnd = scrollState.value == scrollState.maxValue
+    }
 
     Box(
         modifier = Modifier
@@ -64,11 +72,12 @@ fun MapListItem(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             // スクリーン幅に応じてサイズを調整
-            val boxWidth = if (screenWidth >= 600.dp) screenWidth else screenWidth
+            val boxWidth = if (screenWidth <= 600.dp) screenWidth else screenWidth
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .size(width = boxWidth, height = screenHeight)
+                    .height(screenHeight)
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(start = 16.dp, end = 16.dp)
@@ -78,14 +87,29 @@ fun MapListItem(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxSize()
                 ) {
+                    val horizontalScrollState = rememberScrollState()
+                    isScrolledToEnd = horizontalScrollState.canScrollForward
                     Text(
-                        modifier = Modifier.padding(start = 20.dp),
+                        modifier = Modifier
+                            .padding(start = 20.dp)
+                            .width(boxWidth)
+                            .weight(1f)
+                            .horizontalScroll(horizontalScrollState),
                         text = mapName,
                         textAlign = TextAlign.Start,
                         style = TextStyle(MaterialTheme.colorScheme.background),
                         fontWeight = FontWeight.Bold,
-                        fontSize = 32.sp
+                        fontSize = 32.sp,
+                        overflow = TextOverflow.Ellipsis
                     )
+
+                    if (isScrolledToEnd) {
+                        Text(
+                            text = "...",
+                            fontSize = 34.sp,
+                            style = TextStyle(MaterialTheme.colorScheme.background)
+                        )
+                    }
                     Icon(
                         imageVector = Icons.Filled.Menu,
                         contentDescription = "メニュー",
@@ -117,7 +141,7 @@ fun MapListItem(
                                 }
                             }
                         }
-                ){}
+                )
             }
             //ポップアップ表示にする
             Popup(
