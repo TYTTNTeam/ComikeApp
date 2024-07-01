@@ -33,6 +33,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
@@ -71,11 +72,12 @@ fun MapListItem(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             // スクリーン幅に応じてサイズを調整
-            val boxWidth = if (screenWidth >= 600.dp) screenWidth else screenWidth
+            val boxWidth = if (screenWidth <= 600.dp) screenWidth else screenWidth
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .size(width = boxWidth, height = screenHeight)
+                    .height(screenHeight)
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(start = 16.dp, end = 16.dp)
@@ -90,21 +92,22 @@ fun MapListItem(
                     Text(
                         modifier = Modifier
                             .padding(start = 20.dp)
-                            .width(200.dp)
+                            .width(boxWidth)
+                            .weight(1f)
                             .horizontalScroll(horizontalScrollState),
                         text = mapName,
                         textAlign = TextAlign.Start,
                         style = TextStyle(MaterialTheme.colorScheme.background),
                         fontWeight = FontWeight.Bold,
                         fontSize = 32.sp,
-
+                        overflow = TextOverflow.Ellipsis
                     )
 
                     if (isScrolledToEnd) {
                         Text(
                             text = "...",
                             fontSize = 34.sp,
-                           style = TextStyle(MaterialTheme.colorScheme.background)
+                            style = TextStyle(MaterialTheme.colorScheme.background)
                         )
                     }
                     Icon(
@@ -138,7 +141,7 @@ fun MapListItem(
                                 }
                             }
                         }
-                ){}
+                )
             }
             //ポップアップ表示にする
             Popup(
