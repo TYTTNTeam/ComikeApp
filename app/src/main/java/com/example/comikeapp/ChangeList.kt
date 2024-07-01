@@ -33,7 +33,7 @@ import androidx.compose.ui.window.Popup
 fun ChangeList(
     mapList: List<MapList>?, onNo: () -> Unit, passImagePath: (String?) -> Unit
 ) {
-    val maxVisibleItems = 8
+    val maxVisibleItems = 6
     val userScrollEnabled = if (mapList == null) false else mapList.size >= maxVisibleItems
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
