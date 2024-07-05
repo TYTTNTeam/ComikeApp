@@ -23,7 +23,6 @@ fun Top() {
         modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter
     ) {
         BottomBar { index ->
-            Log.d("aaa", "Top index: $index")
             screenID = index
         }
     }
