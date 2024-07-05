@@ -23,6 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.comikeapp.data.maplist.MapList
+import com.example.comikeapp.data.maplist.MapListDatabaseProvider
+import com.example.comikeapp.data.maplist.MapListRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,9 +33,11 @@ import kotlinx.coroutines.withContext
 @Composable
 fun DBTest() {
     val context = LocalContext.current
-    val repository by remember{ mutableStateOf(MapListRepository(
+    val repository by remember{ mutableStateOf(
+        MapListRepository(
         MapListDatabaseProvider.getDatabase(context).mapListDao()
-    )) }
+    )
+    ) }
     var mapName by remember { mutableStateOf("") }
     var newName by remember { mutableStateOf("") }
     var imagePath by remember { mutableStateOf("") }

@@ -20,9 +20,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.example.comikeapp.data.mapimagefile.MapImageRecorder
+import com.example.comikeapp.data.maplist.MapList
+import com.example.comikeapp.ui.layout.menu.MapRegistrationSequencer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.stream.Collectors

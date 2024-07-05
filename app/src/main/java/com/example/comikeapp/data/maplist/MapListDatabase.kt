@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.data.maplist
 
 import androidx.room.ColumnInfo
 import androidx.room.Dao

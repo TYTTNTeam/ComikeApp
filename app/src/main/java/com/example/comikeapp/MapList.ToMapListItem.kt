@@ -3,6 +3,7 @@ package com.example.comikeapp
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.comikeapp.ui.layout.menu.MapListItem
 import com.example.comikeapp.ui.theme.ComikeAppTheme
 
 @Composable

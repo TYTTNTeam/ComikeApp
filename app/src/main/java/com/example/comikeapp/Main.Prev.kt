@@ -2,6 +2,7 @@ package com.example.comikeapp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.comikeapp.ui.layout.main.Top
 import com.example.comikeapp.ui.theme.ComikeAppTheme
 
 

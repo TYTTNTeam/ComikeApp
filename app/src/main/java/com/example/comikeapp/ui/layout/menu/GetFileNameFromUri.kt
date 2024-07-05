@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.ui.layout.menu
 
 import android.content.Context
 import android.database.Cursor
