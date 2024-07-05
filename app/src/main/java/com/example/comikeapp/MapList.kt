@@ -65,6 +65,8 @@ fun MapList() {
     var mapList: List<MapList>? by remember { mutableStateOf(null) }
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
     val snackBarHostState = remember { SnackbarHostState() }
+    // MapImageOperateable クラスを継承したインスタンスを作成
+    val imageOperator = remember { MapImageOperateable(context) }
 
     LaunchedEffect(Unit, Dispatchers.Main) {
         if (mapList == null) {
@@ -218,7 +220,9 @@ fun MapList() {
                     loading = true
                     showMapDeleteDialog = false
                     coroutineScope.launch(Dispatchers.IO) {
+                        val mapToDelete = mapList!![indexToDelete]
                         val data = repository.deleteAndGetAll(it[indexToDelete].mapId)
+                        imageOperator.deleteImageFile(mapToDelete.mapName!!)
                         withContext(Dispatchers.Main) {
                             mapList = data
                             loading = false

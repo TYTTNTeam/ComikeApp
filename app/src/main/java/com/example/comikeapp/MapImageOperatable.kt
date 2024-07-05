@@ -10,4 +10,12 @@ open class MapImageOperateable(protected val context: Context) {
             mkdir()
         }
     }
+
+    // 画像ファイルを削除するメソッド
+    fun deleteImageFile(imageName: String) {
+        val file = File(mapImagesDirectory, imageName)
+        if (file.exists()) {
+            file.delete()
+        }
+    }
 }
