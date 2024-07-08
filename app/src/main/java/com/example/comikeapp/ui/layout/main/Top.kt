@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.ui.layout.main
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box

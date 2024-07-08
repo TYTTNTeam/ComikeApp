@@ -1,7 +1,12 @@
-package com.example.comikeapp
+package com.example.comikeapp.ui.layout.menu
 
 import android.content.Context
 import android.net.Uri
+import com.example.comikeapp.data.mapimagefile.MapImageCleaner
+import com.example.comikeapp.data.mapimagefile.MapImageRecorder
+import com.example.comikeapp.data.maplist.MapList
+import com.example.comikeapp.data.maplist.MapListDatabaseProvider
+import com.example.comikeapp.data.maplist.MapListRepository
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async

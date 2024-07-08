@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.data.mapimagefile
 
 import android.content.Context
 import java.io.File

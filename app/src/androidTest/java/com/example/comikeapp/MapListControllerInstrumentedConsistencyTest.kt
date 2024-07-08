@@ -2,6 +2,9 @@ package com.example.comikeapp
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.comikeapp.data.maplist.MapList
+import com.example.comikeapp.data.maplist.MapListDatabaseProvider
+import com.example.comikeapp.data.maplist.MapListRepository
 
 import org.junit.Test
 import org.junit.runner.RunWith

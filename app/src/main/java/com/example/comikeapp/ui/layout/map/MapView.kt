@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.ui.layout.map
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -23,6 +23,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.example.comikeapp.data.maplist.MapList
+import com.example.comikeapp.data.maplist.MapListDatabaseProvider
+import com.example.comikeapp.data.maplist.MapListRepository
+import com.example.comikeapp.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
