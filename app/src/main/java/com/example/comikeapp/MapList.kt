@@ -79,7 +79,6 @@ fun MapList() {
         mapList = dataList
         loading = false
     }
-
     // ランチャーを定義
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
