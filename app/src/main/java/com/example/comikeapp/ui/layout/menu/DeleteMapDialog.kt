@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.ui.layout.menu
 
 
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.comikeapp.ui.components.DialogBox
 
 @Composable
 fun DeleteMapDialog(mapName:String,

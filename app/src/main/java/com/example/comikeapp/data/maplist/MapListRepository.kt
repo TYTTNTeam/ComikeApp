@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.data.maplist
 
 class MapListRepository(private val mapListDao: MapListDao) {
 

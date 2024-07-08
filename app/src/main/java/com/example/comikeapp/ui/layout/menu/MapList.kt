@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.ui.layout.menu
 
 import android.app.Activity
 import android.content.Intent
@@ -19,6 +19,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,17 +34,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.example.comikeapp.data.maplist.MapList
+import com.example.comikeapp.data.maplist.MapListDatabaseProvider
+import com.example.comikeapp.data.maplist.MapListRepository
+import com.example.comikeapp.R
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
 fun MapList() {
+    var access by remember { mutableStateOf(false) }
     var showNameChangeDialog by remember { mutableStateOf(false) }
     var showMapDeleteDialog by remember { mutableStateOf(false) }
     var showMapRegistDialog by remember { mutableStateOf(false) }
@@ -56,31 +64,45 @@ fun MapList() {
             )
         )
     }
+    var manager by remember { mutableStateOf(MapRegistrationSequencer()) }
     val coroutineScope = rememberCoroutineScope()
     var mapList: List<MapList>? by remember { mutableStateOf(null) }
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit, Dispatchers.Main) {
-        if(mapList == null){
+        if (mapList == null) {
             loading = true
         }
         val dataList: List<MapList>
-        withContext(Dispatchers.IO){
+        withContext(Dispatchers.IO) {
             dataList = repository.getAll()
         }
         mapList = dataList
         loading = false
     }
 
-
     // ランチャーを定義
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
+           if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
                 selectedFileUri = uri
                 showMapRegistDialog = true
+                newName =  getFileNameFromUri(context, uri) ?: uri.toString()
+                coroutineScope.launch(Dispatchers.IO) {
+                    try {
+                        manager.register(this, context, uri) { newList ->
+                            coroutineScope.launch(Dispatchers.Main) {
+                                mapList = newList
+                                loading = false
+                            }
+                        }
+                    } catch (e: Exception) {
+                        snackBarHostState.showSnackbar("地図の追加に失敗しました")
+                    }
+                }
             }
         }
     }
@@ -88,7 +110,6 @@ fun MapList() {
     val pickFileIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
         type = "*/*"
     }
-
 
     Box(
         modifier = Modifier
@@ -141,7 +162,10 @@ fun MapList() {
                             .shadow(20.dp)
                     )
                     FloatingActionButton(
-                        onClick = { launcher.launch(pickFileIntent) },
+                        onClick = {
+                            access = true
+                            launcher.launch(pickFileIntent)
+                        },
                         shape = CircleShape,
                         modifier = Modifier.zIndex(1f)
                     ) {
@@ -210,13 +234,33 @@ fun MapList() {
         }
 
         if (showMapRegistDialog) {
-            MapRegistDialog( /* TODO insertしてね */
-                pdfsName = newName,
-                onYes = {
-
+            MapRegistDialog(
+                pdfsName = getFileNameFromUri(context, selectedFileUri!!) ?: "Unknown",
+                onYes = { newName ->
+                    loading = true
+                    showMapRegistDialog = false
+                    manager.confirmName(newName, true)
+                    manager = MapRegistrationSequencer()
                 },
-                onNo = { showMapRegistDialog = false }
+                onNo = {
+                    showMapRegistDialog = false
+                    manager.confirmName("", false)
+                    manager = MapRegistrationSequencer()
+                },
+                onAccess = {
+                    manager = MapRegistrationSequencer()
+                    launcher.launch(pickFileIntent)
+                }
             )
         }
+    }
+
+    SnackbarHost(hostState = snackBarHostState) {  errorBer->
+        Snackbar(
+            snackbarData = errorBer,
+            shape = RoundedCornerShape(8.dp),
+            containerColor = Color.Red,
+            contentColor = Color.White
+        )
     }
 }

@@ -1,10 +1,16 @@
-package com.example.comikeapp
+package com.example.comikeapp.ui.layout.menu
 
 import android.content.Context
 import android.net.Uri
+import com.example.comikeapp.data.mapimagefile.MapImageCleaner
+import com.example.comikeapp.data.mapimagefile.MapImageRecorder
+import com.example.comikeapp.data.maplist.MapList
+import com.example.comikeapp.data.maplist.MapListDatabaseProvider
+import com.example.comikeapp.data.maplist.MapListRepository
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 class MapRegistrationSequencer {
@@ -32,6 +38,12 @@ class MapRegistrationSequencer {
             val list = db.insertAndGetAll(name, imageFile.path)
 
             onComplete(list)
+
+            scope.launch {
+                val paths = list.map { it.imagePath!! }
+                val cleaner = MapImageCleaner(appContext)
+                cleaner.clean(paths)
+            }
         }
     }
 
