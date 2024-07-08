@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.data.maplist
 
 import android.content.Context
 import androidx.room.Room
