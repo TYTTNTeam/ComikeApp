@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ "master", "develop" ]
+    branches: [ "master", "develop", "feature/map-registration/master", "feature/handwritten-memo/master" ]
   pull_request:
-    branches: [ "master", "develop" ]
+    branches: [ "master", "develop", "feature/map-registration/master", "feature/handwritten-memo/master" ]
 
 jobs:
   build:
