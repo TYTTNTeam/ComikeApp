@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.ui.layout.map
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import com.example.comikeapp.data.maplist.MapList
+import com.example.comikeapp.R
 
 @Composable
 fun ChangeList(
