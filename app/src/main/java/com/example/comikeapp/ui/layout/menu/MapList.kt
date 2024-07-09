@@ -108,7 +108,7 @@ fun MapList() {
     }
     // ファイルピッカーを起動するIntent
     val pickFileIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
-        type = "*/*"
+        type = "application/pdf"
     }
 
     Box(
