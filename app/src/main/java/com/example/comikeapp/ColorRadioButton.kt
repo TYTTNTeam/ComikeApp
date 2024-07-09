@@ -22,28 +22,22 @@ fun ColorRadioButton(
     check: Boolean,
     onColorSelected: (Color) -> Unit,
 ) {
+    val modifier = Modifier
+        .padding(8.dp)
+        .size(50.dp)
+        .clip(RoundedCornerShape(50))
+        .background(color = color)
+        .clickable {
+            onColorSelected(color)
+        }
     if (check) {
-        Icon(imageVector = Icons.Filled.Check,
+        Icon(
+            imageVector = Icons.Filled.Check,
             contentDescription = "penColor",
             tint = MaterialTheme.colorScheme.background,
-            modifier = Modifier
-                .padding(8.dp)
-                .size(50.dp)
-                .clip(RoundedCornerShape(50))
-                .background(color = color)
-                .clickable {
-                    onColorSelected(color)
-                }
+            modifier = modifier
         )
     } else {
-        Box(modifier = Modifier
-            .padding(8.dp)
-            .size(50.dp)
-            .clip(RoundedCornerShape(50))
-            .background(color = color)
-            .clickable {
-                onColorSelected(color)
-            }
-        )
+        Box(modifier = modifier)
     }
 }

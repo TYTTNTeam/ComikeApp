@@ -17,17 +17,17 @@ fun ControlPanel() {
     var colorPaletteOpen by remember { mutableStateOf(false) }
     Column {
         if (colorPaletteOpen) {
-            ColorPalette(
-                penColor = penColor,
-                onColorSelected = { color -> penColor = color },
-                onClose = { colorPaletteOpen = false }
+            ColorPalette(penColor = penColor,
+                onColorSelected = { color ->
+                    penColor = color
+                    colorPaletteOpen = false
+                }
             )
         }
 
         Button(
             onClick = { colorPaletteOpen = !colorPaletteOpen },
-            modifier = Modifier
-                .background(penColor)
+            modifier = Modifier.background(penColor)
         ) { }
     }
 
