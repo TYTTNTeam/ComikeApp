@@ -43,6 +43,7 @@ import com.example.comikeapp.data.maplist.MapList
 import com.example.comikeapp.data.maplist.MapListDatabaseProvider
 import com.example.comikeapp.data.maplist.MapListRepository
 import com.example.comikeapp.R
+import com.example.comikeapp.data.mapimagefile.MapImageDeleter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -69,8 +70,7 @@ fun MapList() {
     var mapList: List<MapList>? by remember { mutableStateOf(null) }
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
     val snackBarHostState = remember { SnackbarHostState() }
-    // MapImageOperateable クラスを継承したインスタンスを作成
-    val imageOperator = remember { MapImageOperateable(context) }
+    val mapImageDeleter = MapImageDeleter(context)
 
     LaunchedEffect(Unit, Dispatchers.Main) {
         if (mapList == null) {
@@ -83,15 +83,15 @@ fun MapList() {
         mapList = dataList
         loading = false
     }
-    // ランチャーを定義
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-           if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
                 selectedFileUri = uri
                 showMapRegistDialog = true
-                newName =  getFileNameFromUri(context, uri) ?: uri.toString()
+                newName = getFileNameFromUri(context, uri) ?: uri.toString()
                 coroutineScope.launch(Dispatchers.IO) {
                     try {
                         manager.register(this, context, uri) { newList ->
@@ -107,7 +107,7 @@ fun MapList() {
             }
         }
     }
-    // ファイルピッカーを起動するIntent
+
     val pickFileIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
         type = "*/*"
     }
@@ -126,7 +126,7 @@ fun MapList() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(15.dp))
-                    .background(MaterialTheme.colorScheme.background) // 白色の背景
+                    .background(MaterialTheme.colorScheme.background)
             ) {
                 LazyColumn(
                     modifier = Modifier
@@ -155,7 +155,6 @@ fun MapList() {
                         .align(Alignment.BottomEnd)
                         .padding(bottom = 10.dp, end = 10.dp)
                 ) {
-                    // NOTE このBoxは影を濃くするためだけにあります。
                     Box(
                         modifier = Modifier
                             .height(5.dp)
@@ -189,7 +188,6 @@ fun MapList() {
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center)
-                //trackColor = MaterialTheme.colorScheme.surfaceVariant,
             )
         }
     }
@@ -224,8 +222,9 @@ fun MapList() {
                     showMapDeleteDialog = false
                     coroutineScope.launch(Dispatchers.IO) {
                         val mapToDelete = mapList!![indexToDelete]
+
                         val data = repository.deleteAndGetAll(it[indexToDelete].mapId)
-                        imageOperator.deleteImageFile(mapToDelete.mapName!!)
+                        mapImageDeleter.deleteImageFile(mapToDelete.imagePath!!)
                         withContext(Dispatchers.Main) {
                             mapList = data
                             loading = false
@@ -258,9 +257,9 @@ fun MapList() {
         }
     }
 
-    SnackbarHost(hostState = snackBarHostState) {  errorBer->
+    SnackbarHost(hostState = snackBarHostState) { errorBar ->
         Snackbar(
-            snackbarData = errorBer,
+            snackbarData = errorBar,
             shape = RoundedCornerShape(8.dp),
             containerColor = Color.Red,
             contentColor = Color.White
