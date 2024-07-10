@@ -7,11 +7,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
@@ -23,7 +20,6 @@ import androidx.compose.ui.unit.dp
     iconImage: ImageVector,
     iconDescription: String
 ) {
-    var sliderValue by remember { mutableFloatStateOf(value)}
     Row {
         Icon(
             imageVector = iconImage,
@@ -35,7 +31,6 @@ import androidx.compose.ui.unit.dp
         Slider(
             value = value,
             onValueChange = {
-                sliderValue = it
                 onValue(it)
             },
             modifier = sliderModifier
@@ -43,7 +38,7 @@ import androidx.compose.ui.unit.dp
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.background,
                 activeTrackColor = MaterialTheme.colorScheme.background,
-                inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f),
+                inactiveTrackColor = Color.Gray
             )
         )
     }
