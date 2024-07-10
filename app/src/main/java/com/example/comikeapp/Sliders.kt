@@ -8,7 +8,6 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
@@ -38,7 +37,7 @@ import androidx.compose.ui.unit.dp
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.background,
                 activeTrackColor = MaterialTheme.colorScheme.background,
-                inactiveTrackColor = Color.Gray
+                inactiveTrackColor = MaterialTheme.colorScheme.background.copy(alpha = 0.35f)
             )
         )
     }

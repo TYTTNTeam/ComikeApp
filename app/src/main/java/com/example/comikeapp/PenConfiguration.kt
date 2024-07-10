@@ -30,7 +30,7 @@ fun PenConfiguration(
             .width(screenWidth.dp)
             .height(127.dp)
             .padding(10.dp)
-            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
+            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f))
     ) {
         Column(
             modifier = Modifier
