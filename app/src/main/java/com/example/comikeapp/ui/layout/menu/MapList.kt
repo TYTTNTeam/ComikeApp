@@ -196,7 +196,7 @@ fun MapList() {
         }
     }
 
-    mapList?.let {
+    mapList?.let { list ->
         if (showNameChangeDialog) {
             ChangeMapNameDialog(
                 mapName = newName,
@@ -205,7 +205,7 @@ fun MapList() {
                     showNameChangeDialog = false
                     coroutineScope.launch(Dispatchers.IO) {
                         val data = repository.updateAndGetAll(
-                            it[indexToDelete].mapId,
+                            list[indexToDelete].mapId,
                             changeName
                         )
                         withContext(Dispatchers.Main) {
@@ -225,9 +225,9 @@ fun MapList() {
                     loading = true
                     showMapDeleteDialog = false
                     coroutineScope.launch(Dispatchers.IO) {
-                        val mapToDelete = mapList!![indexToDelete]
+                        val mapToDelete = list[indexToDelete]
 
-                        val data = repository.deleteAndGetAll(it[indexToDelete].mapId)
+                        val data = repository.deleteAndGetAll(mapToDelete.mapId)
                         mapImageDeleter.deleteImageFile(mapToDelete.imagePath!!)
                         withContext(Dispatchers.Main) {
                             mapList = data
