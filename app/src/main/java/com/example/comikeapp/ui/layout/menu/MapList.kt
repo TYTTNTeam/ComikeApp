@@ -84,6 +84,7 @@ fun MapList() {
         loading = false
     }
 
+    // ランチャーを定義
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -108,6 +109,7 @@ fun MapList() {
         }
     }
 
+    // ファイルピッカーを起動するIntent
     val pickFileIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
         type = "*/*"
     }
@@ -126,7 +128,7 @@ fun MapList() {
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(15.dp))
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(MaterialTheme.colorScheme.background)// 白色の背景
             ) {
                 LazyColumn(
                     modifier = Modifier
@@ -156,6 +158,7 @@ fun MapList() {
                         .padding(bottom = 10.dp, end = 10.dp)
                 ) {
                     Box(
+                        // NOTE このBoxは影を濃くするためだけにあります
                         modifier = Modifier
                             .height(5.dp)
                             .width(50.dp)
@@ -188,6 +191,7 @@ fun MapList() {
                 modifier = Modifier
                     .width(64.dp)
                     .align(Alignment.Center)
+                //trackColor = MaterialTheme.colorScheme.surfaceVariant,
             )
         }
     }
