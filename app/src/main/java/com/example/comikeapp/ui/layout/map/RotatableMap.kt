@@ -2,10 +2,12 @@ package com.example.comikeapp.ui.layout.map
 
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -26,7 +28,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
-import com.example.comikeapp.ui.layout.map.ImageLoadingStatus.*
+import com.example.comikeapp.ui.layout.map.ImageLoadingStatus.Error
+import com.example.comikeapp.ui.layout.map.ImageLoadingStatus.ImageLoaded
+import com.example.comikeapp.ui.layout.map.ImageLoadingStatus.Loading
 import kotlinx.coroutines.flow.MutableStateFlow
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
@@ -94,7 +98,7 @@ fun RotatableMap(imagePath: String) {
     }
 
     val currentUiState = uiStateFlow.collectAsState().value
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column {
         when (currentUiState) {
             Loading -> {
                 Text("画像を読み込み中...")
@@ -107,6 +111,7 @@ fun RotatableMap(imagePath: String) {
                     )
                 }
             }
+
             ImageLoaded -> {
                 // 画像の表示
                 if (imageBitmap.value != null) {
@@ -114,12 +119,15 @@ fun RotatableMap(imagePath: String) {
                         bitmap = imageBitmap.value!!,
                         contentDescription = null,
                         modifier = Modifier
+                            .fillMaxSize()
                             .zoomable(zoomState)
+                            .horizontalScroll(rememberScrollState())
                     )
                 } else {
                     Text("画像読み込みに失敗しました。")
                 }
             }
+
             Error -> {
 
             }
