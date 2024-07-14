@@ -96,12 +96,12 @@ fun ControlPanel(
                 ) {}
 
                 IconButton(
-                    onClick = { /*  */ },
+                    onClick = { },
                     enabled = false
                 ) {}
 
                 IconButton(
-                    onClick = { /* ToDo */ },
+                    onClick = { },
                     enabled = false
                 ) {
                 }
