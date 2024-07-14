@@ -96,12 +96,12 @@ fun ControlPanel(
                 ) {}
 
                 IconButton(
-                    onClick = { },
+                    onClick = {  },
                     enabled = false
                 ) {}
 
                 IconButton(
-                    onClick = { },
+                    onClick = {  },
                     enabled = false
                 ) {
                 }
