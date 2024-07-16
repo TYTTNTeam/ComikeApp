@@ -24,9 +24,8 @@ class MainActivity : ComponentActivity() {
                     Box(
                         contentAlignment = Alignment.BottomCenter
                     ) {
-                        test()
+                       ControlPanel (onChange = {})
                     }
-
                 }
             }
         }
