@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,11 +40,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.example.comikeapp.R
+import com.example.comikeapp.data.mapimagefile.MapImageDeleter
 import com.example.comikeapp.data.maplist.MapList
 import com.example.comikeapp.data.maplist.MapListDatabaseProvider
 import com.example.comikeapp.data.maplist.MapListRepository
-import com.example.comikeapp.R
-import com.example.comikeapp.data.mapimagefile.MapImageDeleter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -148,6 +149,9 @@ fun MapList() {
                                     newName = it[index].mapName!!
                                 }
                             )
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(96.dp))
                         }
                     }
                 }
