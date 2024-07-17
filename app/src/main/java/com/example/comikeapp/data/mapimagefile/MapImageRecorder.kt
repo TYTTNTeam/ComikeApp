@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.data.mapimagefile
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -7,12 +7,7 @@ import android.net.Uri
 import java.io.File
 import java.io.FileOutputStream
 
-class MapImageRecorder(private val context: Context) {
-    private val dir: File = File(context.filesDir, "maps").apply {
-        if (!exists()) {
-            mkdir()
-        }
-    }
+class MapImageRecorder(context: Context) : MapImageOperateable(context) {
     private var targetFile: File? = null
 
     fun render(uri: Uri, fileName: String): File{
@@ -49,7 +44,7 @@ class MapImageRecorder(private val context: Context) {
             pfd.close()
 
             // 空のファイルのインスタンスを生成
-            this.targetFile = File(this.dir, fileName)
+            this.targetFile = File(this.mapImagesDirectory, fileName)
             // Bitmapのメソッドで、画像を圧縮しつつ空のファイルに保存するよう依頼
             val fileOut = FileOutputStream(this.targetFile)
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOut)
@@ -69,18 +64,6 @@ class MapImageRecorder(private val context: Context) {
             return true
         }
         return false
-    }
-
-    fun getRecordFile(fileName: String): File?{
-        /*
-        fileNameが正しい時場合はFile型を返し、そうでない場合はnullを返します。
-         */
-        val file = File(dir, fileName)
-        return if(file.isFile) {
-            file
-        }else{
-            null
-        }
     }
 }
 
