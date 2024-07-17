@@ -44,7 +44,6 @@ enum class ImageLoadingStatus {
 @Composable
 fun RotatableMap(imagePath: String) {
     val imageBitmap = remember { mutableStateOf<ImageBitmap?>(null) }
-    val zoomState = rememberZoomState()
     val snackBarHostState = remember { SnackbarHostState() }
     SnackbarHost(hostState = snackBarHostState) { snackbarData ->
         Snackbar(
@@ -111,6 +110,7 @@ fun RotatableMap(imagePath: String) {
             }
 
             ImageLoaded -> {
+                val zoomState = rememberZoomState( maxScale = 50f)
                 // 画像の表示
                 if (imageBitmap.value != null) {
                     Image(
