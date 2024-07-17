@@ -1,4 +1,4 @@
-package com.example.comikeapp
+package com.example.comikeapp.ui.layout.editor
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
