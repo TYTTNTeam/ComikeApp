@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
@@ -40,31 +39,25 @@ data class PenSettings(
 private val buttonSize = 50.dp
 private val iconSize = 50.dp
 private val iconPadding = 10.dp
-
+private val rowHeight = 73.dp
+private val rowSpace = Arrangement.SpaceEvenly
+private val rowAlignment = Alignment.CenterVertically
 
 @Composable
 fun ControlPanel(onChange: () -> Unit) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp
 
     Row(
         modifier = Modifier
-            .width(screenWidth.dp)
-            .height(73.dp)
+            .fillMaxWidth()
+            .height(rowHeight)
             .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+        horizontalArrangement = rowSpace,
+        verticalAlignment = rowAlignment
     ) {
-
-        IconButton(
-            onClick = {},
-            enabled = false,
-            modifier = Modifier
-                .size(buttonSize),
-        ) {}
 
         Spacer(
             modifier = Modifier
-                .size(180.dp)
+                .size(230.dp)
         )
 
         IconButton(
@@ -89,8 +82,6 @@ fun ControlPanel(
 ) {
     var colorPaletteOpen by remember { mutableStateOf(false) }
     var penConfigurationOpen by remember { mutableStateOf(false) }
-    val screenWidth = LocalConfiguration.current.screenWidthDp
-
 
     Column {
 
@@ -122,11 +113,11 @@ fun ControlPanel(
 
         Row(
             modifier = Modifier
-                .width(screenWidth.dp)
-                .height(73.dp)
+                .fillMaxWidth()
+                .height(rowHeight)
                 .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = rowSpace,
+            verticalAlignment = rowAlignment
         ) {
 
             Button(
