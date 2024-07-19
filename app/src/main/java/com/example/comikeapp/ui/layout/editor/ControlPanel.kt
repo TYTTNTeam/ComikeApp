@@ -31,7 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.comikeapp.R
 
-data class PenSettings(
+data class PenProperties(
     val color: Color,
     val thickness: Float,
     val intensity: Float
@@ -77,8 +77,8 @@ fun ControlPanel(onChange: () -> Unit) {
 
 @Composable
 fun ControlPanel(
-    penSettings: PenSettings,
-    onPenSettingsChange: (PenSettings) -> Unit,
+    penSettings: PenProperties,
+    onPenSettingsChange: ( PenProperties ) -> Unit,
     onChange: () -> Unit
 ) {
     var colorPaletteOpen by remember { mutableStateOf(false) }
