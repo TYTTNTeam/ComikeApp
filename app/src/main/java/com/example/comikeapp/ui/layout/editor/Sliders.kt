@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
             contentDescription = iconDescription,
             modifier = modifier
                 .size(40.dp),
-            tint = MaterialTheme.colorScheme.background
+            tint = MaterialTheme.colorScheme.onSecondary
         )
         Slider(
             value = value,
@@ -35,9 +35,9 @@ import androidx.compose.ui.unit.dp
             modifier = sliderModifier
                 .weight(1f),
             colors = SliderDefaults.colors(
-                thumbColor = MaterialTheme.colorScheme.background,
-                activeTrackColor = MaterialTheme.colorScheme.background,
-                inactiveTrackColor = MaterialTheme.colorScheme.background.copy(alpha = 0.35f)
+                thumbColor = MaterialTheme.colorScheme.onSecondary,
+                activeTrackColor = MaterialTheme.colorScheme.onSecondary,
+                inactiveTrackColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.35f)
             )
         )
     }

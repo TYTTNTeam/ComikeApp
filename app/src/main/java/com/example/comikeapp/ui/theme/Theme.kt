@@ -22,6 +22,8 @@ private val LightColorScheme = darkColorScheme(
     background = Color(0xFFFFFBFE),
     onBackground = Color(0xFF000000),
     error = Color(0xFFFF0000),
+    secondary = Color(0x80000000),
+    onSecondary = Color(0xFFD9D9D9)
 )
 
 private val DarkColorScheme = lightColorScheme(
