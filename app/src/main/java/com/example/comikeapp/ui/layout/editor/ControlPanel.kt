@@ -58,7 +58,17 @@ fun ControlPanel(onChange: () -> Unit) {
 
         Spacer(
             modifier = Modifier
-                .size(230.dp)
+                .size(60.dp)
+        )
+
+        Spacer(
+            modifier = Modifier
+                .size(120.dp)
+        )
+
+        Spacer(
+            modifier = Modifier
+                .size(60.dp)
         )
 
         IconButton(
