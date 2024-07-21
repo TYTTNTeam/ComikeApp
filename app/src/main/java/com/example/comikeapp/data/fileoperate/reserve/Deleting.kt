@@ -6,7 +6,8 @@ import java.nio.file.Path
 class Deleting: Accessing() {
     override fun access(absolutePath: Path): Boolean {
         val target = File(absolutePath.toString())
-        this.accessedFile = target.toPath()
-        return target.delete()
+        val success = target.delete()
+        if(success) this.accessedFile = target.toPath()
+        return success
     }
 }
