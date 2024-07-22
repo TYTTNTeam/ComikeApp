@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
             contentDescription = iconDescription,
             modifier = modifier
                 .size(40.dp),
-            tint = MaterialTheme.colorScheme.background
+            tint = MaterialTheme.colorScheme.onSecondary
         )
         Slider(
             value = value,
