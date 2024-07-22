@@ -146,7 +146,7 @@ fun ControlPanel(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Tune,
-                    contentDescription = "",
+                    contentDescription = "ペンの設定",
                     modifier = itemModifier,
                     tint = MaterialTheme.colorScheme.background
                 )
@@ -162,7 +162,7 @@ fun ControlPanel(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Edit,
-                    contentDescription = "",
+                    contentDescription = "ペン",
                     modifier = itemModifier,
                     tint = MaterialTheme.colorScheme.background
                 )
