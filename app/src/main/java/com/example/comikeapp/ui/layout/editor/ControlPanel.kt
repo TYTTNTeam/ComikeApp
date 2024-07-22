@@ -37,9 +37,7 @@ data class PenProperties(
     val intensity: Float
 )
 
-private val buttonSize = 50.dp
-private val iconSize = 50.dp
-private val iconPadding = 10.dp
+private val itemModifier = Modifier.size(50.dp)
 private val rowHeight = 73.dp
 private val rowSpace = Arrangement.SpaceEvenly
 private val rowAlignment = Alignment.CenterVertically
@@ -57,8 +55,7 @@ fun ControlPanel(onChange: () -> Unit) {
     ) {
 
         Spacer(
-            modifier = Modifier
-                .size(60.dp)
+            modifier = itemModifier
         )
 
         Spacer(
@@ -67,15 +64,12 @@ fun ControlPanel(onChange: () -> Unit) {
         )
 
         Spacer(
-            modifier = Modifier
-                .size(60.dp)
+            modifier = itemModifier
         )
 
         IconButton(
             onClick = onChange,
-            modifier = Modifier
-                .padding(iconPadding)
-                .size(iconSize)
+            modifier = itemModifier
         ) {
             Image(
                 painter = painterResource(R.drawable.button_pen_change),
@@ -137,8 +131,7 @@ fun ControlPanel(
                     penConfigurationOpen = false
                 },
                 shape = CircleShape,
-                modifier = Modifier
-                    .size(buttonSize),
+                modifier = itemModifier,
                 colors = ButtonDefaults.buttonColors(penSettings.color)
             ) {}
 
@@ -149,15 +142,12 @@ fun ControlPanel(
                     penConfigurationOpen = !penConfigurationOpen
                     colorPaletteOpen = false
                 },
-                modifier = Modifier
-                    .padding(iconPadding)
-                    .size(buttonSize)
+                modifier = itemModifier
             ) {
                 Icon(
                     imageVector = Icons.Filled.Tune,
                     contentDescription = "",
-                    modifier = Modifier
-                        .size(iconSize),
+                    modifier = itemModifier,
                     tint = MaterialTheme.colorScheme.background
                 )
             }
@@ -168,15 +158,12 @@ fun ControlPanel(
                     colorPaletteOpen = false
                     penConfigurationOpen = false
                 },
-                modifier = Modifier
-                    .padding(iconPadding)
-                    .size(iconSize)
+                modifier = itemModifier
             ) {
                 Icon(
                     imageVector = Icons.Filled.Edit,
                     contentDescription = "",
-                    modifier = Modifier
-                        .size(iconSize),
+                    modifier = itemModifier,
                     tint = MaterialTheme.colorScheme.background
                 )
             }
