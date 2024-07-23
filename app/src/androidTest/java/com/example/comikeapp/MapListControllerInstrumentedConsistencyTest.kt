@@ -32,7 +32,7 @@ class MapListControllerInstrumentedConsistencyTest {
 
         db.insertAndGetAll(name, path)
 
-        val tracer = listOf(MapList(-1, name, path))
+        val tracer = listOf(MapList(-1, name, path, null, null))
 
         assertEquals(
             idNormalize(tracer),
@@ -46,7 +46,7 @@ class MapListControllerInstrumentedConsistencyTest {
         for(i in 0..10){
             val name = "test $i"; val  path = "test/path.png"
 
-            tracer.add(MapList(-1, name, path))
+            tracer.add(MapList(-1, name, path, null, null))
             db.insertAndGetAll(name, path)
         }
 
@@ -69,7 +69,7 @@ class MapListControllerInstrumentedConsistencyTest {
         db.deleteAndGetAll(id)
 
         // データベース上の１つ目の要素は削除され、２つ目の要素の値が、１つ目として保存されているはず
-        val expected = listOf(MapList(-1, name[1], path[1]))
+        val expected = listOf(MapList(-1, name[1], path[1], null, null))
 
         assertEquals(
             idNormalize(expected),
@@ -92,8 +92,8 @@ class MapListControllerInstrumentedConsistencyTest {
 
         // 一つ目の名前だけ異なるはず
         val expected = listOf(
-            MapList(-1, newName, path[0]),
-            MapList(-1, name[1], path[1])
+            MapList(-1, newName, path[0], null, null),
+            MapList(-1, name[1], path[1], null, null)
         )
 
         assertEquals(
@@ -106,7 +106,7 @@ class MapListControllerInstrumentedConsistencyTest {
     private fun idNormalize(list: List<MapList>): List<MapList>{
         val newList = mutableListOf<MapList>()
         for(d in list){
-            newList.add(MapList(0, d.mapName, d.imagePath))
+            newList.add(MapList(0, d.mapName, d.imagePath, d.rawImagePath, d.drawingDataPath))
         }
         return newList
     }
