@@ -49,7 +49,7 @@ fun ControlPanel(onChange: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(rowHeight)
-            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)),
+            .background(MaterialTheme.colorScheme.secondary),
         horizontalArrangement = rowSpace,
         verticalAlignment = rowAlignment
     ) {
@@ -69,7 +69,7 @@ fun ControlPanel(onChange: () -> Unit) {
 
         IconButton(
             onClick = onChange,
-            modifier = itemModifier
+            modifier = itemModifier,
         ) {
             Image(
                 painter = painterResource(R.drawable.button_pen_change),
@@ -120,7 +120,7 @@ fun ControlPanel(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(rowHeight)
-                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)),
+                .background(MaterialTheme.colorScheme.secondary),
             horizontalArrangement = rowSpace,
             verticalAlignment = rowAlignment
         ) {
@@ -148,7 +148,7 @@ fun ControlPanel(
                     imageVector = Icons.Filled.Tune,
                     contentDescription = "ペンの設定",
                     modifier = itemModifier,
-                    tint = MaterialTheme.colorScheme.background
+                    tint = MaterialTheme.colorScheme.onSecondary
                 )
             }
 
@@ -164,7 +164,7 @@ fun ControlPanel(
                     imageVector = Icons.Filled.Edit,
                     contentDescription = "ペン",
                     modifier = itemModifier,
-                    tint = MaterialTheme.colorScheme.background
+                    tint = MaterialTheme.colorScheme.onSecondary
                 )
             }
         }
