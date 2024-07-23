@@ -30,10 +30,10 @@ interface MapListDao {
     fun updateMapNameById(mapId: Int, newName: String)
 
     @Query("UPDATE maplist SET  rawImagePath = :rawImage , drawingDataPath = :drawingData  WHERE mapId = :mapId")
-    fun updateRawImageAndDrawingData(mapId: Int, rawImagePath: String?, drawingDataPath: String?, rawImage: String?, drawingData: String?)
+    fun updateRawImageAndDrawingData(mapId: Int, rawImage: String?, drawingData: String?)
 
     @Query("UPDATE maplist SET imagePath = :image , drawingDataPath = :drawingData WHERE  mapId = :mapId")
-    fun updateImageAndDrawingData(mapId: Int, imagePath: String?, drawingDataPath: String?, image: String?, drawingData: String?)
+    fun updateImageAndDrawingData(mapId: Int, image: String?, drawingData: String?)
 
     @Insert
     fun insert(mapList: MapList)
