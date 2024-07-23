@@ -5,8 +5,17 @@ class MapListRepository(private val mapListDao: MapListDao) {
     fun getAll(): List<MapList> {
         return mapListDao.getAll()
     }
-    fun insertAndGetAll(mapName: String?, imagePath: String?): List<MapList> {
-        val mapList = MapList(mapName = mapName, imagePath = imagePath)
+
+    fun insertAndGetAll(
+        mapName: String?,
+        imagePath: String?
+    ): List<MapList> {
+        val mapList = MapList(
+            mapName = mapName,
+            imagePath = imagePath,
+            rawImagePath = null,
+            drawingDataPath = null
+        )
         mapListDao.insert(mapList)
         return mapListDao.getAll()
     }

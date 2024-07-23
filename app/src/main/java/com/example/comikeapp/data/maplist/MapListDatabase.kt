@@ -9,12 +9,18 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 
+
+
 @Entity
 data class MapList(
-    @PrimaryKey(autoGenerate = true) val mapId: Int = 0,
-    @ColumnInfo(name = "名前") val mapName: String?,
-    @ColumnInfo(name = "画像パス") val imagePath: String?
+    @PrimaryKey(autoGenerate  = true) @ColumnInfo(name = MapListColumns.MAP_ID) val mapId: Int = 0,
+    @ColumnInfo(name = MapListColumns.MAP_NAME) val mapName: String?,
+    @ColumnInfo(name = MapListColumns.IMAGE_PATH) val imagePath: String?,
+    @ColumnInfo(name = MapListColumns.RAW_IMAGE_PATH) val rawImagePath: String?,
+    @ColumnInfo(name = MapListColumns.DRAWING_DATA_PATH) val drawingDataPath: String?
 )
+
+private val n = MapListColumns
 @Dao
 interface MapListDao {
     @Query("SELECT * FROM maplist")
@@ -22,6 +28,12 @@ interface MapListDao {
 
     @Query("UPDATE maplist SET 名前 = :newName WHERE mapId = :mapId")
     fun updateMapNameById(mapId: Int, newName: String)
+
+    @Query("UPDATE maplist SET  rawImagePath = :rawImage , drawingDataPath = :drawingData  WHERE mapId = :mapId")
+    fun updateRawImageAndDrawingData(mapId: Int, rawImage: String?, drawingData: String?)
+
+    @Query("UPDATE maplist SET imagePath = :image , drawingDataPath = :drawingData WHERE  mapId = :mapId")
+    fun updateImageAndDrawingData(mapId: Int, image: String?, drawingData: String?)
 
     @Insert
     fun insert(mapList: MapList)
