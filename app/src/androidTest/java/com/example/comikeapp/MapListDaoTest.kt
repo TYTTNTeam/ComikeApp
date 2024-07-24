@@ -1,3 +1,5 @@
+package com.example.comikeapp
+
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -121,5 +123,25 @@ class MapListDaoTest {
 
         val deletedMap = mapListDao.getAll().find { it.mapId == mapId }
         assertEquals(null, deletedMap)
+    }
+
+    @Test
+    fun testSelectForMemoEditor(){
+        val mapList = MapList(
+            mapName = "Incorrect map",
+            imagePath = "path/to/image",
+            rawImagePath = "path/to/raw_image",
+            drawingDataPath = "path/to/drawing_data"
+        )
+        mapListDao.insert(mapList)
+        mapListDao.insert(mapList.copy(mapName = "Nice map"))
+
+        val all = mapListDao.getAll()
+        assertEquals(all.size, 2)
+
+        var map = mapListDao.selectById(all[0].mapId)
+        assertEquals("Incorrect map", map.mapName)
+        map = mapListDao.selectById(all[1].mapId)
+        assertEquals("Nice map", map.mapName)
     }
 }
