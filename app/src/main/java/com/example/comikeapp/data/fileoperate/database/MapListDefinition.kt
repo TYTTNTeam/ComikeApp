@@ -1,18 +1,21 @@
 package com.example.comikeapp.data.maplist
 
 object MapListDefinition {
-    val image = ColumnData(
-        name = MapListColumns.IMAGE_PATH,
-        uniqueDirectoryName = "maps"
+    val image = FileTypeDefinition(
+        getAbsolutePath = { uuid ->
+            "maps/$uuid"
+        }
     )
 
-    val rawImage = ColumnData(
-        name = MapListColumns.RAW_IMAGE_PATH,
-        uniqueDirectoryName = "raw_maps"
+    val rawImage = FileTypeDefinition(
+        getAbsolutePath = { uuid ->
+            "editor_data/$uuid/raw_image.png"
+        }
     )
 
-    val drawingData = ColumnData(
-        name = MapListColumns.DRAWING_DATA_PATH,
-        uniqueDirectoryName = "draw_maps"
+    val drawingData = FileTypeDefinition(
+        getAbsolutePath = { uuid ->
+            "editor_data/$uuid/memo.dvmf"
+        }
     )
 }
