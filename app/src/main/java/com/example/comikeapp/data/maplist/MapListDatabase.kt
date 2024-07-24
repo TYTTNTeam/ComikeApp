@@ -26,6 +26,9 @@ interface MapListDao {
     @Query("SELECT * FROM maplist")
     fun getAll(): List<MapList>
 
+    @Query("SELECT * FROM mapList WHERE mapId = :mapId")
+    fun selectById(mapId: Int): MapList
+
     @Query("UPDATE maplist SET 名前 = :newName WHERE mapId = :mapId")
     fun updateMapNameById(mapId: Int, newName: String)
 
