@@ -20,7 +20,6 @@ data class MapList(
     @ColumnInfo(name = MapListColumns.DRAWING_DATA_PATH) val drawingDataPath: String?
 )
 
-private val n = MapListColumns
 @Dao
 interface MapListDao {
     @Query("SELECT * FROM maplist")
