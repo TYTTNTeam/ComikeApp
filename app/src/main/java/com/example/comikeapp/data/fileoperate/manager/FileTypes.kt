@@ -1,6 +1,6 @@
-package com.example.comikeapp.data.maplist
+package com.example.comikeapp.data.fileoperate.manager
 
-object MapListDefinition {
+object FileTypes {
     val image = FileTypeDefinition(
         getAbsolutePath = { uuid ->
             "maps/$uuid"
