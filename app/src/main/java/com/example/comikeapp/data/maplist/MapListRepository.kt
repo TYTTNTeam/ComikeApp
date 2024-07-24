@@ -10,12 +10,15 @@ class MapListRepository(private val mapListDao: MapListDao) {
         mapName: String?,
         imagePath: String?
     ): List<MapList> {
-        val mapList = MapList(
-            mapName = mapName,
-            imagePath = imagePath,
-            rawImagePath = null,
-            drawingDataPath = null
-        )
+        val mapList: MapList
+        if(mapName != null && imagePath != null){
+            mapList = MapList(
+                mapName = mapName,
+                imagePath = imagePath
+            )
+        }else{
+            throw NullPointerException("行を追加する場合、nullを渡さないでください。")
+        }
         mapListDao.insert(mapList)
         return mapListDao.getAll()
     }
