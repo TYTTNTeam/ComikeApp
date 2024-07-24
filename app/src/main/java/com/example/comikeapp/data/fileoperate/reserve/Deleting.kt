@@ -8,7 +8,7 @@ class Deleting: Accessing() {
     override fun access(absolutePath: Path): Boolean {
         val target = File(absolutePath.toString())
         val success = target.delete()
-        if(success) this.accessedFile = target.toPath() else Log.e("Deleting", "Failed accessing: deleting")
+        if(success) this.accessedFile = target.toPath() else Log.e("Deleting", "Failed accessing: Deleting file")
         return success
     }
 }
