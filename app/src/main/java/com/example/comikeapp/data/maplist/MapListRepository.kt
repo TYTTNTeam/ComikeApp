@@ -29,6 +29,7 @@ class MapListRepository(private val mapListDao: MapListDao) {
     }
 
     fun deleteAndGetAll(mapId: Int): List<MapList> {
+        // TODO ファイルが削除されないため、変更が必要。
         mapListDao.deleteById(mapId)
         return mapListDao.getAll()
     }
