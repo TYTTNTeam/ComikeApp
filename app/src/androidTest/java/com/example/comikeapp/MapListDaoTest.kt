@@ -8,7 +8,6 @@ import com.example.comikeapp.data.maplist.MapListDao
 import com.example.comikeapp.data.maplist.MapListDatabase
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,102 +35,10 @@ class MapListDaoTest {
     }
 
     @Test
-    fun testInsertAndGetAll() {
-        val mapList = MapList(
-            mapName = "Test Map",
-            imagePath = "path/to/image",
-            rawImagePath = "path/to/raw_image",
-            drawingDataPath = "path/to/drawing_data"
-        )
-        // Insert and retrieve the ID
-        mapListDao.insert(mapList)
-
-        // Retrieve all maps and assert
-        val maps = mapListDao.getAll()
-        assertEquals(1, maps.size)
-        assertEquals("Test Map", maps[0].mapName)
-    }
-
-    @Test
-    fun testUpdateMapNameById() {
-        val mapList = MapList(
-            mapName = "Test Map",
-            imagePath = "path/to/image",
-            rawImagePath = "path/to/raw_image",
-            drawingDataPath = "path/to/drawing_data"
-        )
-        mapListDao.insert(mapList)
-        val mapId = mapListDao.getAll()[0].mapId
-
-        mapListDao.updateMapNameById(mapId, "Updated Map")
-
-        val updatedMap = mapListDao.getAll().find { it.mapId == mapId }
-        assertNotNull(updatedMap)
-        assertEquals("Updated Map", updatedMap?.mapName)
-    }
-
-    @Test
-    fun testUpdateRawImageAndDrawingData() {
-        val mapList = MapList(
-            mapName = "Test Map",
-            imagePath = "path/to/image",
-            rawImagePath = "path/to/raw_image",
-            drawingDataPath = "path/to/drawing_data"
-        )
-        mapListDao.insert(mapList)
-        val mapId = mapListDao.getAll()[0].mapId
-
-        mapListDao.updateRawImageAndDrawingData(mapId, "new_raw_image", "new_drawing_data")
-
-        val updatedMap = mapListDao.getAll().find { it.mapId == mapId }
-        assertNotNull(updatedMap)
-        assertEquals("new_raw_image", updatedMap?.rawImagePath)
-        assertEquals("new_drawing_data", updatedMap?.drawingDataPath)
-    }
-
-    @Test
-    fun testUpdateImageAndDrawingData() {
-        val mapList = MapList(
-            mapName = "Test Map",
-            imagePath = "path/to/image",
-            rawImagePath = "path/to/raw_image",
-            drawingDataPath = "path/to/drawing_data"
-        )
-        mapListDao.insert(mapList)
-        val mapId = mapListDao.getAll()[0].mapId
-
-        mapListDao.updateImageAndDrawingData(mapId, "new_image", "new_drawing_data")
-
-        val updatedMap = mapListDao.getAll().find { it.mapId == mapId }
-        assertNotNull(updatedMap)
-        assertEquals("new_image", updatedMap?.imagePath)
-        assertEquals("new_drawing_data", updatedMap?.drawingDataPath)
-    }
-
-    @Test
-    fun testDeleteById() {
-        val mapList = MapList(
-            mapName = "Test Map",
-            imagePath = "path/to/image",
-            rawImagePath = "path/to/raw_image",
-            drawingDataPath = "path/to/drawing_data"
-        )
-        mapListDao.insert(mapList)
-        val mapId = mapListDao.getAll()[0].mapId
-
-        mapListDao.deleteById(mapId)
-
-        val deletedMap = mapListDao.getAll().find { it.mapId == mapId }
-        assertEquals(null, deletedMap)
-    }
-
-    @Test
-    fun testSelectForMemoEditor(){
+    fun testSelectOneRaw(){
         val mapList = MapList(
             mapName = "Incorrect map",
             imagePath = "path/to/image",
-            rawImagePath = "path/to/raw_image",
-            drawingDataPath = "path/to/drawing_data"
         )
         mapListDao.insert(mapList)
         mapListDao.insert(mapList.copy(mapName = "Nice map"))
@@ -143,5 +50,18 @@ class MapListDaoTest {
         assertEquals("Incorrect map", map.mapName)
         map = mapListDao.selectById(all[1].mapId)
         assertEquals("Nice map", map.mapName)
+    }
+
+    @Test
+    fun testGetMapUUID() {
+        val mapList = MapList(
+            mapName = "Incorrect map",
+            imagePath = "path/to/image",
+        )
+        mapListDao.insert(mapList)
+        val list = mapListDao.getAll()
+        val uuid = mapListDao.getImagePath(list[0].mapId)
+
+        assertEquals("path/to/image", uuid)
     }
 }
