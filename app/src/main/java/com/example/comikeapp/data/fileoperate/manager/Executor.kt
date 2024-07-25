@@ -13,8 +13,9 @@ class Executor(
         val db = MapListDatabaseProvider.getDatabase(context).mapListDao()
 
         if (mapUUID == null) {
-            // UUID部であるファイル名だけを抽出
-            mapUUID = File(db.getImagePath(mapId)).name
+            val p = db.getImagePath(mapId)
+            // UUIDだけを抽出
+            mapUUID = File(p).name
         }
 
         var ok = true
