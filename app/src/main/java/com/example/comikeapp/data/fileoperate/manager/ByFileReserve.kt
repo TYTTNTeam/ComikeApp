@@ -26,7 +26,7 @@ class ByFileReserve(
         ) {
             true
         } else {
-            Log.e("ByFileReserve", "ファイル'${fileType.type}'へのアクセスが失敗。")
+            Log.e("ByFileReserve", "Failed to access '${fileType.type}' file.")
             false
         }
     }
