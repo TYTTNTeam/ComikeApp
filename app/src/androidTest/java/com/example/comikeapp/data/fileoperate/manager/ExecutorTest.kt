@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.comikeapp.data.fileoperate.reserve.Deleting
+import com.example.comikeapp.data.fileoperate.reserve.DuplicatingFile
 import com.example.comikeapp.data.maplist.MapList
 import com.example.comikeapp.data.maplist.MapListDao
 import com.example.comikeapp.data.maplist.MapListDatabase
@@ -112,10 +113,25 @@ class ExecutorTest {
         assertFalse(File(appContext.filesDir, "editor_data/0/raw_image.png").exists())
     }
 
-    /*
+    @Test
     fun createDirectoryTest(){
-    // TODO Writingサブクラスを作成した場合、テストの追加が必要です。
-    }
+        dao.insert(MapList(
+            mapId = -1,
+            mapName = "map for writing",
+            imagePath = appContext.filesDir.toString() + "maps/_1"
+        ))
 
-     */
+        val deleter = Executor(
+            mapId = dao.getAll()[0].mapId,
+            reserves = listOf(
+                ByFileReserve(FileTypes.rawImage, DuplicatingFile())
+            )
+        )
+
+        assertFalse(File(appContext.filesDir,  "editor_data/_1").exists())
+
+        deleter.execute(appContext)
+
+        assertTrue(File(appContext.filesDir,  "editor_data/_1").exists())
+    }
 }
