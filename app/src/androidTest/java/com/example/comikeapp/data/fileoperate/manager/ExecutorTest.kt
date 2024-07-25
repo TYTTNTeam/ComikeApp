@@ -101,7 +101,7 @@ class ExecutorTest {
         val deleter = Executor(
             mapId = dao.getAll()[0].mapId,
             reserves = listOf(
-                ByFileReserve(FileTypes.image, Deleting())
+                ByFileReserve(FileTypes.rawImage, Deleting())
             )
         )
 
