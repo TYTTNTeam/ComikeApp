@@ -14,4 +14,9 @@ object MapListDatabaseProvider {
             newInstance
         }
     }
+
+    // テストファイル以外でこのメソッドを利用しないでください。
+    fun setInstanceForTest(new: MapListDatabase){
+        this.instance = new
+    }
 }
