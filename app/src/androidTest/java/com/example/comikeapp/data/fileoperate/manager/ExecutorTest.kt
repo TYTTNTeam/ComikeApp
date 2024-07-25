@@ -111,4 +111,11 @@ class ExecutorTest {
 
         assertFalse(File(appContext.filesDir, "editor_data/0/raw_image.png").exists())
     }
+
+    /*
+    fun createDirectoryTest(){
+    // TODO Writingサブクラスを作成した場合、テストの追加が必要です。
+    }
+
+     */
 }
