@@ -26,7 +26,7 @@ fun DataSynchronizer(
         if(saving){
             delay(1000)
             drawing = DrawingViewModel()
-            map = MapList(0, "test map name", "test/path.png", null, null)
+            map = MapList(0, "test map name", "test/path.png")
             onSavingChange(false)
         }
     }
