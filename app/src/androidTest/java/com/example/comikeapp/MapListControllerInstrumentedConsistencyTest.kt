@@ -1,15 +1,16 @@
 package com.example.comikeapp
 
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.example.comikeapp.data.maplist.MapList
-import com.example.comikeapp.data.maplist.MapListDatabaseProvider
+import com.example.comikeapp.data.maplist.MapListDatabase
 import com.example.comikeapp.data.maplist.MapListRepository
-
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -18,12 +19,23 @@ import org.junit.Assert.*
  */
 @RunWith(AndroidJUnit4::class)
 class MapListControllerInstrumentedConsistencyTest {
-    private val db: MapListRepository
-    init {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        db = MapListRepository(
-            MapListDatabaseProvider.getDatabase(appContext).mapListDao()
-        )
+    private lateinit var database: MapListDatabase
+    private lateinit var db: MapListRepository
+
+    @Before
+    fun setUp() {
+        // In-memory database for testing
+        database = Room.inMemoryDatabaseBuilder(
+            InstrumentationRegistry.getInstrumentation().targetContext,
+            MapListDatabase::class.java
+        ).build()
+        db = MapListRepository(database.mapListDao())
+    }
+
+    @After
+    fun tearDown() {
+        // Close the database after each test
+        database.close()
     }
 
     @Test
@@ -32,7 +44,7 @@ class MapListControllerInstrumentedConsistencyTest {
 
         db.insertAndGetAll(name, path)
 
-        val tracer = listOf(MapList(-1, name, path, null, null))
+        val tracer = listOf(MapList(-1, name, path))
 
         assertEquals(
             idNormalize(tracer),
@@ -46,7 +58,7 @@ class MapListControllerInstrumentedConsistencyTest {
         for(i in 0..10){
             val name = "test $i"; val  path = "test/path.png"
 
-            tracer.add(MapList(-1, name, path, null, null))
+            tracer.add(MapList(-1, name, path))
             db.insertAndGetAll(name, path)
         }
 
@@ -69,7 +81,7 @@ class MapListControllerInstrumentedConsistencyTest {
         db.deleteAndGetAll(id)
 
         // データベース上の１つ目の要素は削除され、２つ目の要素の値が、１つ目として保存されているはず
-        val expected = listOf(MapList(-1, name[1], path[1], null, null))
+        val expected = listOf(MapList(-1, name[1], path[1]))
 
         assertEquals(
             idNormalize(expected),
@@ -92,8 +104,8 @@ class MapListControllerInstrumentedConsistencyTest {
 
         // 一つ目の名前だけ異なるはず
         val expected = listOf(
-            MapList(-1, newName, path[0], null, null),
-            MapList(-1, name[1], path[1], null, null)
+            MapList(-1, newName, path[0]),
+            MapList(-1, name[1], path[1])
         )
 
         assertEquals(
@@ -106,7 +118,7 @@ class MapListControllerInstrumentedConsistencyTest {
     private fun idNormalize(list: List<MapList>): List<MapList>{
         val newList = mutableListOf<MapList>()
         for(d in list){
-            newList.add(MapList(0, d.mapName, d.imagePath, d.rawImagePath, d.drawingDataPath))
+            newList.add(MapList(0, d.mapName, d.imagePath))
         }
         return newList
     }
