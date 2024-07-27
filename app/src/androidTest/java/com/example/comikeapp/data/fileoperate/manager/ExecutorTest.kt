@@ -8,7 +8,6 @@ import com.example.comikeapp.data.fileoperate.reserve.Deleting
 import com.example.comikeapp.data.maplist.MapList
 import com.example.comikeapp.data.maplist.MapListDao
 import com.example.comikeapp.data.maplist.MapListDatabase
-import com.example.comikeapp.data.maplist.MapListDatabaseProvider
 import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
