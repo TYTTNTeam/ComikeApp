@@ -9,7 +9,7 @@ object MapListDatabaseProvider {
         return instance ?: synchronized(this) {
             val newInstance = Room.databaseBuilder(
                 context.applicationContext, MapListDatabase::class.java, "app-database"
-            ).fallbackToDestructiveMigration().build()// TODO バージョンアップ時にデータベースがリセットされる可能性があります。要修正
+            ).build()
             instance = newInstance
             newInstance
         }
