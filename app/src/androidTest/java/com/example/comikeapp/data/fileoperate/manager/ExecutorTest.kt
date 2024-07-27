@@ -105,11 +105,11 @@ class ExecutorTest {
         dao.insert(MapList(
             mapId = -1,
             mapName = "map for writing",
-            imagePath = appContext.filesDir.toString() + "maps/_1"
+            imagePath = "_1"
         ))
 
         val deleter = ByFileReserve(FileTypes.rawImage, DuplicatingFile())
-        val uuid = dao.getImagePath(dao.getAll()[0].mapId)
+        val uuid = dao.getImagePath(-1)
 
         assertFalse(File(appContext.filesDir,  "editor_data/_1").exists())
 
