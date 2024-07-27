@@ -27,7 +27,7 @@ class DuplicatingFileTest {
     }
 
     @Test
-    fun testAccessSuccessful() {
+    fun testAccessSuccessful(){
         // テスト用のディレクトリを作成
         val testDir = File("path/to/testDir")
         if (!testDir.exists()) {
@@ -37,10 +37,10 @@ class DuplicatingFileTest {
         // ImageBitmap（ここではBitmap）をファイルに保存
         val imageBitmap = BitmapFactory.decodeResource(
             InstrumentationRegistry.getInstrumentation().targetContext.resources,
-           // R.drawable.test_image
+            R.drawable.test_image
         )
         val fromFile = File(testDir, "from.png")
-        saveImageBitmapToFile(imageBitmap, fromFile)
+//        saveImageBitmapToFile(imageBitmap, fromFile)
 
         // コピー先のファイルを作成
         val targetFile = File(testDir, "target.png")
@@ -57,7 +57,7 @@ class DuplicatingFileTest {
         Assert.assertTrue(targetFile.exists())
 
         // 必要に応じてファイルの内容を確認（省略可能）
-        // Assert.assertEquals(fromFile.readBytes(), targetFile.readBytes())
+         Assert.assertEquals(fromFile.readBytes(), targetFile.readBytes())
     }
 
 

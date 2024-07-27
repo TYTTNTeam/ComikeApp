@@ -1,5 +1,8 @@
 package com.example.comikeapp.data.fileoperate.reserve
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.util.Log
 import java.io.IOException
 import java.nio.file.Files
@@ -17,4 +20,11 @@ class DuplicatingFile(private val from : Path) : Writing() { // fromが意図し
             false
         }
     }
+}
+fun drawableToBitmap(drawable: Drawable): Bitmap {
+    val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    drawable.setBounds(0, 0, canvas.width, canvas.height)
+    drawable.draw(canvas)
+    return bitmap
 }

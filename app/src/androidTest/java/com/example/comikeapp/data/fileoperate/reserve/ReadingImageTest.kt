@@ -3,6 +3,7 @@ package com.example.comikeapp.data.fileoperate.reserve
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert
+import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,6 +37,13 @@ class ReadingImageTest{
         // 画像が読み込まれなかったことを検証
         // Assert.assertFalse()
        // Assert.assertNull(.getData())
+    }
+    @Test
+    fun testReadNonexistentFile() {
+        val nonExistentFile = File("non_existent_file.jpg")
+        val reader = ReadingImage()
+        val result = reader.access(nonExistentFile.toPath())
+        assertFalse(result)
     }
 
 }

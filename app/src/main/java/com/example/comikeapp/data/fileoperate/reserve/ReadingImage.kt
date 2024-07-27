@@ -22,7 +22,7 @@ class ReadingImage : Reading() {
             true
         } else {
             accessedFile = null
-            Log.e("ReadingImage", "画像パス: $absolutePath")
+            Log.e("ReadingImage", "Failed accessing: ")
             false
         }
     }
