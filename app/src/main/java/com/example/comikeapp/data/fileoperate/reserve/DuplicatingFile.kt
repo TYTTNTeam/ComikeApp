@@ -1,18 +1,19 @@
 package com.example.comikeapp.data.fileoperate.reserve
 
 import android.util.Log
+import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 
-class DuplicatingFile : Writing() {
+class DuplicatingFile(private val from : Path) : Writing() { // fromが意図しないアクセスや変更を防ぐ
     override fun access(absolutePath: Path): Boolean {
-        val from: Path? = null
         return try {
             Files.copy(from, absolutePath, StandardCopyOption.REPLACE_EXISTING)
+            // このオプションはPathが被っている場合に上書きするためにある
             true
-        } catch (e: Exception) {
-            Log.e("absolutePath", e.toString())
+        } catch (e: IOException) {
+            Log.e("DuplicatingFile", "Failed accessing: File copy")
             false
         }
     }

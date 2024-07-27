@@ -8,16 +8,16 @@ import java.io.File
 import java.nio.file.Path
 
 class ReadingImage : Reading() {
-    private var data : ImageBitmap? = null
+    private var result : ImageBitmap? = null
     override fun getData(): ImageBitmap? {
-        return data
+        return result
     }
 
     override fun access(absolutePath: Path): Boolean {
         val file = File(absolutePath.toString())
         val bitmap = BitmapFactory.decodeFile(file.absolutePath)
         return if(bitmap != null) {
-            this.data = bitmap.asImageBitmap()
+            this.result = bitmap.asImageBitmap()
             accessedFile = absolutePath
             true
         } else {
