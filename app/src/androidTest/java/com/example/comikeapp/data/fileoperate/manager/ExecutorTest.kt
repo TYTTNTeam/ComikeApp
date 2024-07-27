@@ -29,13 +29,10 @@ class ExecutorTest {
     fun setUp() {
         appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-        MapListDatabaseProvider.setInstanceForTest(
-            Room.inMemoryDatabaseBuilder(
-                appContext,
-                MapListDatabase::class.java
-            ).build()
-        )
-        database = MapListDatabaseProvider.getDatabase(appContext)
+        database = Room.inMemoryDatabaseBuilder(
+            appContext,
+            MapListDatabase::class.java
+        ).build()
         dao = database.mapListDao()
 
         // テストのためだけの地図データを作成
@@ -102,28 +99,30 @@ class ExecutorTest {
     }
 
     @Test
-    fun createDirectoryTest(){
-        dao.insert(MapList(
-            mapId = -1,
-            mapName = "map for writing",
-            imagePath = "_1"
-        ))
+    fun createDirectoryTest() {
+        dao.insert(
+            MapList(
+                mapId = -1,
+                mapName = "map for writing",
+                imagePath = "_1"
+            )
+        )
 
         val deleter = ByFileReserve(FileTypes.rawImage, DuplicatingFile())
         val uuid = dao.getImagePath(-1)
 
-        assertFalse(File(appContext.dataDir,  "editor_data/_1").exists())
+        assertFalse(File(appContext.dataDir, "editor_data/_1").exists())
 
         deleter.execute(appContext, uuid)
 
-        assertTrue(File(appContext.dataDir,  "editor_data/_1").exists())
+        assertTrue(File(appContext.dataDir, "editor_data/_1").exists())
     }
 
     @Test
     fun deleteDirWhenEmpty() {
         val uuid = dao.getImagePath(dao.getAll()[0].mapId)
 
-        assertTrue(File(appContext.dataDir,  "editor_data/$uuid").exists())
+        assertTrue(File(appContext.dataDir, "editor_data/$uuid").exists())
 
         val a = ByFileReserve(FileTypes.rawImage, Deleting())
         a.execute(appContext, uuid)
@@ -131,7 +130,7 @@ class ExecutorTest {
         val b = ByFileReserve(FileTypes.rawImage, DuplicatingFile())
         b.execute(appContext, uuid)
 
-        assertTrue(File(appContext.dataDir,  "editor_data/$uuid").exists())
+        assertTrue(File(appContext.dataDir, "editor_data/$uuid").exists())
 
         val c = ByFileReserve(FileTypes.rawImage, Deleting())
         c.execute(appContext, uuid)
@@ -139,6 +138,6 @@ class ExecutorTest {
         val d = ByFileReserve(FileTypes.drawingData, Deleting())
         d.execute(appContext, uuid)
 
-        assertFalse(File(appContext.dataDir,  "editor_data/$uuid").exists())
+        assertFalse(File(appContext.dataDir, "editor_data/$uuid").exists())
     }
 }
