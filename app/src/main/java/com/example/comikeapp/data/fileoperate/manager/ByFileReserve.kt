@@ -14,7 +14,7 @@ class ByFileReserve(
 ) {
     fun execute(context: Context, mapUUID: String): Boolean {
         val absolutePath = File(
-            context.filesDir,
+            context.dataDir,
             fileType.getRelativeDirFromMapUUID(mapUUID)
         ).toPath()
 
