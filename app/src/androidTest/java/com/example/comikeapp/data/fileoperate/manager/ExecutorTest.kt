@@ -50,7 +50,7 @@ class ExecutorTest {
             d.mkdirs()
             File(d, "raw_image.png").createNewFile()
 
-            dao.insert(MapList(mapName = "test file $i", imagePath = file.absolutePath))
+            dao.insert(MapList(mapName = "test file $i", imagePath = i.toString()))
             files.add(file)
         }
     }
@@ -67,17 +67,13 @@ class ExecutorTest {
 
     @Test
     fun deletingFileTest() {
-        val deleter = Executor(
-            mapId = dao.getAll()[0].mapId,
-            reserves = listOf(
-                ByFileReserve(FileTypes.image, Deleting())
-            )
-        )
+        val del = ByFileReserve(FileTypes.image, Deleting())
+        val uuid = dao.getImagePath(dao.getAll()[0].mapId)
 
         assertTrue(files[0].exists())
         assertTrue(files[1].exists())
 
-        deleter.execute(appContext)
+        del.execute(appContext, uuid)
 
         assertFalse(files[0].exists())
         assertTrue(files[1].exists())
@@ -85,29 +81,21 @@ class ExecutorTest {
 
     @Test
     fun outPutSuccessState() {
-        val deleter = Executor(
-            mapId = dao.getAll()[0].mapId,
-            reserves = listOf(
-                ByFileReserve(FileTypes.image, Deleting())
-            )
-        )
+        val deleter = ByFileReserve(FileTypes.image, Deleting())
+        val uuid = dao.getImagePath(dao.getAll()[0].mapId)
 
-        assertTrue(deleter.execute(appContext))
-        assertFalse(deleter.execute(appContext))
+        assertTrue(deleter.execute(appContext, uuid))
+        assertFalse(deleter.execute(appContext, uuid))
     }
 
     @Test
     fun deleteRawImageFileTest() {
-        val deleter = Executor(
-            mapId = dao.getAll()[0].mapId,
-            reserves = listOf(
-                ByFileReserve(FileTypes.rawImage, Deleting())
-            )
-        )
+        val deleter = ByFileReserve(FileTypes.rawImage, Deleting())
+        val uuid = dao.getImagePath(dao.getAll()[0].mapId)
 
         assertTrue(File(appContext.filesDir, "editor_data/0/raw_image.png").exists())
 
-        deleter.execute(appContext)
+        deleter.execute(appContext, uuid)
 
         assertFalse(File(appContext.filesDir, "editor_data/0/raw_image.png").exists())
     }
@@ -120,16 +108,12 @@ class ExecutorTest {
             imagePath = appContext.filesDir.toString() + "maps/_1"
         ))
 
-        val deleter = Executor(
-            mapId = dao.getAll()[0].mapId,
-            reserves = listOf(
-                ByFileReserve(FileTypes.rawImage, DuplicatingFile())
-            )
-        )
+        val deleter = ByFileReserve(FileTypes.rawImage, DuplicatingFile())
+        val uuid = dao.getImagePath(dao.getAll()[0].mapId)
 
         assertFalse(File(appContext.filesDir,  "editor_data/_1").exists())
 
-        deleter.execute(appContext)
+        deleter.execute(appContext, uuid)
 
         assertTrue(File(appContext.filesDir,  "editor_data/_1").exists())
     }
