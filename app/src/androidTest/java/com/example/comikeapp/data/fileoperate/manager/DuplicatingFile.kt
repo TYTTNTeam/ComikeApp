@@ -6,7 +6,6 @@ import java.nio.file.Path
 class DuplicatingFile : Writing() {
     override fun access(absolutePath: Path): Boolean {
         return true
-        // TODO("Not yet implemented")
     }
 
 }
