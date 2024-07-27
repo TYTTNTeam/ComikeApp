@@ -49,6 +49,7 @@ class ExecutorTest {
             val d = File(appContext.filesDir, "editor_data/$i")
             d.mkdirs()
             File(d, "raw_image.png").createNewFile()
+            File(d, "drawing_data.dat").createNewFile()
 
             dao.insert(MapList(mapName = "test file $i", imagePath = i.toString()))
             files.add(file)
@@ -116,5 +117,28 @@ class ExecutorTest {
         deleter.execute(appContext, uuid)
 
         assertTrue(File(appContext.filesDir,  "editor_data/_1").exists())
+    }
+
+    @Test
+    fun deleteDirWhenEmpty() {
+        val uuid = dao.getImagePath(dao.getAll()[0].mapId)
+
+        assertTrue(File(appContext.filesDir,  "editor_data/$uuid").exists())
+
+        val a = ByFileReserve(FileTypes.rawImage, Deleting())
+        a.execute(appContext, uuid)
+
+        val b = ByFileReserve(FileTypes.rawImage, DuplicatingFile())
+        b.execute(appContext, uuid)
+
+        assertTrue(File(appContext.filesDir,  "editor_data/$uuid").exists())
+
+        val c = ByFileReserve(FileTypes.rawImage, Deleting())
+        c.execute(appContext, uuid)
+
+        val d = ByFileReserve(FileTypes.drawingData, Deleting())
+        d.execute(appContext, uuid)
+
+        assertFalse(File(appContext.filesDir,  "editor_data/$uuid").exists())
     }
 }
