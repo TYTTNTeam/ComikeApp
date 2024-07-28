@@ -16,8 +16,6 @@ class DrawingViewModel: ViewModel() {
         PathStyle()
     )
 
-    private val removedPaths = mutableListOf<Pair<Path, PathStyle>>()
-
     private val _background = MutableLiveData<Bitmap?>(null)
     private val _isZoomable = MutableLiveData(false)
     // LiveDataを外部で変更できないように設定
@@ -56,27 +54,6 @@ class DrawingViewModel: ViewModel() {
         val list = _paths.value
         list.add(pair)
         _paths.value = list
-    }
-
-    fun undoPath() {
-        val pathList = _paths.value
-        if (pathList.isEmpty())
-            return
-        val last = pathList.last()
-        val size = pathList.size
-
-        removedPaths.add(last)
-        _paths.value = pathList.subList(0, size-1)
-    }
-
-    fun redoPath() {
-        if (removedPaths.isEmpty())
-            return
-        _paths.value = (_paths.value + removedPaths.removeLast()) as MutableList<Pair<Path, PathStyle>>
-    }
-
-    fun setBackground(bitmap: Bitmap?) {
-        _background.value = bitmap
     }
 
     fun setIsZoomable(isZoomable: Boolean) {

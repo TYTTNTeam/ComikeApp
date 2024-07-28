@@ -18,13 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import com.example.comikeapp.R
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun DrawingCanvas(
@@ -39,7 +36,7 @@ fun DrawingCanvas(
 
     val isZoomable by drawingData.isZoomable.observeAsState()
 
-    fun pinchOperation(change1: PointerInputChange, change2: PointerInputChange){
+    fun pinchOperation(change1: PointerInputChange, change2: PointerInputChange) {
         val distanceStart =
             (change1.previousPosition - change2.previousPosition).getDistance()
         val distanceEnd =
@@ -56,16 +53,19 @@ fun DrawingCanvas(
         val midpoint =
             (change1.position + change2.position) / 2f
 
-        val movedAbsolute = offset + (midpoint - (change1.previousPosition + change2.previousPosition) / 2f)
+        val movedAbsolute =
+            offset + (midpoint - (change1.previousPosition + change2.previousPosition) / 2f)
 
         val movedCenterAbsolute = movedAbsolute + toCenter
         val midToMovedCenter = (movedCenterAbsolute - midpoint)
 
         offset = movedAbsolute + midToMovedCenter * (relativeScale - 1)
-        Log.d("test", "absolute: $offset\n" +
-                "relative scale: $relativeScale \n" +
-                "mid to move center relative: $midToMovedCenter\n" +
-                "absolute scale: $scale")
+        Log.d(
+            "test", "absolute: $offset\n" +
+                    "relative scale: $relativeScale \n" +
+                    "mid to move center relative: $midToMovedCenter\n" +
+                    "absolute scale: $scale"
+        )
     }
 
     LaunchedEffect(key1 = penProperties) {
@@ -84,26 +84,22 @@ fun DrawingCanvas(
                     )
                 }
                 .pointerInput(Unit) {
-                    coroutineScope {
-                        launch {
-                            awaitPointerEventScope {
-                                while (true) {
-                                    val event = awaitPointerEvent()
-                                    val changes = event.changes
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            val changes = event.changes
 
-                                    // ピンチ操作を検出
-                                    val pinchMode = changes.size >= 2
+                            // ピンチ操作を検出
+                            val pinchMode = changes.size >= 2
 
-                                    drawingData.setIsZoomable(pinchMode)
+                            drawingData.setIsZoomable(pinchMode)
 
-                                    if (pinchMode) {
-                                        val change1 = changes[0]
-                                        val change2 = changes[1]
+                            if (pinchMode) {
+                                val change1 = changes[0]
+                                val change2 = changes[1]
 
-                                        if (change1.pressed && change2.pressed) {
-                                            pinchOperation(change1, change2)
-                                        }
-                                    }
+                                if (change1.pressed && change2.pressed) {
+                                    pinchOperation(change1, change2)
                                 }
                             }
                         }

@@ -1,6 +1,5 @@
 package com.example.comikeapp.ui.layout.editor
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,7 +42,7 @@ fun StaticCanvas(viewModel: DrawingViewModel) {
                         points.add(point)
                     },
                     onDrag = { _, dragAmount ->
-                        if(!isZoomable!!){
+                        if (!isZoomable!!) {
                             point += dragAmount
                             points.add(point)
 
@@ -55,13 +54,13 @@ fun StaticCanvas(viewModel: DrawingViewModel) {
                                     path.lineTo(point.x, point.y)
                                 }
                             }
-                        }else{
+                        } else {
                             points.clear()
                             path = Path()
                         }
                     },
                     onDragEnd = {
-                        if(!isZoomable!!){
+                        if (!isZoomable!!) {
                             viewModel.addPath(Pair(path, pathStyle!!.copy()))
                         }
 
@@ -70,7 +69,7 @@ fun StaticCanvas(viewModel: DrawingViewModel) {
                     }
                 )
             },
-        ) {
+    ) {
         paths?.forEach { pair ->
             drawPath(
                 path = pair.first,
