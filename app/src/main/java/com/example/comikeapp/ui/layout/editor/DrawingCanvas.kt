@@ -36,7 +36,17 @@ fun DrawingCanvas(
     isZoomable?.let {
         Box(
             modifier = modifier
-                .zoomable(zoomState = zoomState, zoomEnabled = isZoomable!!, enableOneFingerZoom = true)
+                .zoomable(zoomState = zoomState, zoomEnabled = isZoomable!!, enableOneFingerZoom = false)
+                .pointerInput(Unit){
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            val fingerCount = event.changes.count { it.pressed }
+                            drawingData.setIsZoomable(fingerCount >= 2)
+                            Log.d("test", fingerCount.toString()) // TODO
+                        }
+                    }
+                }
         ) {
             StaticCanvas(viewModel = drawingData)
         }
