@@ -60,12 +60,6 @@ fun DrawingCanvas(
         val midToMovedCenter = (movedCenterAbsolute - midpoint)
 
         offset = movedAbsolute + midToMovedCenter * (relativeScale - 1)
-        Log.d(
-            "test", "absolute: $offset\n" +
-                    "relative scale: $relativeScale \n" +
-                    "mid to move center relative: $midToMovedCenter\n" +
-                    "absolute scale: $scale"
-        )
     }
 
     LaunchedEffect(key1 = penProperties) {
