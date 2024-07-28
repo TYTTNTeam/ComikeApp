@@ -45,10 +45,13 @@ fun DrawingCanvas(
         val distanceEnd =
             (change1.position - change2.position).getDistance()
 
-        val relativeScale = (distanceEnd / distanceStart)
-        val newScale = scale * relativeScale
+        val prev = scale
+
+        val newScale = scale * (distanceEnd / distanceStart)
         scale =
             newScale.coerceIn(0.5f, 50f) // スケールの最小・最大値を設定
+
+        val relativeScale = scale / prev
 
         val midpoint =
             (change1.position + change2.position) / 2f
@@ -61,7 +64,8 @@ fun DrawingCanvas(
         offset = movedAbsolute + midToMovedCenter * (relativeScale - 1)
         Log.d("test", "absolute: $offset\n" +
                 "relative scale: $relativeScale \n" +
-                "mid to move center relative: $midToMovedCenter")
+                "mid to move center relative: $midToMovedCenter\n" +
+                "absolute scale: $scale")
     }
 
     LaunchedEffect(key1 = penProperties) {
