@@ -71,9 +71,12 @@ fun DrawingCanvas(
                                 while (true) {
                                     val event = awaitPointerEvent()
                                     val changes = event.changes
+                                    val pinchMode = changes.size >= 2
+
+                                    drawingData.setIsZoomable(pinchMode)
 
                                     // ピンチ操作を検出
-                                    if (changes.size >= 2) {
+                                    if (pinchMode) {
                                         val change1 = changes[0]
                                         val change2 = changes[1]
 
@@ -82,15 +85,12 @@ fun DrawingCanvas(
                                             val distanceEnd = (change1.position - change2.position).getDistance()
 
                                             val newScale = scale * (distanceEnd / distanceStart)
-                                            scale = newScale.coerceIn(0.5f, 3f) // スケールの最小・最大値を設定
+                                            scale = newScale.coerceIn(0.5f, 50f) // スケールの最小・最大値を設定
 
                                             val midpoint = (change1.position + change2.position) / 2f
                                             offset += midpoint - (change1.previousPosition + change2.previousPosition) / 2f
                                         }
                                     }
-
-                                    drawingData.setIsZoomable(changes.count { it.pressed } >= 2)
-                                    Log.d("test", changes.count { it.pressed }.toString()) // TODO: Remove or refine this log statement for production
                                 }
                             }
                         }
