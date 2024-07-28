@@ -7,9 +7,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -23,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.example.comikeapp.R
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
 import kotlinx.coroutines.coroutineScope
@@ -41,7 +45,6 @@ fun DrawingCanvas(
     var scale by remember { mutableStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
 
-    val zoomState = rememberZoomState()
     val isZoomable by drawingData.isZoomable.observeAsState()
 
     LaunchedEffect(key1 = penProperties) {
@@ -49,12 +52,50 @@ fun DrawingCanvas(
         drawingData.updateWidth(penProperties.thickness * 20)
         drawingData.updateColor(penProperties.color)
 
-        drawingData.setIsZoomable(false)
+        drawingData.setIsZoomable(true)
     }
 
     isZoomable?.let {
         Box(
             modifier = modifier
+                .graphicsLayer(
+                    scaleX = scale,
+                    scaleY = scale,
+                    translationX = offset.x,
+                    translationY = offset.y
+                )
+                .pointerInput(Unit){
+                    coroutineScope {
+                        launch {
+                            awaitPointerEventScope {
+                                while (true) {
+                                    val event = awaitPointerEvent()
+                                    val changes = event.changes
+
+                                    // ピンチ操作を検出
+                                    if (changes.size >= 2) {
+                                        val change1 = changes[0]
+                                        val change2 = changes[1]
+
+                                        if (change1.pressed && change2.pressed) {
+                                            val distanceStart = (change1.previousPosition - change2.previousPosition).getDistance()
+                                            val distanceEnd = (change1.position - change2.position).getDistance()
+
+                                            val newScale = scale * (distanceEnd / distanceStart)
+                                            scale = newScale.coerceIn(0.5f, 3f) // スケールの最小・最大値を設定
+
+                                            val midpoint = (change1.position + change2.position) / 2f
+                                            offset += midpoint - (change1.previousPosition + change2.previousPosition) / 2f
+                                        }
+                                    }
+
+                                    drawingData.setIsZoomable(changes.count { it.pressed } >= 2)
+                                    Log.d("test", changes.count { it.pressed }.toString()) // TODO: Remove or refine this log statement for production
+                                }
+                            }
+                        }
+                    }
+                }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.button_pen_change),
