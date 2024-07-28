@@ -34,54 +34,52 @@ fun StaticCanvas(viewModel: DrawingViewModel) {
 
     val paths by viewModel.paths.observeAsState()
 
-    paths?.let {
-        Canvas(
-            modifier = Modifier
-                .height(650.dp)
-                .fillMaxWidth()
-                .background(Color.LightGray)
-                .clipToBounds()
-                .pointerInput(Unit) {
-                    detectDragGestures(
-                        onDragStart = { offset ->
-                            point = offset
-                            points.add(point)
-                        },
-                        onDrag = { _, dragAmount ->
-                            point += dragAmount
-                            points.add(point)
-                            path = Path()
-                            points.forEachIndexed { index, point ->
-                                if (index == 0) {
-                                    path.moveTo(point.x, point.y)
-                                } else {
-                                    path.lineTo(point.x, point.y)
-                                }
+    Canvas(
+        modifier = Modifier
+            .height(650.dp)
+            .fillMaxWidth()
+            .background(Color.LightGray)
+            .clipToBounds()
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = { offset ->
+                        point = offset
+                        points.add(point)
+                    },
+                    onDrag = { _, dragAmount ->
+                        point += dragAmount
+                        points.add(point)
+                        path = Path()
+                        points.forEachIndexed { index, point ->
+                            if (index == 0) {
+                                path.moveTo(point.x, point.y)
+                            } else {
+                                path.lineTo(point.x, point.y)
                             }
-                        },
-                        onDragEnd = {
-                            viewModel.addPath(Pair(path, pathStyle!!.copy()))
-                            points.clear()
-
-                            path = Path()
                         }
-                    )
-                },
+                    },
+                    onDragEnd = {
+                        viewModel.addPath(Pair(path, pathStyle!!.copy()))
+                        points.clear()
 
-            ) {
-            paths?.forEach { pair ->
-                drawPath(
-                    path = pair.first,
-                    style = pair.second
+                        path = Path()
+                    }
                 )
-            }
+            },
 
+        ) {
+        paths?.forEach { pair ->
             drawPath(
-                path = path,
-                style = pathStyle!!
+                path = pair.first,
+                style = pair.second
             )
-
         }
+
+        drawPath(
+            path = path,
+            style = pathStyle!!
+        )
+
     }
 }
 
