@@ -42,7 +42,6 @@ fun StaticCanvas(viewModel: DrawingViewModel) {
     Canvas(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.LightGray)
             .clipToBounds()
             .pointerInput(Unit) {
                 detectDragGestures(
