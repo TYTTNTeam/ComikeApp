@@ -35,7 +35,7 @@ fun DrawingCanvas(
 
     val isZoomable by drawingData.isZoomable.observeAsState()
 
-    fun pinchOperation(change1: PointerInputChange, change2: PointerInputChange) {
+    fun onPinchGesture(change1: PointerInputChange, change2: PointerInputChange) {
         val distanceStart =
             (change1.previousPosition - change2.previousPosition).getDistance()
         val distanceEnd =
@@ -92,7 +92,7 @@ fun DrawingCanvas(
                                 val change2 = changes[1]
 
                                 if (change1.pressed && change2.pressed) {
-                                    pinchOperation(change1, change2)
+                                    onPinchGesture(change1, change2)
                                 }
                             }
                         }
