@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+val ColorPaletteDefaultColor = Color.Green
+
 @Composable
 fun ColorPalette(
     modifier: Modifier = Modifier,
@@ -23,7 +25,7 @@ fun ColorPalette(
             .height(73.dp)
 
     ) {
-        ColorRadioButton(color = Color.Green,
+        ColorRadioButton(color = ColorPaletteDefaultColor,
             check = penColor == Color.Green,
             onColorSelected = { color ->
                 onColorSelected(color)
