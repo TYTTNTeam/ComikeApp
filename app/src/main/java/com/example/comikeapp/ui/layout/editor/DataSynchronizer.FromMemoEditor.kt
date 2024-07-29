@@ -7,7 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.comikeapp.data.maplist.MapList
+import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
 import kotlinx.coroutines.delay
 
 
@@ -22,10 +24,12 @@ fun DataSynchronizer(
     var drawing by remember { mutableStateOf<DrawingViewModel?>(null) }
     var map by remember { mutableStateOf<MapList?>(null) }
 
+    val testViewmodelInstance: DrawingViewModel = viewModel()
+
     LaunchedEffect(key1 = saving) {
         if(saving){
             delay(1000)
-            drawing = DrawingViewModel()
+            drawing = testViewmodelInstance
             map = MapList(0, "test map name", "test/path.png")
             onSavingChange(false)
         }
