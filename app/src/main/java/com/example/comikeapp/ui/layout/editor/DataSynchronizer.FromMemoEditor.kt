@@ -24,7 +24,6 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun DataSynchronizer(
-    modifier: Modifier = Modifier,
     mapId: Int,
     saving: Boolean,
     onSavingChange: (Boolean) -> Unit,
