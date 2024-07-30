@@ -1,13 +1,11 @@
 package com.example.comikeapp.data.fileoperate.reserve
 
-
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.drawable.Drawable
+import android.graphics.Color
+import android.graphics.Paint
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.comikeapp.R
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -19,32 +17,29 @@ import java.io.IOException
 @RunWith(AndroidJUnit4::class)
 class DuplicatingFileTest {
 
-    private var test = InstrumentationRegistry.getInstrumentation().targetContext.filesDir
+    private var test = InstrumentationRegistry.getInstrumentation().targetContext.dataDir
 
     @Before
     fun setUp() {
-        test = InstrumentationRegistry.getInstrumentation().targetContext.filesDir
+        test = InstrumentationRegistry.getInstrumentation().targetContext.dataDir
     }
 
     @Test
     fun testAccessSuccessful(){
         // テスト用のディレクトリを作成
-        val testDir = File("path/to/testDir")
+        val testDir = File(InstrumentationRegistry.getInstrumentation().targetContext.dataDir,"path/to/testDir")
         if (!testDir.exists()) {
             testDir.mkdirs()
         }
 
-        // ImageBitmap（ここではBitmap）をファイルに保存
-        val imageBitmap = BitmapFactory.decodeResource(
-            InstrumentationRegistry.getInstrumentation().targetContext.resources,
-            R.drawable.test_image
-        )
+        // ダミーのBitmapを生成してファイルに保存
+        val imageBitmap = createDummyImage()
         val fromFile = File(testDir, "from.png")
-//        saveImageBitmapToFile(imageBitmap, fromFile)
+        saveImageBitmapToFile(imageBitmap, fromFile)
 
         // コピー先のファイルを作成
         val targetFile = File(testDir, "target.png")
-        targetFile.createNewFile()
+        Assert.assertFalse(targetFile.exists())
 
         // DuplicatingFile クラスを使用してコピーを実行
         val duplicatingFile = DuplicatingFile(fromFile.toPath())
@@ -57,31 +52,21 @@ class DuplicatingFileTest {
         Assert.assertTrue(targetFile.exists())
 
         // 必要に応じてファイルの内容を確認（省略可能）
-         Assert.assertEquals(fromFile.readBytes(), targetFile.readBytes())
+        val tmp = fromFile.readBytes()
+        val tmp2 = targetFile.readBytes()
+        Assert.assertTrue(tmp.contentEquals(tmp2))
     }
-
 
     @Test
     fun testAccessNotFile() {  // 無効なディレクトリパスを指定
         val target = File(test, "test.png")
 
-        // val data = DuplicatingFile(from).access(target.toPath())
+        val state = DuplicatingFile(target.toPath()).access(target.toPath())
 
-        //   Assert.assertFalse()
+        Assert.assertFalse(state)
     }
 
-    class DuplicatingFileTest {
-
-        private lateinit var duplicatingFile: DuplicatingFile
-
-        @Before
-        fun setUp() {
-            //   duplicatingFile = DuplicatingFile(from)
-        }
-
-
-    }
-    fun saveImageBitmapToFile(imageBitmap: Bitmap, file: File): Boolean {
+    private fun saveImageBitmapToFile(imageBitmap: Bitmap, file: File): Boolean {
         return try {
             FileOutputStream(file).use { out ->
                 imageBitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
@@ -93,14 +78,15 @@ class DuplicatingFileTest {
         }
     }
 
-    fun drawableToBitmap(drawable: Drawable): Bitmap {
-        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+
+    private fun createDummyImage(): Bitmap {  // 100 × 100の赤い四角い画像を作成
+        val width = 100
+        val height = 100
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
+        val paint = Paint()
+        paint.color = Color.RED
+        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
         return bitmap
     }
 }
-
-
-
