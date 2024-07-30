@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,12 +27,10 @@ import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
 fun DrawingCanvas (
     modifier: Modifier = Modifier,
     drawingData: DrawingViewModel,
-    imagePath: String,
+    background: ImageBitmap,
     penProperties: PenProperties
 ){
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
-
-    val appContext = LocalContext.current
 
     ScalableCanvas(modifier = modifier, drawingData = drawingData, penProperties = penProperties) {
         Image(
@@ -42,17 +41,4 @@ fun DrawingCanvas (
                 .background(Color.Yellow)
         )
     }
-}
-
-fun vectorDrawableToImageBitmap(@DrawableRes drawableRes: Int, context: Context): ImageBitmap {
-    val drawable = ContextCompat.getDrawable(context, drawableRes)
-    val bitmap = Bitmap.createBitmap(
-        100,
-        100,
-        Bitmap.Config.ARGB_8888
-    )
-    val canvas = Canvas(bitmap)
-    drawable?.setBounds(0, 0, canvas.width, canvas.height)
-    drawable?.draw(canvas)
-    return bitmap.asImageBitmap()
 }
