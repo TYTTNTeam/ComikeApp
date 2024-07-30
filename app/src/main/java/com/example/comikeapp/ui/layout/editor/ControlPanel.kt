@@ -34,7 +34,8 @@ import com.example.comikeapp.R
 data class PenProperties(
     val color: Color,
     val thickness: Float,
-    val intensity: Float
+    val intensity: Float,
+    val mode: Int
 )
 
 private val itemModifier = Modifier.size(50.dp)
