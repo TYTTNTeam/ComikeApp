@@ -37,10 +37,10 @@ fun DrawingCanvas (
         ) {
             Image(
                 bitmap = background,
-                contentDescription = "test",
+                contentDescription = "背景の地図",
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Yellow)
+                    .background(Color.Yellow) // TODO
             )
             StaticCanvas(viewModel = drawingData)
         }
