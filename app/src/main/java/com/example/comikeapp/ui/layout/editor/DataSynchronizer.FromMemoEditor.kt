@@ -39,7 +39,6 @@ fun DataSynchronizer(
 
     LaunchedEffect(key1 = saving) {
         if(saving){
-            delay(1000)
             drawing = testViewmodelInstance
             map = MapList(0, "test map name", "test/path.png")
             imageBitmap = vectorDrawableToImageBitmap(R.drawable.button_pen_change, appContext)
