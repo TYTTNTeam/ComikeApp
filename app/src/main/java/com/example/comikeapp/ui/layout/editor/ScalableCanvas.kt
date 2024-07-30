@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
@@ -18,10 +17,9 @@ import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
 
 @Composable
 fun ScalableCanvas(
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
     drawingData: DrawingViewModel,
-    penProperties: PenProperties,
-    backGround: @Composable() (BoxScope.() -> Unit)
+    scalable: @Composable() (BoxScope.(scale: Float, offset: Offset) -> Unit)
 ) {
     var scale by remember { mutableStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
@@ -51,12 +49,6 @@ fun ScalableCanvas(
         val midToMovedCenter = (movedCenterAbsolute - midpoint)
 
         offset = movedAbsolute + midToMovedCenter * (relativeScale - 1)
-    }
-
-    LaunchedEffect(key1 = penProperties) {
-        drawingData.updateAlpha(penProperties.intensity)
-        drawingData.updateWidth(penProperties.thickness * 20)
-        drawingData.updateColor(penProperties.color)
     }
 
     Box(
@@ -90,17 +82,6 @@ fun ScalableCanvas(
                 }
             }
     ) {
-        Box(
-            modifier = Modifier
-                .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    translationX = offset.x,
-                    translationY = offset.y
-                )
-        ) {
-            backGround()
-            StaticCanvas(viewModel = drawingData)
-        }
+        scalable(scale, offset)
     }
 }
