@@ -1,5 +1,6 @@
 package com.example.comikeapp.ui.layout.editor
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.fillMaxSize
@@ -54,6 +55,8 @@ fun StaticCanvas(viewModel: DrawingViewModel) {
                                     path.lineTo(point.x, point.y)
                                 }
                             }
+
+                            Log.d("test", "on drawing: $point") // TODO
                         } else {
                             points.clear()
                             path = Path()

@@ -25,10 +25,6 @@ fun ScalableCanvas(
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
 
-    LaunchedEffect(key1 = scalableSize) {
-        Log.d("test", "launched effect:$scalableSize")
-    }
-
     Box(
         modifier = modifier
             .pointerInput(scalableSize) {
@@ -66,8 +62,12 @@ fun ScalableCanvas(
                                 val movedAbsolute =
                                     offset + (midpoint - (change1.previousPosition + change2.previousPosition) / 2f)
 
-                                val movedCenterAbsolute = movedAbsolute + (scalableSize / 2f)
+                                val movedCenterAbsolute = movedAbsolute + scalableSize / 2f
                                 val midToMovedCenter = (movedCenterAbsolute - midpoint)
+
+                                Log.d("test", "on pointer event:\n" +
+                                        "mtmc: $midToMovedCenter\n" +
+                                        "mid point: $midpoint") // TODO
 
                                 offset = movedAbsolute + midToMovedCenter * (relativeScale - 1)
                             }
