@@ -37,40 +37,33 @@ fun StaticCanvas(viewModel: DrawingViewModel) {
             .fillMaxSize()
             .clipToBounds()
             .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = { offset ->
-                        point = offset
+                awaitPointerEventScope {
+                    while (true) {
+                        val event = awaitPointerEvent()
+                        val change = event.changes[0]
+
+                        point = change.position
                         points.add(point)
-                    },
-                    onDrag = { _, dragAmount ->
-                        if (!isZoomable!!) {
-                            point += dragAmount
-                            points.add(point)
 
-                            path = Path()
-                            points.forEachIndexed { index, point ->
-                                if (index == 0) {
-                                    path.moveTo(point.x, point.y)
-                                } else {
-                                    path.lineTo(point.x, point.y)
-                                }
+                        path = Path()
+                        points.forEachIndexed { index, point ->
+                            if (index == 0) {
+                                path.moveTo(point.x, point.y)
+                            } else {
+                                path.lineTo(point.x, point.y)
                             }
-
-                            Log.d("test", "on drawing: $point") // TODO
-                        } else {
+                        }
+                        if(!change.pressed){
+                            if(!isZoomable!!) viewModel.addPath(Pair(path, pathStyle!!.copy()))
                             points.clear()
                             path = Path()
                         }
-                    },
-                    onDragEnd = {
-                        if (!isZoomable!!) {
-                            viewModel.addPath(Pair(path, pathStyle!!.copy()))
+                        if(isZoomable!!){
+                            points.clear()
+                            path = Path()
                         }
-
-                        points.clear()
-                        path = Path()
                     }
-                )
+                }
             },
     ) {
         paths?.forEach { pair ->

@@ -1,10 +1,8 @@
 package com.example.comikeapp.ui.layout.editor
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -64,10 +62,6 @@ fun ScalableCanvas(
 
                                 val movedCenterAbsolute = movedAbsolute + scalableSize / 2f
                                 val midToMovedCenter = (movedCenterAbsolute - midpoint)
-
-                                Log.d("test", "on pointer event:\n" +
-                                        "mtmc: $midToMovedCenter\n" +
-                                        "mid point: $midpoint") // TODO
 
                                 offset = movedAbsolute + midToMovedCenter * (relativeScale - 1)
                             }
