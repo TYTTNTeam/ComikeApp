@@ -47,7 +47,6 @@ fun DrawingCanvas(
                     x = size.width * 1f,
                     y = size.width * 1f * (background.height.toFloat() / background.width)
                 )
-                Log.d("test", "onSizeChanged: ${size.width}, ${size.height}\n$scalableSize") // TODO
             },
         drawingData = drawingData,
         scalableSize = scalableSize
@@ -68,7 +67,6 @@ fun DrawingCanvas(
                 contentDescription = "背景の地図",
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Yellow) // TODO
             )
             StaticCanvas(viewModel = drawingData)
         }
