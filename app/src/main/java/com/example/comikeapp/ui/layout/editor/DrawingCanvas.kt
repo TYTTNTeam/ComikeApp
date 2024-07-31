@@ -40,10 +40,19 @@ fun DrawingCanvas(
     ScalableInput(
         modifier = modifier
             .onSizeChanged { size ->
-                scalableSize = Offset(
-                    x = size.width * 1f,
-                    y = size.width * 1f * (background.height.toFloat() / background.width)
-                )
+                val backgroundAspect = background.height.toFloat() / background.width
+                val parentAspect = size.height.toFloat() / size.width
+                scalableSize = if(backgroundAspect < parentAspect){
+                    Offset(
+                        x = size.width.toFloat(),
+                        y = size.width * backgroundAspect
+                    )
+                }else {
+                    Offset(
+                        x = size.height * (1 / backgroundAspect),
+                        y = size.height.toFloat()
+                    )
+                }
             },
         drawingData = drawingData,
         scalableSize = scalableSize
