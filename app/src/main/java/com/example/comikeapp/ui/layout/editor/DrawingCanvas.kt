@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
-import java.lang.Math.pow
 import kotlin.math.pow
 
 @Composable
