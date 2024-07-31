@@ -10,7 +10,7 @@ class DuplicatingFile(private val from: Path) : Writing() { // fromが意図し�
     override fun access(absolutePath: Path): Boolean {
         return try {
             Files.copy(from, absolutePath, StandardCopyOption.REPLACE_EXISTING)
-            // このオプションはPathが被っている場合に上書きするためにある
+            accessedFile = absolutePath
             true
         } catch (e: IOException) {
             Log.e("data.fileOperate.reserve", "Duplicating:Failed accessing. \n Failed to copy files.",e)
