@@ -21,6 +21,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
+import java.lang.Math.pow
+import kotlin.math.pow
 
 @Composable
 fun DrawingCanvas(
@@ -35,7 +37,7 @@ fun DrawingCanvas(
 
     LaunchedEffect(key1 = penProperties) {
         drawingData.updateAlpha(penProperties.intensity)
-        drawingData.updateWidth(penProperties.thickness * 20)
+        drawingData.updateWidth((penProperties.thickness + 1).pow(5f) * 0.5f)
         drawingData.updateColor(penProperties.color)
     }
 
