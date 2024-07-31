@@ -39,7 +39,7 @@ fun DrawingCanvas(
         drawingData.updateColor(penProperties.color)
     }
 
-    ScalableCanvas(
+    ScalableInput(
         modifier = modifier
             .onSizeChanged { size ->
                 scalableSize = Offset(

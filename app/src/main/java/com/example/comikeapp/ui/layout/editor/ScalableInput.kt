@@ -14,10 +14,10 @@ import androidx.compose.ui.input.pointer.pointerInput
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
 
 @Composable
-fun ScalableCanvas(
+fun ScalableInput(
     modifier: Modifier,
     drawingData: DrawingViewModel,
-    scalableSize: Offset,
+    scalableSize: Offset,// dpではなく、pixelで指定
     scalable: @Composable (BoxScope.(scale: Float, offset: Offset) -> Unit)
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
