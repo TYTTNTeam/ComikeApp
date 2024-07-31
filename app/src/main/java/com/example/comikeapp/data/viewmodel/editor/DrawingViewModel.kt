@@ -59,4 +59,21 @@ class DrawingViewModel: ViewModel() {
     fun setIsZoomable(isZoomable: Boolean) {
         _isZoomable.value = isZoomable
     }
+
+    // ViewModelを保存と読み取り機能
+    fun getSaveData(): DrawingViewModelSaveData {
+        val nodes = paths.value.map { it.first. }
+        return DrawingViewModelSaveData()
+    }
+
+    data class DrawingViewModelSaveData(
+        val paths: List<Node>
+    )
+    data class Node(
+        val x: Float,
+        val y: Float,
+        val color: Int,
+        val alpha: Float,
+        val width: Float
+    )
 }
