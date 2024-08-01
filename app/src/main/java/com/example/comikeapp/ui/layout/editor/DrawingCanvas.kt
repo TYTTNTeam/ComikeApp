@@ -40,6 +40,7 @@ fun DrawingCanvas(
 
     val density = LocalDensity.current
 
+    val minScalableSizePx = 5000f
     val backgroundAspect = background.height.toFloat() / background.width
 
     LaunchedEffect(key1 = penProperties) {
@@ -49,18 +50,16 @@ fun DrawingCanvas(
     }
 
     LaunchedEffect(key1 = background) {
-        with(density) {
-            scalableSize = if(backgroundAspect < 1){
-                Offset(
-                    x = (2000 * (1 / backgroundAspect)).dp.toPx(),
-                    y = 2000.dp.toPx()
-                )
-            }else {
-                Offset(
-                    x = 2000.dp.toPx(),
-                    y = (2000 * backgroundAspect).dp.toPx()
-                )
-            }
+        scalableSize = if(backgroundAspect < 1){
+            Offset(
+                x = minScalableSizePx * (1 / backgroundAspect),
+                y = minScalableSizePx
+            )
+        }else {
+            Offset(
+                x = minScalableSizePx,
+                y = minScalableSizePx * backgroundAspect
+            )
         }
     }
 
@@ -71,9 +70,9 @@ fun DrawingCanvas(
 
                 with(density) {
                     defaultScale = if (backgroundAspect < parentAspect) {
-                        size.width.toDp().value / 2000
+                        size.width / minScalableSizePx
                     } else {
-                        size.height.toDp().value / 2000
+                        size.height / minScalableSizePx
                     }
                     Log.d("test", "${size.width}:${size.height}, ${size.width.toDp().value}:${size.height.toDp().value}\n") // TODO
                 }

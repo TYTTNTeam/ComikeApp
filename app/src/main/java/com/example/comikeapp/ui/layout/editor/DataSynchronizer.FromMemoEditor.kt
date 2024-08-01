@@ -3,6 +3,8 @@ package com.example.comikeapp.ui.layout.editor
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,6 +60,12 @@ internal fun vectorDrawableToImageBitmap(@DrawableRes drawableRes: Int, context:
         Bitmap.Config.ARGB_8888
     )
     val canvas = Canvas(bitmap)
+
+    val paint = Paint().apply {
+        color = Color.YELLOW
+    }
+    canvas.drawRect(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat(), paint)
+
     drawable?.setBounds(0, 0, canvas.width, canvas.height)
     drawable?.draw(canvas)
     return bitmap.asImageBitmap()
