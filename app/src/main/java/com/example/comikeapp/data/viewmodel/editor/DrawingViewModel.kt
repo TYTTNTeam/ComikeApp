@@ -6,8 +6,9 @@ import androidx.compose.ui.graphics.Path
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.io.Serializable
 
-class DrawingViewModel: ViewModel() {
+class DrawingViewModel : ViewModel() {
     // MutableLiveDataは変更可能
     private val _paths = NonNullLiveData<MutableList<Pair<Path, PathStyle>>>(
         mutableListOf()
@@ -18,6 +19,7 @@ class DrawingViewModel: ViewModel() {
 
     private val _background = MutableLiveData<Bitmap?>(null)
     private val _isZoomable = MutableLiveData(false)
+
     // LiveDataを外部で変更できないように設定
     // getterを使用してデータを読み取るプロセスのみ実行可能
     val paths: LiveData<MutableList<Pair<Path, PathStyle>>>
@@ -29,6 +31,7 @@ class DrawingViewModel: ViewModel() {
         get() = _background
     val isZoomable: LiveData<Boolean>
         get() = _isZoomable
+
     fun updateWidth(width: Float) {
         val style = _pathStyle.value
         style.width = width
@@ -62,18 +65,53 @@ class DrawingViewModel: ViewModel() {
 
     // ViewModelを保存と読み取り機能
     fun getSaveData(): DrawingViewModelSaveData {
-        val nodes = paths.value.map { it.first. }
-        return DrawingViewModelSaveData()
+        val paths = paths.value!!.map { path ->
+
+            val l = emptyList<Pair<Float, Float>>()
+
+            // TODO テスト用処理
+            SaveDataPaths(
+                nodes = l,
+                color = path.second.color.value.toInt(),
+                alpha = path.second.alpha,
+                width = path.second.width
+            )
+        }
+        return DrawingViewModelSaveData(paths = paths)
+    }
+
+    fun restoreSaveData(saveData: DrawingViewModelSaveData) {
+        saveData.paths.forEach { path ->
+            val p = Path()
+            for (node in path.nodes) {
+                if(p.isEmpty){
+                    p.moveTo(node.first, node.second)
+                    continue
+                }
+                p.lineTo(node.first, node.second)
+            }
+
+            this.addPath(
+                Pair(
+                    p,
+                    PathStyle(
+                        Color(path.color.toULong()),
+                        path.alpha,
+                        path.width
+                    )
+                )
+            )
+        }
     }
 
     data class DrawingViewModelSaveData(
-        val paths: List<Node>
-    )
-    data class Node(
-        val x: Float,
-        val y: Float,
+        val paths: List<SaveDataPaths>
+    ): Serializable
+
+    data class SaveDataPaths(
+        val nodes: List<Pair<Float, Float>>,
         val color: Int,
         val alpha: Float,
         val width: Float
-    )
+    ): Serializable
 }
