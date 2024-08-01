@@ -1,6 +1,5 @@
 package com.example.comikeapp.ui.layout.editor
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
@@ -32,7 +31,6 @@ fun ScalableInput(
             x = offset.x - (scalableSize.x * (1 - defaultScale)) / 2,
             y = offset.y - (scalableSize.y * (1 - defaultScale)) / 2
         )
-        Log.d("test", "on default scale change: $defaultScale") // TODO
     }
 
     Box(

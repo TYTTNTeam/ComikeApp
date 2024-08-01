@@ -1,8 +1,6 @@
 package com.example.comikeapp.ui.layout.editor
 
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,12 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
 import kotlin.math.pow
 
@@ -68,22 +64,17 @@ fun DrawingCanvas(
             .onSizeChanged { size ->
                 val parentAspect = size.height.toFloat() / size.width
 
-                with(density) {
-                    defaultScale = if (backgroundAspect < parentAspect) {
-                        size.width / minScalableSizePx
-                    } else {
-                        size.height / minScalableSizePx
-                    }
-                    Log.d("test", "${size.width}:${size.height}, ${size.width.toDp().value}:${size.height.toDp().value}\n") // TODO
+                defaultScale = if (backgroundAspect < parentAspect) {
+                    size.width / minScalableSizePx
+                } else {
+                    size.height / minScalableSizePx
                 }
-            }
-            .background(Color.Green),// TODO
+            },
         drawingData = drawingData,
         scalableSize = scalableSize,
         defaultScale = defaultScale
     ) { scale, offset ->
         val scroll = rememberScrollState()
-        Log.d("test", "$scale, $offset") // TODO
         Box(
             modifier = Modifier
                 .horizontalScroll(scroll, false)
