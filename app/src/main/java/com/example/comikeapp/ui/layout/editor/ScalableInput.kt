@@ -1,8 +1,10 @@
 package com.example.comikeapp.ui.layout.editor
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -18,14 +20,24 @@ fun ScalableInput(
     modifier: Modifier,
     drawingData: DrawingViewModel,
     scalableSize: Offset,// dpではなく、pixelで指定
-    scalable: @Composable (BoxScope.(scale: Float, offset: Offset) -> Unit)
+    defaultScale: Float,
+    scalable: @Composable() (BoxScope.(scale: Float, offset: Offset) -> Unit)
 ) {
-    var scale by remember { mutableFloatStateOf(1f) }
+    var scale by remember { mutableFloatStateOf(defaultScale) }
     var offset by remember { mutableStateOf(Offset.Zero) }
+
+    LaunchedEffect(key1 = defaultScale) {
+        scale = defaultScale
+        offset = Offset(
+            x = offset.x - (scalableSize.x * (1 - defaultScale)) / 2,
+            y = offset.y - (scalableSize.y * (1 - defaultScale)) / 2
+        )
+        Log.d("test", "on default scale change: $defaultScale") // TODO
+    }
 
     Box(
         modifier = modifier
-            .pointerInput(scalableSize) {
+            .pointerInput(scalableSize, defaultScale) {
                 awaitPointerEventScope {
                     while (true) {
                         val event = awaitPointerEvent()
@@ -50,7 +62,7 @@ fun ScalableInput(
 
                                 val newScale = scale * (distanceEnd / distanceStart)
                                 scale =
-                                    newScale.coerceIn(0.5f, 50f) // スケールの最小・最大値を設定
+                                    newScale.coerceIn(defaultScale * 0.5f, defaultScale * 50f) // スケールの最小・最大値を設定
 
                                 val relativeScale = scale / prev
 
