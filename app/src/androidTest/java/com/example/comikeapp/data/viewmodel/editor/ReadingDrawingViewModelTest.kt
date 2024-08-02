@@ -66,7 +66,7 @@ class ReadingDrawingViewModelTest {
     }
 
     @Test
-    fun dataTest() {
+    fun pathStyleDataTest() {
         val originalViewModel = DrawingViewModel()
         originalViewModel.addPath(Pair(Path(), PathStyle()))
         val writing = WritingDrawingViewModel(originalViewModel.getSaveData())
@@ -79,6 +79,38 @@ class ReadingDrawingViewModelTest {
         val readViewModel = DrawingViewModel()
         readViewModel.restoreSaveData(reading.getData()!!)
 
-        assertEquals(originalViewModel.paths.value!!.first().second, readViewModel.paths.value!!.first().second)
+        assertEquals(
+            originalViewModel.paths.value!!.first().second,
+            readViewModel.paths.value!!.first().second
+        )
+    }
+
+    @Test
+    fun multiDataTest() {
+        val originalViewModel = DrawingViewModel()
+
+        val path = Path()
+        path.moveTo(1f, 2f)
+        path.lineTo(2f, 3f)
+        originalViewModel.addPath(Pair(path, PathStyle(alpha = 1f)))
+
+        path.moveTo(3f, 4f)
+        path.lineTo(5f, 6f)
+        originalViewModel.addPath(Pair(path, PathStyle(alpha = 0.5f)))
+
+        val writing = WritingDrawingViewModel(originalViewModel.getSaveData())
+        val file = File(appContext.dataDir, "test.dat")
+        writing.access(file.toPath())
+
+        val reading = ReadingDrawingViewModel()
+        reading.access(file.toPath())
+
+        val readViewModel = DrawingViewModel()
+        readViewModel.restoreSaveData(reading.getData()!!)
+
+        assertEquals(
+            originalViewModel.getSaveData().toString(),
+            readViewModel.getSaveData().toString()
+        )
     }
 }
