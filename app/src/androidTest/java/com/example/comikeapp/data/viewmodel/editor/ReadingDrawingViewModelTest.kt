@@ -31,64 +31,84 @@ class ReadingDrawingViewModelTest {
 
     @Test
     fun successStateTest() {
-        val originalViewModel = DrawingViewModel()
-        originalViewModel.addPath(Pair(emptyList(), PathStyle()))
-        val writing = WritingDrawingViewModel(originalViewModel.getSaveData())
-        val file = File(appContext.dataDir, "test.dat")
-        writing.access(file.toPath())
+        useEmptyViewModelFile {file, _ ->
+            val willBeSuccess = ReadingDrawingViewModel()
+            assertTrue(willBeSuccess.access(file.toPath()))
 
-        val willBeSuccess = ReadingDrawingViewModel()
-        assertTrue(willBeSuccess.access(file.toPath()))
-
-        val notExistFile = File("/test.dat")
-
-        val willBeFail = ReadingDrawingViewModel()
-        assertFalse(willBeFail.access(notExistFile.toPath()))
-
-        file.delete()
-        notExistFile.delete()
+            val notExistFile = File("/test.dat")
+            val willBeFail = ReadingDrawingViewModel()
+            assertFalse(willBeFail.access(notExistFile.toPath()))
+            notExistFile.delete()
+        }
     }
 
     @Test
     fun classTypeTest() {
-        val originalViewModel = DrawingViewModel()
-        originalViewModel.addPath(Pair(emptyList(), PathStyle()))
-        val writing = WritingDrawingViewModel(originalViewModel.getSaveData())
-        val file = File(appContext.dataDir, "test.dat")
-        writing.access(file.toPath())
+        useEmptyViewModelFile {file, _ ->
+            val reading = ReadingDrawingViewModel()
+            reading.access(file.toPath())
 
-        val reading = ReadingDrawingViewModel()
-        reading.access(file.toPath())
-
-        assert(reading.getData() is DrawingViewModel.DrawingViewModelSaveData)
-
-        file.delete()
+            assert(reading.getData() is DrawingViewModel.DrawingViewModelSaveData)
+        }
     }
 
     @Test
     fun pathStyleDataTest() {
+        useEmptyViewModelFile { file, original ->
+            val reading = ReadingDrawingViewModel()
+            reading.access(file.toPath())
+
+            val readViewModel = DrawingViewModel()
+            readViewModel.restoreSaveData(reading.getData()!!)
+
+            assertEquals(
+                original.paths.value!!.first().second,
+                readViewModel.paths.value!!.first().second
+            )
+        }
+    }
+
+    @Test
+    fun multiDataTest() {
+        useWrittenViewModelFile { file, original ->
+            val reading = ReadingDrawingViewModel()
+            reading.access(file.toPath())
+
+            val readViewModel = DrawingViewModel()
+            readViewModel.restoreSaveData(reading.getData()!!)
+
+            assertEquals(
+                original.getSaveData().toString(),
+                readViewModel.getSaveData().toString()
+            )
+        }
+    }
+
+    @Test
+    fun dataExistTest() {
+        useWrittenViewModelFile { file, _ ->
+            val reading = ReadingDrawingViewModel()
+            reading.access(file.toPath())
+
+            val readViewModel = DrawingViewModel()
+            readViewModel.restoreSaveData(reading.getData()!!)
+
+            assert(!readViewModel.paths.value!!.first().first.isEmpty)
+        }
+    }
+
+    private fun useEmptyViewModelFile(block: (file: File, original: DrawingViewModel) -> Unit) {
         val originalViewModel = DrawingViewModel()
         originalViewModel.addPath(Pair(emptyList(), PathStyle()))
         val writing = WritingDrawingViewModel(originalViewModel.getSaveData())
         val file = File(appContext.dataDir, "test.dat")
         writing.access(file.toPath())
 
-        val reading = ReadingDrawingViewModel()
-        reading.access(file.toPath())
-
-        val readViewModel = DrawingViewModel()
-        readViewModel.restoreSaveData(reading.getData()!!)
-
-        assertEquals(
-            originalViewModel.paths.value!!.first().second,
-            readViewModel.paths.value!!.first().second
-        )
-
+        block(file, originalViewModel)
         file.delete()
     }
 
-    @Test
-    fun multiDataTest() {
+    private fun useWrittenViewModelFile(block: (file: File, original: DrawingViewModel) -> Unit) {
         val originalViewModel = DrawingViewModel()
 
         val points = mutableListOf<Offset>()
@@ -104,45 +124,7 @@ class ReadingDrawingViewModelTest {
         val file = File(appContext.dataDir, "test.dat")
         writing.access(file.toPath())
 
-        val reading = ReadingDrawingViewModel()
-        reading.access(file.toPath())
-
-        val readViewModel = DrawingViewModel()
-        readViewModel.restoreSaveData(reading.getData()!!)
-
-        assertEquals(
-            originalViewModel.getSaveData().toString(),
-            readViewModel.getSaveData().toString()
-        )
-
-        file.delete()
-    }
-
-    @Test
-    fun dataExistTest() {
-        val originalViewModel = DrawingViewModel()
-
-        val points = mutableListOf<Offset>()
-        points.add(Offset(1f, 2f))
-        points.add(Offset(11f, 22f))
-        originalViewModel.addPath(Pair(points, PathStyle(alpha = 1f)))
-
-        points.add(Offset(31f, 32f))
-        points.add(Offset(11f, 22f))
-        originalViewModel.addPath(Pair(points, PathStyle(alpha = 0.5f)))
-
-        val writing = WritingDrawingViewModel(originalViewModel.getSaveData())
-        val file = File(appContext.dataDir, "test.dat")
-        writing.access(file.toPath())
-
-        val reading = ReadingDrawingViewModel()
-        reading.access(file.toPath())
-
-        val readViewModel = DrawingViewModel()
-        readViewModel.restoreSaveData(reading.getData()!!)
-
-        assert(!readViewModel.paths.value!!.first().first.isEmpty)
-
+        block(file, originalViewModel)
         file.delete()
     }
 }
