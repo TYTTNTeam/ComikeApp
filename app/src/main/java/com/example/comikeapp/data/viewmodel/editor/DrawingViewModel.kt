@@ -58,12 +58,21 @@ class DrawingViewModel : ViewModel() {
         _pathStyle.value = style
     }
 
-    fun addPath(pair: Pair<Path, PathStyle>, points: List<Offset>) {
+    fun addPath(pair: Pair<List<Offset>, PathStyle>) {
+        val p = Path()
+        for (offset in pair.first) {
+            if(p.isEmpty){
+                p.moveTo(offset.x, offset.y)
+                continue
+            }
+            p.lineTo(offset.x, offset.y)
+        }
+
         val list = _paths.value
-        list.add(pair)
+        list.add(Pair(p, pair.second))
         _paths.value = list
 
-        _pathsSaveData.value.add(Pair(points, pair.second))
+        _pathsSaveData.value.add(pair)
     }
 
     fun setIsZoomable(isZoomable: Boolean) {
@@ -90,25 +99,15 @@ class DrawingViewModel : ViewModel() {
 
     fun restoreSaveData(saveData: DrawingViewModelSaveData) {
         saveData.paths.forEach { path ->
-            val p = Path()
-            for (node in path.nodes) {
-                if(p.isEmpty){
-                    p.moveTo(node.first, node.second)
-                    continue
-                }
-                p.lineTo(node.first, node.second)
-            }
-
             this.addPath(
                 Pair(
-                    p,
+                    path.nodes.map { Offset(it.first, it.second) },
                     PathStyle(
                         Color(path.color.toULong()),
                         path.alpha,
                         path.width
                     )
-                ),
-                path.nodes.map { Offset(it.first, it.second) }
+                )
             )
         }
     }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Path
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.comikeapp.data.fileoperate.reserve.ReadingDrawingViewModel
@@ -34,7 +33,7 @@ class ReadingDrawingViewModelTest {
     @Test
     fun successStateTest() {
         val originalViewModel = DrawingViewModel()
-        originalViewModel.addPath(Pair(Path(), PathStyle()), emptyList())
+        originalViewModel.addPath(Pair(emptyList(), PathStyle()))
         val writing = WritingDrawingViewModel(originalViewModel.getSaveData())
         val file = File(appContext.dataDir, "test.dat")
         writing.access(file.toPath())
@@ -54,7 +53,7 @@ class ReadingDrawingViewModelTest {
     @Test
     fun classTypeTest() {
         val originalViewModel = DrawingViewModel()
-        originalViewModel.addPath(Pair(Path(), PathStyle()), emptyList())
+        originalViewModel.addPath(Pair(emptyList(), PathStyle()))
         val writing = WritingDrawingViewModel(originalViewModel.getSaveData())
         val file = File(appContext.dataDir, "test.dat")
         writing.access(file.toPath())
@@ -70,7 +69,7 @@ class ReadingDrawingViewModelTest {
     @Test
     fun pathStyleDataTest() {
         val originalViewModel = DrawingViewModel()
-        originalViewModel.addPath(Pair(Path(), PathStyle()), emptyList())
+        originalViewModel.addPath(Pair(emptyList(), PathStyle()))
         val writing = WritingDrawingViewModel(originalViewModel.getSaveData())
         val file = File(appContext.dataDir, "test.dat")
         writing.access(file.toPath())
@@ -92,18 +91,13 @@ class ReadingDrawingViewModelTest {
         val originalViewModel = DrawingViewModel()
 
         val points = mutableListOf<Offset>()
-        val path = Path()
         points.add(Offset(1f, 2f))
-        path.moveTo(1f, 2f)
         points.add(Offset(11f, 22f))
-        path.moveTo(11f, 22f)
-        originalViewModel.addPath(Pair(path, PathStyle(alpha = 1f)), points)
+        originalViewModel.addPath(Pair(points, PathStyle(alpha = 1f)))
 
         points.add(Offset(31f, 32f))
-        path.moveTo(31f, 32f)
-        points.add(Offset(311f, 322f))
-        path.moveTo(311f, 322f)
-        originalViewModel.addPath(Pair(path, PathStyle(alpha = 0.5f)), points)
+        points.add(Offset(11f, 22f))
+        originalViewModel.addPath(Pair(points, PathStyle(alpha = 0.5f)))
 
         val writing = WritingDrawingViewModel(originalViewModel.getSaveData())
         val file = File(appContext.dataDir, "test.dat")
