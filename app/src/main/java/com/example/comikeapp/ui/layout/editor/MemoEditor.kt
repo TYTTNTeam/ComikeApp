@@ -43,15 +43,15 @@ fun MemoEditor(
                 saving = newSaving
                 if(!newSaving && awaitingSavingToClose) onClose()
             }
-        ) { drawing, map ->
-            if (map != null && drawing != null) {
+        ) { drawing, map, image ->
+            if (map != null && drawing != null && image != null) {
                 LaunchedEffect(key1 = map) {
                     mapName = map.mapName
                 }
 
                 DrawingCanvas(
                     modifier = Modifier.fillMaxSize(),
-                    imagePath = map.imagePath,
+                    background = image,
                     drawingData = drawing,
                     penProperties = penProperties
                 )
