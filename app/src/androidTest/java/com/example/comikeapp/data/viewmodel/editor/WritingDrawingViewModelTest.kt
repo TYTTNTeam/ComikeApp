@@ -30,7 +30,7 @@ class WritingDrawingViewModelTest {
     @Test
     fun fileExistsTest() {
         val viewModel = DrawingViewModel()
-        viewModel.addPath(Pair(Path(), PathStyle()))
+        viewModel.addPath(Pair(Path(), PathStyle()), emptyList())
         val writing = WritingDrawingViewModel(viewModel.getSaveData())
         val file = File(appContext.dataDir, "test.dat")
 
@@ -46,7 +46,7 @@ class WritingDrawingViewModelTest {
     @Test
     fun successStateTest() {
         val viewModel = DrawingViewModel()
-        viewModel.addPath(Pair(Path(), PathStyle()))
+        viewModel.addPath(Pair(Path(), PathStyle()), emptyList())
 
         val willBeFail = WritingDrawingViewModel(viewModel.getSaveData())
         val notExistFile = File("/test.dat")
