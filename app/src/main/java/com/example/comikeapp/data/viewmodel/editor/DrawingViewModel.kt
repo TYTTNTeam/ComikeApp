@@ -7,7 +7,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
 import java.io.Serializable
 
 class DrawingViewModel : ViewModel() {
@@ -19,9 +18,6 @@ class DrawingViewModel : ViewModel() {
         PathStyle()
     )
 
-    private val _points = NonNullLiveData(
-        mutableListOf<Offset>()
-    )
     private val _pathsSaveData = NonNullLiveData(
         mutableListOf<Pair<List<Offset>, PathStyle>>()
     )
@@ -62,16 +58,21 @@ class DrawingViewModel : ViewModel() {
         _pathStyle.value = style
     }
 
-    fun addPath(pair: Pair<Path, PathStyle>) {
+    fun addPath(pair: Pair<List<Offset>, PathStyle>) {
+        val p = Path()
+        for (offset in pair.first) {
+            if(p.isEmpty){
+                p.moveTo(offset.x, offset.y)
+                continue
+            }
+            p.lineTo(offset.x, offset.y)
+        }
+
         val list = _paths.value
-        list.add(pair)
+        list.add(Pair(p, pair.second))
         _paths.value = list
 
-        _pathsSaveData.value.add(Pair(_points.value, pair.second))
-    }
-
-    fun setPoints(points: MutableList<Offset>) {
-        _points.value = points
+        _pathsSaveData.value.add(pair)
     }
 
     fun setIsZoomable(isZoomable: Boolean) {
@@ -88,7 +89,7 @@ class DrawingViewModel : ViewModel() {
 
             SaveDataPaths(
                 nodes = l,
-                color = path.second.color.value.toInt(),
+                color = path.second.color.value.toLong(),
                 alpha = path.second.alpha,
                 width = path.second.width
             )
@@ -98,18 +99,9 @@ class DrawingViewModel : ViewModel() {
 
     fun restoreSaveData(saveData: DrawingViewModelSaveData) {
         saveData.paths.forEach { path ->
-            val p = Path()
-            for (node in path.nodes) {
-                if(p.isEmpty){
-                    p.moveTo(node.first, node.second)
-                    continue
-                }
-                p.lineTo(node.first, node.second)
-            }
-
             this.addPath(
                 Pair(
-                    p,
+                    path.nodes.map { Offset(it.first, it.second) },
                     PathStyle(
                         Color(path.color.toULong()),
                         path.alpha,
@@ -126,7 +118,7 @@ class DrawingViewModel : ViewModel() {
 
     data class SaveDataPaths(
         val nodes: List<Pair<Float, Float>>,
-        val color: Int,
+        val color: Long,
         val alpha: Float,
         val width: Float
     ): Serializable

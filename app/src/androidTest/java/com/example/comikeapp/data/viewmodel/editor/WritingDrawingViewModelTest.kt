@@ -2,7 +2,6 @@ package com.example.comikeapp.data.viewmodel.editor
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.compose.ui.graphics.Path
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.comikeapp.data.fileoperate.reserve.WritingDrawingViewModel
@@ -30,7 +29,7 @@ class WritingDrawingViewModelTest {
     @Test
     fun fileExistsTest() {
         val viewModel = DrawingViewModel()
-        viewModel.addPath(Pair(Path(), PathStyle()))
+        viewModel.addPath(Pair(emptyList(), PathStyle()))
         val writing = WritingDrawingViewModel(viewModel.getSaveData())
         val file = File(appContext.dataDir, "test.dat")
 
@@ -46,7 +45,7 @@ class WritingDrawingViewModelTest {
     @Test
     fun successStateTest() {
         val viewModel = DrawingViewModel()
-        viewModel.addPath(Pair(Path(), PathStyle()))
+        viewModel.addPath(Pair(emptyList(), PathStyle()))
 
         val willBeFail = WritingDrawingViewModel(viewModel.getSaveData())
         val notExistFile = File("/test.dat")
