@@ -1,7 +1,6 @@
 package com.example.comikeapp.data.viewmodel.editor
 
 import android.content.Context
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.geometry.Offset
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -115,6 +114,34 @@ class ReadingDrawingViewModelTest {
             originalViewModel.getSaveData().toString(),
             readViewModel.getSaveData().toString()
         )
+
+        file.delete()
+    }
+
+    @Test
+    fun dataExistTest() {
+        val originalViewModel = DrawingViewModel()
+
+        val points = mutableListOf<Offset>()
+        points.add(Offset(1f, 2f))
+        points.add(Offset(11f, 22f))
+        originalViewModel.addPath(Pair(points, PathStyle(alpha = 1f)))
+
+        points.add(Offset(31f, 32f))
+        points.add(Offset(11f, 22f))
+        originalViewModel.addPath(Pair(points, PathStyle(alpha = 0.5f)))
+
+        val writing = WritingDrawingViewModel(originalViewModel.getSaveData())
+        val file = File(appContext.dataDir, "test.dat")
+        writing.access(file.toPath())
+
+        val reading = ReadingDrawingViewModel()
+        reading.access(file.toPath())
+
+        val readViewModel = DrawingViewModel()
+        readViewModel.restoreSaveData(reading.getData()!!)
+
+        assert(!readViewModel.paths.value!!.first().first.isEmpty)
 
         file.delete()
     }
