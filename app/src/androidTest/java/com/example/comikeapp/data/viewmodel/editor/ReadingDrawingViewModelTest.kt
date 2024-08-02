@@ -84,6 +84,8 @@ class ReadingDrawingViewModelTest {
             originalViewModel.paths.value!!.first().second,
             readViewModel.paths.value!!.first().second
         )
+
+        file.delete()
     }
 
     @Test
@@ -109,10 +111,11 @@ class ReadingDrawingViewModelTest {
         val readViewModel = DrawingViewModel()
         readViewModel.restoreSaveData(reading.getData()!!)
 
-        Log.d("test", originalViewModel.getSaveData().toString())
         assertEquals(
             originalViewModel.getSaveData().toString(),
             readViewModel.getSaveData().toString()
         )
+
+        file.delete()
     }
 }
