@@ -1,20 +1,29 @@
 package com.example.comikeapp.data.viewmodel.editor
 
 import android.graphics.Bitmap
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import java.io.Serializable
 
 class DrawingViewModel : ViewModel() {
     // MutableLiveDataは変更可能
-    private val _paths = NonNullLiveData<MutableList<Pair<Path, PathStyle>>>(
-        mutableListOf()
+    private val _paths = NonNullLiveData(
+        mutableListOf<Pair<Path, PathStyle>>()
     )
     private val _pathStyle = NonNullLiveData(
         PathStyle()
+    )
+
+    private val _points = NonNullLiveData(
+        mutableListOf<Offset>()
+    )
+    private val _pathsSaveData = NonNullLiveData(
+        mutableListOf<Pair<List<Offset>, PathStyle>>()
     )
 
     private val _background = MutableLiveData<Bitmap?>(null)
@@ -57,6 +66,12 @@ class DrawingViewModel : ViewModel() {
         val list = _paths.value
         list.add(pair)
         _paths.value = list
+
+        _pathsSaveData.value.add(Pair(_points.value, pair.second))
+    }
+
+    fun setPoints(points: MutableList<Offset>) {
+        _points.value = points
     }
 
     fun setIsZoomable(isZoomable: Boolean) {
@@ -65,11 +80,12 @@ class DrawingViewModel : ViewModel() {
 
     // ViewModelを保存と読み取り機能
     fun getSaveData(): DrawingViewModelSaveData {
-        val paths = paths.value!!.map { path ->
+        val paths = _pathsSaveData.value.map { path ->
 
-            val l = emptyList<Pair<Float, Float>>()
+            val l = path.first.map {
+                Pair(it.x, it.y)
+            }
 
-            // TODO テスト用処理
             SaveDataPaths(
                 nodes = l,
                 color = path.second.color.value.toInt(),
