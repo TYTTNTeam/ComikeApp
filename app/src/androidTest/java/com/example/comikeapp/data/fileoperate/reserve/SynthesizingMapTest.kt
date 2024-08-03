@@ -86,7 +86,7 @@ class SynthesizingMapTest {
         assertNull(shouldBeSuccess.accessedFile)
         val file = File(appContext.dataDir, "test.png")
         shouldBeSuccess.access(file.toPath())
-        assertEquals(shouldBeSuccess.accessedFile, file)
+        assertEquals(shouldBeSuccess.accessedFile, file.toPath())
 
         assertNull(shouldBeFail.accessedFile)
         val cannotAccessFile = File("/test.png")
@@ -111,44 +111,15 @@ class SynthesizingMapTest {
         r.access(target.toPath())
         val readImage = r.getData()
 
-        val original = intArrayOf()
-        image.readPixels(original, width = 1000, height = 1000)
-        val read = intArrayOf()
-        readImage!!.readPixels(read, width = 1000, height = 1000)
+        val original = IntArray(100 * 100)
+        image.readPixels(original, width = 100, height = 100)
+        val read = IntArray(100 * 100)
+        readImage!!.readPixels(read, width = 100, height = 100)
 
         assertEquals(original[0], read[0])
         assertEquals(read[0], Color.RED)
 
         target.delete()
-    }
-
-    @Test
-    fun outputToExternal() {
-        val image = createDummyImage().asImageBitmap()
-        val viewModel = createEmptyDrawingViewModel()
-        val target = File(appContext.dataDir, "test.png")
-        val s = SynthesizingMap(image, viewModel)
-        s.access(target.toPath())
-
-        val r = ReadingImage()
-        r.access(target.toPath())
-        val readImage = r.getData()!!.asAndroidBitmap()
-
-        // 保存先のファイルを指定
-        val file = File(
-            appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            "AndroidStudio_AndroidTest_" +
-                    "com.example.comikeapp.data.fileoperate.reserve.SynthesizingMap_" +
-                    "#outputToExternal.png"
-        )
-
-        // ファイルにBitmapをPNG形式で保存
-        FileOutputStream(file).use { outputStream ->
-            readImage.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        }
-        assert(file.exists())
-        Log.i("SynthesizingMapTest", "Saved picture to: ${file.absolutePath}")
-        // TODO このメソッドは作りかけ
     }
 
     private fun createEmptyDrawingViewModel(): DrawingViewModel {
