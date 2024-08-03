@@ -33,6 +33,9 @@ class SynthesizingMap(
             FileOutputStream(file).use { out ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
             }
+            if (!file.exists()){
+                return false
+            }
             accessedFile = absolutePath
             true
         } catch (e: FileNotFoundException) {
