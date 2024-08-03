@@ -5,11 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.os.Environment
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -18,13 +15,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
-import java.io.FileOutputStream
 
 @RunWith(AndroidJUnit4::class)
 class SynthesizingMapTest {
@@ -91,7 +86,7 @@ class SynthesizingMapTest {
         assertNull(shouldBeFail.accessedFile)
         val cannotAccessFile = File("/test.png")
         shouldBeFail.access(cannotAccessFile.toPath())
-        assertNull(shouldBeSuccess.accessedFile)
+        assertNull(shouldBeFail.accessedFile)
 
         file.delete()
         cannotAccessFile.delete()
