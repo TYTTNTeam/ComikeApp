@@ -75,15 +75,15 @@ fun StaticCanvas(
                 imageScale = it.size.width.toFloat() / image.width
             },
     ) {
-        paths?.let { mapMemoRendering(paths = it, image = image, imageScale = imageScale) }
-
-        drawIntoCanvas { l ->
-            l
+        drawIntoCanvas { c ->
+            c.apply {
+                paths?.let { mapMemoRendering(paths = it, image = image, imageScale = imageScale) }
+                drawPath(
+                    path = path,
+                    pathStyle = pathStyle!!
+                )
+            }
         }
-        drawPath(
-            path = path,
-            style = pathStyle!!
-        )
 
     }
 }
