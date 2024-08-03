@@ -33,14 +33,6 @@ class SynthesizingMap(
             FileOutputStream(file).use { out ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
             }
-            if (!file.exists()){
-                Log.e(
-                    "data.fileoperate.reserve",
-                    "SynthesizingMap: Failed accessing.\n" +
-                            "Failed to write the file for some reason."
-                )
-                return false
-            }
             accessedFile = absolutePath
             return true
         } catch (e: FileNotFoundException) {
