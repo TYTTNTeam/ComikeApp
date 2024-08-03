@@ -1,4 +1,4 @@
-package com.example.comikeapp.data.viewmodel.editor
+package com.example.comikeapp.data.editorrendering
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,9 +1,6 @@
 package com.example.comikeapp.ui.layout.editor
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -75,7 +72,7 @@ fun DrawingCanvas(
         defaultScale = defaultScale
     ) { scale, offset ->
         val scroll = rememberScrollState()
-        Box(
+        StaticCanvas(
             modifier = Modifier
                 .horizontalScroll(scroll, false)
                 .verticalScroll(scroll, false)
@@ -86,15 +83,9 @@ fun DrawingCanvas(
                     scaleY = scale,
                     translationX = offset.x,
                     translationY = offset.y
-                )
-        ) {
-            Image(
-                bitmap = background,
-                contentDescription = "背景の地図",
-                modifier = Modifier
-                    .fillMaxSize()
-            )
-            StaticCanvas(viewModel = drawingData)
-        }
+                ),
+            viewModel = drawingData,
+            image = background
+        )
     }
 }

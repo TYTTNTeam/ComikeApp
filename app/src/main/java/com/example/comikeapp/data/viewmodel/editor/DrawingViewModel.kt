@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.comikeapp.data.editorrendering.PathStyle
 
 class DrawingViewModel: ViewModel() {
     // MutableLiveDataは変更可能
