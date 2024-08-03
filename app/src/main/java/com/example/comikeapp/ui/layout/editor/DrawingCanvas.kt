@@ -54,6 +54,8 @@ fun DrawingCanvas(
                 y = minScalableSizePx * backgroundAspect
             )
         }
+
+        drawingData.setImageScale(scalableSize.x / background.width)
     }
 
     ScalableInput(

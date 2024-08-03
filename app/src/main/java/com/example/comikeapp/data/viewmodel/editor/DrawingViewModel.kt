@@ -1,6 +1,5 @@
 package com.example.comikeapp.data.viewmodel.editor
 
-import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.lifecycle.LiveData
@@ -17,7 +16,8 @@ class DrawingViewModel: ViewModel() {
         PathStyle()
     )
 
-    private val _background = MutableLiveData<Bitmap?>(null)
+    private val _imageScale = MutableLiveData(1f)
+
     private val _isZoomable = MutableLiveData(false)
     // LiveDataを外部で変更できないように設定
     // getterを使用してデータを読み取るプロセスのみ実行可能
@@ -26,10 +26,12 @@ class DrawingViewModel: ViewModel() {
     val pathStyle: LiveData<PathStyle>
         get() = _pathStyle
 
-    val background: LiveData<Bitmap?>
-        get() = _background
+    val imageScale: LiveData<Float>
+        get() = _imageScale
+
     val isZoomable: LiveData<Boolean>
         get() = _isZoomable
+
     fun updateWidth(width: Float) {
         val style = _pathStyle.value
         style.width = width
@@ -55,6 +57,10 @@ class DrawingViewModel: ViewModel() {
         val list = _paths.value
         list.add(pair)
         _paths.value = list
+    }
+
+    fun setImageScale(imageScale: Float) {
+        _imageScale.value = imageScale
     }
 
     fun setIsZoomable(isZoomable: Boolean) {
