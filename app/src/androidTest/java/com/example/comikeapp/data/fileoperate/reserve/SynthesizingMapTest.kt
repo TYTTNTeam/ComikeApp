@@ -119,6 +119,39 @@ class SynthesizingMapTest {
         target.delete()
     }
 
+    @Test
+    fun drawingTest() {
+        val image = createDummyImage().asImageBitmap()
+        val viewModel = createEmptyDrawingViewModel()
+
+        val p = Path().apply {
+            moveTo(0f, 0f)
+            lineTo(0f, 5000f)
+        }
+
+        viewModel.addPath(Pair(p, PathStyle(color = androidx.compose.ui.graphics.Color.White)))
+
+        val target = File(appContext.dataDir, "test.png")
+
+        val s = SynthesizingMap(image, viewModel)
+        s.access(target.toPath())
+
+        val r = ReadingImage()
+        r.access(target.toPath())
+        val readImage = r.getData()
+
+        val read = IntArray(100 * 100)
+        readImage!!.readPixels(read, width = 100, height = 100)
+
+        assertEquals(read.first(), Color.WHITE)
+        assertEquals(read.last(), Color.RED)
+    }
+
+    @Test
+    fun drownBitmapEquivalenceTest() {
+
+    }
+
     private fun createEmptyDrawingViewModel(): DrawingViewModel {
         val viewModel = DrawingViewModel()
         viewModel.setCanvasSizePx(Offset(5000f, 5000f))
