@@ -31,10 +31,9 @@ fun StaticCanvas(
 
     val pathStyle by viewModel.pathStyle.observeAsState()
     val isZoomable by viewModel.isZoomable.observeAsState()
+    val canvasSizePx by viewModel.canvasSizePx.observeAsState()
 
     val paths by viewModel.paths.observeAsState()
-
-    val imageScale by viewModel.imageScale.observeAsState()
 
     Canvas(
         modifier = modifier
@@ -57,12 +56,12 @@ fun StaticCanvas(
                                 path.lineTo(point.x, point.y)
                             }
                         }
-                        if(!change.pressed){
-                            if(!isZoomable!!) viewModel.addPath(Pair(path, pathStyle!!.copy()))
+                        if (!change.pressed) {
+                            if (!isZoomable!!) viewModel.addPath(Pair(path, pathStyle!!.copy()))
                             points.clear()
                             path = Path()
                         }
-                        if(isZoomable!!){
+                        if (isZoomable!!) {
                             points.clear()
                             path = Path()
                         }
@@ -72,7 +71,7 @@ fun StaticCanvas(
     ) {
         drawIntoCanvas { c ->
             c.apply {
-                paths?.let { mapMemoRendering(paths = it, image = image, imageScale = imageScale!!) }
+                paths?.let { mapMemoRendering(paths = it, image = image, imageScale = canvasSizePx!!.x / image.width) }
                 drawPath(
                     path = path,
                     pathStyle = pathStyle!!
