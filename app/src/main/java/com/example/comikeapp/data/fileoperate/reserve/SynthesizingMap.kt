@@ -29,23 +29,28 @@ class SynthesizingMap(
 
         val file = absolutePath.toFile()
 
-        return try {
+        try {
             FileOutputStream(file).use { out ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
             }
             if (!file.exists()){
+                Log.e(
+                    "data.fileoperate.reserve",
+                    "SynthesizingMap: Failed accessing.\n" +
+                            "Failed to write the file for some reason."
+                )
                 return false
             }
             accessedFile = absolutePath
-            true
+            return true
         } catch (e: FileNotFoundException) {
             Log.e(
                 "data.fileoperate.reserve",
                 "SynthesizingMap: Failed accessing.\n" +
-                        "File does not exist.",
+                        "Cannot access file.",
                 e
             )
-            false
+            return false
         }
     }
 }
