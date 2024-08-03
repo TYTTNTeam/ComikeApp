@@ -9,7 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,7 +34,7 @@ import com.example.comikeapp.ui.layout.editor.PenProperties
 import com.example.comikeapp.ui.theme.ComikeAppTheme
 import java.io.File
 
-@Preview(widthDp = 350, heightDp = 800)
+@Preview
 @Composable
 fun SynthesizingMapPreview() {
     val appContext = LocalContext.current
@@ -77,14 +77,14 @@ fun SynthesizingMapPreview() {
         ) {
             imageBitmap?.let {
                 DrawingCanvas(
-                    modifier = Modifier.height(400.dp),
+                    modifier = Modifier.size(350.dp),
                     drawingData = drawing!!,
                     background = imageBitmap!!,
                     penProperties = PenProperties(Color.Unspecified, 2f, 2f, 0)
                 )
                 Image(
                     modifier = Modifier
-                        .height(400.dp)
+                        .size(350.dp)
                         .clickable { saving = true },
                     bitmap = if(readImage != null) readImage!! else imageBitmap!!,
                     contentDescription = ""
