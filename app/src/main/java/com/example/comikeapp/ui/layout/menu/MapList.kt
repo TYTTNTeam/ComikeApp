@@ -41,7 +41,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.comikeapp.R
-import com.example.comikeapp.data.mapimagefile.MapImageDeleter
+import com.example.comikeapp.data.fileoperate.manager.ByFileReserve
+import com.example.comikeapp.data.fileoperate.manager.FileTypes
+import com.example.comikeapp.data.fileoperate.reserve.Deleting
 import com.example.comikeapp.data.maplist.MapList
 import com.example.comikeapp.data.maplist.MapListDatabaseProvider
 import com.example.comikeapp.data.maplist.MapListRepository
@@ -71,16 +73,16 @@ fun MapList() {
     var mapList: List<MapList>? by remember { mutableStateOf(null) }
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
     val snackBarHostState = remember { SnackbarHostState() }
-    val mapImageDeleter = MapImageDeleter(context)
 
-    LaunchedEffect(Unit, Dispatchers.Main) {
+
+    LaunchedEffect(Unit) {
         if (mapList == null) {
             loading = true
         }
         val dataList: List<MapList>
         withContext(Dispatchers.IO) {
             dataList = repository.getAll()
-        }
+        }// コミケ地図
         mapList = dataList
         loading = false
     }
@@ -115,7 +117,7 @@ fun MapList() {
         type = "application/pdf"
     }
 
-    Box(
+    Box( // 　
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.primaryContainer)
@@ -137,16 +139,16 @@ fun MapList() {
                 ) {
                     mapList?.let {
                         items(it.size) { index ->
-                            MapListItem(mapName = it[index].mapName!!,
+                            MapListItem(mapName = it[index].mapName,
                                 onNameChange = {
-                                    newName = it[index].mapName!!
+                                    newName = it[index].mapName
                                     showNameChangeDialog = true
                                     indexToDelete = index
                                 },
                                 onDelete = {
                                     showMapDeleteDialog = true
                                     indexToDelete = index
-                                    newName = it[index].mapName!!
+                                    newName = it[index].mapName
                                 }
                             )
                         }
@@ -231,8 +233,15 @@ fun MapList() {
                     coroutineScope.launch(Dispatchers.IO) {
                         val mapToDelete = list[indexToDelete]
 
+                        val deleteImage = ByFileReserve(FileTypes.image, Deleting())
+                        val deleteImagePath = ByFileReserve(FileTypes.rawImage, Deleting())
+                        val deleteDrawingData = ByFileReserve(FileTypes.drawingData,Deleting())
+
+                        deleteImage.execute(context, mapToDelete.imagePath)
+                        deleteImagePath.execute(context, mapToDelete.imagePath)
+                        deleteDrawingData.execute(context, mapToDelete.imagePath)
+
                         val data = repository.deleteAndGetAll(mapToDelete.mapId)
-                        mapImageDeleter.deleteImageFile(mapToDelete.imagePath!!)
                         withContext(Dispatchers.Main) {
                             mapList = data
                             loading = false
