@@ -75,7 +75,7 @@ fun MapList() {
     val snackBarHostState = remember { SnackbarHostState() }
 
 
-    LaunchedEffect(Unit, Dispatchers.Main) {
+    LaunchedEffect(Unit) {
         if (mapList == null) {
             loading = true
         }
@@ -237,9 +237,9 @@ fun MapList() {
                         val deleteImagePath = ByFileReserve(FileTypes.rawImage, Deleting())
                         val deleteDrawingData = ByFileReserve(FileTypes.drawingData,Deleting())
 
-                        deleteImage.execute(context, mapToDelete.mapId.toString())
-                        deleteImagePath.execute(context, mapToDelete.mapId.toString())
-                        deleteDrawingData.execute(context, mapToDelete.mapId.toString())
+                        deleteImage.execute(context, mapToDelete.imagePath)
+                        deleteImagePath.execute(context, mapToDelete.imagePath)
+                        deleteDrawingData.execute(context, mapToDelete.imagePath)
 
                         val data = repository.deleteAndGetAll(mapToDelete.mapId)
                         withContext(Dispatchers.Main) {
