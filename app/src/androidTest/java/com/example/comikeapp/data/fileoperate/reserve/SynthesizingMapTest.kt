@@ -144,12 +144,8 @@ class SynthesizingMapTest {
         readImage!!.readPixels(read, width = 100, height = 100)
 
         assertEquals(read.first(), Color.WHITE)
+        assertEquals(read[100], Color.WHITE)
         assertEquals(read.last(), Color.RED)
-    }
-
-    @Test
-    fun drownBitmapEquivalenceTest() {
-
     }
 
     private fun createEmptyDrawingViewModel(): DrawingViewModel {
