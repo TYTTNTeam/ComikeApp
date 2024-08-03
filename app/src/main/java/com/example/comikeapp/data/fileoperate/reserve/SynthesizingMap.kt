@@ -1,6 +1,5 @@
 package com.example.comikeapp.data.fileoperate.reserve
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.compose.ui.graphics.Canvas
