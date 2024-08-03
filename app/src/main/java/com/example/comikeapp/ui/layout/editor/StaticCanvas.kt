@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import com.example.comikeapp.data.editorrendering.drawPath
@@ -76,6 +77,9 @@ fun StaticCanvas(
     ) {
         paths?.let { mapMemoRendering(paths = it, image = image, imageScale = imageScale) }
 
+        drawIntoCanvas { l ->
+            l
+        }
         drawPath(
             path = path,
             style = pathStyle!!
