@@ -55,8 +55,8 @@ fun DataSynchronizer(
 internal fun vectorDrawableToImageBitmap(@DrawableRes drawableRes: Int, context: Context): ImageBitmap {
     val drawable = ContextCompat.getDrawable(context, drawableRes)
     val bitmap = Bitmap.createBitmap(
-        100,
-        100,
+        1000,
+        1300,
         Bitmap.Config.ARGB_8888
     )
     val canvas = Canvas(bitmap)
