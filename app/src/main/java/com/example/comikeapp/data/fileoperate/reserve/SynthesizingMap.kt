@@ -14,8 +14,7 @@ import java.nio.file.Path
 
 class SynthesizingMap(
     private val image: ImageBitmap,
-    private val drawing: DrawingViewModel,
-    private val context: Context
+    private val drawing: DrawingViewModel
 ) : Writing() {
     override fun access(absolutePath: Path): Boolean {
         val width = drawing.canvasSizePx.value!!.x.toInt()
@@ -23,7 +22,11 @@ class SynthesizingMap(
 
         // Bitmapを作成し、Canvasに描画
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        Canvas(bitmap.asImageBitmap()).mapMemoRendering(drawing.paths.value!!.toList(), image, drawing.canvasSizePx.value!!.x / image.width)
+        Canvas(bitmap.asImageBitmap()).mapMemoRendering(
+            drawing.paths.value!!.toList(),
+            image,
+            drawing.canvasSizePx.value!!.x / image.width
+        )
 
         val file = absolutePath.toFile()
 

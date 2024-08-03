@@ -6,11 +6,11 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
-import org.junit.Assert
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -18,8 +18,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class SynthesizingMapTest {
@@ -39,8 +37,9 @@ class SynthesizingMapTest {
 
         val image = createDummyImage()
         val viewModel = DrawingViewModel()
+        viewModel.setCanvasSizePx(Offset(5000f, 5000f))
 
-        val s = SynthesizingMap(image.asImageBitmap(), viewModel, appContext)
+        val s = SynthesizingMap(image.asImageBitmap(), viewModel)
 
         assertFalse(target.exists())
 
@@ -52,8 +51,8 @@ class SynthesizingMapTest {
     }
 
     private fun createDummyImage(): Bitmap {  // 100 × 100の赤い四角い画像を作成
-        val width = 100
-        val height = 100
+        val width = 1000
+        val height = 1000
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         val paint = Paint()
