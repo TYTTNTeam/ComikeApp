@@ -7,9 +7,11 @@ import android.graphics.Color
 import android.graphics.Paint
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.example.comikeapp.data.editorrendering.PathStyle
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -111,7 +113,7 @@ class SynthesizingMapTest {
         val read = IntArray(100 * 100)
         readImage!!.readPixels(read, width = 100, height = 100)
 
-        assertEquals(original[0], read[0])
+        assert(original.contentEquals(read))
         assertEquals(read[0], Color.RED)
 
         target.delete()
