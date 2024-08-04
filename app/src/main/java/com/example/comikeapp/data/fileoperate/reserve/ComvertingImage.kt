@@ -12,7 +12,7 @@ import java.nio.file.Path
 class ConvertingImage(
     private val pdfFile: Uri,
     private val context: Context
-) : Accessing() {
+) : Writing() {
 
     override fun access(absolutePath: Path): Boolean {
         return try {
@@ -32,12 +32,12 @@ class ConvertingImage(
 
                 accessedFile = absolutePath
                 true
-            } ?: run {
-                Log.e("ConvertingImage", "Failed accessing.\nError: PDF file descriptor is null.")
+            }?: run {
+                Log.e("data.fileOperate.reserve", "ConvertingImage: Failed accessing.\nError: PDF file descriptor is null. This may indicate that the URI is invalid or the file does not exist.")
                 false
             }
         } catch (e: Exception) {
-            Log.e("ConvertingImage", "Failed accessing.\nError: ${e.message}", e)
+            Log.e("data.fileOperate.reserve", "ConvertingImage: Failed accessing.\nError: ${e.message}", e)
             accessedFile = null
             false
         }
