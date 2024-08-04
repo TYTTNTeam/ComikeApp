@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -124,12 +123,11 @@ class SynthesizingMapTest {
         val image = createDummyImage().asImageBitmap()
         val viewModel = createEmptyDrawingViewModel()
 
-        val p = Path().apply {
-            moveTo(0f, 0f)
-            lineTo(0f, 5000f)
-        }
+        val l = mutableListOf<Offset>()
+        l.add(Offset(0f, 0f))
+        l.add(Offset(0f, 5000f))
 
-        viewModel.addPath(Pair(p, PathStyle(color = androidx.compose.ui.graphics.Color.White)))
+        viewModel.addPath(Pair(l, PathStyle(color = androidx.compose.ui.graphics.Color.White)))
 
         val target = File(appContext.dataDir, "test.png")
 
