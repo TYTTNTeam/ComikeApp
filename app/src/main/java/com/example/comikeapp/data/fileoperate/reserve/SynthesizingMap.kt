@@ -1,74 +1,63 @@
 package com.example.comikeapp.data.fileoperate.reserve
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.util.Log
-import android.view.View
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.core.graphics.scale
+import com.example.comikeapp.data.editorrendering.mapMemoRendering
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
-import com.example.comikeapp.ui.layout.editor.DrawingCanvas
-import com.example.comikeapp.ui.layout.editor.PenProperties
-import com.example.comikeapp.ui.theme.ComikeAppTheme
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.nio.file.Path
 
 class SynthesizingMap(
     private val image: ImageBitmap,
-    private val drawing: DrawingViewModel,
-    private val context: Context
-): Writing() {
+    private val drawing: DrawingViewModel
+) : Writing() {
     override fun access(absolutePath: Path): Boolean {
-        val width = image.width
-        val height = image.height
-
-        // ComposeViewを作成
-        val composeView = ComposeView(context).apply {
-            setContent {
-                ComikeAppTheme {
-                    DrawingCanvas(
-                        modifier = Modifier.fillMaxSize(),
-                        drawingData = drawing,
-                        background = image,
-                        penProperties = PenProperties(Color.Unspecified, 1f, 1f, 0)
-                    )
-                }
-            }
-        }
-
-        // ComposeViewのmeasure及びレイアウトをする
-        composeView.measure(
-            View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
-            View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY)
-        )
-        composeView.layout(0, 0, composeView.measuredWidth, composeView.measuredHeight)
+        val canvasSizePx = drawing.canvasSizePx.value!!
 
         // Bitmapを作成し、Canvasに描画
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        composeView.draw(canvas)
+        val bitmap = Bitmap.createBitmap(canvasSizePx.x.toInt(), canvasSizePx.y.toInt(), Bitmap.Config.ARGB_8888)
+        Canvas(bitmap.asImageBitmap()).mapMemoRendering(
+            drawing.paths.value!!.toList(),
+            image,
+            drawing.canvasSizePx.value!!.x / image.width
+        )
+
+        val scale: Float
+
+        val maxSizePx = 2400
+        val aspect = canvasSizePx.x / canvasSizePx.y
+        scale = if(aspect < 1) {
+            maxSizePx / canvasSizePx.x
+        }else{
+            maxSizePx / canvasSizePx.y
+        }
+
+        val scaled = bitmap.scale(
+            (canvasSizePx.x * scale).toInt(),
+            (canvasSizePx.y * scale).toInt()
+        )
 
         val file = absolutePath.toFile()
 
-        return try {
+        try {
             FileOutputStream(file).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                scaled.compress(Bitmap.CompressFormat.PNG, 100, out)
             }
             accessedFile = absolutePath
-            true
-        }catch (e: FileNotFoundException) {
+            return true
+        } catch (e: FileNotFoundException) {
             Log.e(
                 "data.fileoperate.reserve",
                 "SynthesizingMap: Failed accessing.\n" +
-                        "File does not exist.",
+                        "Cannot access file.",
                 e
             )
-            false
+            return false
         }
     }
 }
