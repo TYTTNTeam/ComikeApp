@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.example.comikeapp.data.editorrendering.PathStyle
 import com.example.comikeapp.data.fileoperate.reserve.WritingDrawingViewModel
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

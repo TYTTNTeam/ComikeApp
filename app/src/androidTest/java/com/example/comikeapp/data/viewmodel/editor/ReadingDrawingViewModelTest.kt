@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.geometry.Offset
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.example.comikeapp.data.editorrendering.PathStyle
 import com.example.comikeapp.data.fileoperate.reserve.ReadingDrawingViewModel
 import com.example.comikeapp.data.fileoperate.reserve.WritingDrawingViewModel
 import org.junit.Assert.assertEquals
