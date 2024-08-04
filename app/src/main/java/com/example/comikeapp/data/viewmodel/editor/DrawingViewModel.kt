@@ -7,9 +7,10 @@ import androidx.compose.ui.graphics.Path
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.comikeapp.data.editorrendering.PathStyle
 import java.io.Serializable
 
-class DrawingViewModel : ViewModel() {
+class DrawingViewModel: ViewModel() {
     // MutableLiveDataは変更可能
     private val _paths = NonNullLiveData(
         mutableListOf<Pair<Path, PathStyle>>()
@@ -23,8 +24,9 @@ class DrawingViewModel : ViewModel() {
     )
 
     private val _background = MutableLiveData<Bitmap?>(null)
-    private val _isZoomable = MutableLiveData(false)
+    private val _canvasSizePx = MutableLiveData(Offset.Zero)
 
+    private val _isZoomable = MutableLiveData(false)
     // LiveDataを外部で変更できないように設定
     // getterを使用してデータを読み取るプロセスのみ実行可能
     val paths: LiveData<MutableList<Pair<Path, PathStyle>>>
@@ -32,11 +34,11 @@ class DrawingViewModel : ViewModel() {
     val pathStyle: LiveData<PathStyle>
         get() = _pathStyle
 
-    val background: LiveData<Bitmap?>
-        get() = _background
+    val canvasSizePx: LiveData<Offset>
+        get() = _canvasSizePx
+
     val isZoomable: LiveData<Boolean>
         get() = _isZoomable
-
     fun updateWidth(width: Float) {
         val style = _pathStyle.value
         style.width = width
@@ -73,6 +75,10 @@ class DrawingViewModel : ViewModel() {
         _paths.value = list
 
         _pathsSaveData.value.add(pair)
+    }
+
+    fun setCanvasSizePx(canvasSizePx: Offset) {
+        _canvasSizePx.value = canvasSizePx
     }
 
     fun setIsZoomable(isZoomable: Boolean) {
