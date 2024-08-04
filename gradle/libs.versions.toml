@@ -2,9 +2,11 @@
 ksp = "1.9.0-1.0.13"
 runtimeLivedata = "1.7.0-beta06"
 lifecycleViewmodelCompose = "2.8.4"
+coreTesting = "2.2.0"
 [libraries]
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTesting" }
 
 [plugins]
 ksp-gradle-plugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
