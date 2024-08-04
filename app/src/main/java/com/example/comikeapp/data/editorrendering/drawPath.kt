@@ -1,18 +1,23 @@
 package com.example.comikeapp.data.editorrendering
 
+import androidx.compose.ui.graphics.Canvas
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.PaintingStyle
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 
-fun DrawScope.drawPath(
+fun Canvas.drawPath(
     path: Path,
-    style: PathStyle
+    pathStyle: PathStyle
 ) {
     drawPath(
         path = path,
-        color = style.color,
-        alpha = style.alpha,
-        style = Stroke(width = style.width, join = StrokeJoin.Round)
+        paint = Paint().apply {
+            color = pathStyle.color
+            alpha = pathStyle.alpha
+            strokeWidth = pathStyle.width
+            style = PaintingStyle.Stroke
+            strokeJoin = StrokeJoin.Round
+        }
     )
 }

@@ -8,8 +8,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -28,7 +28,8 @@ fun DrawingCanvas(
     background: ImageBitmap,
     penProperties: PenProperties
 ) {
-    var scalableSize by remember { mutableStateOf(Offset.Zero) }
+    val scalableSize by drawingData.canvasSizePx.observeAsState()
+
     var defaultScale by remember { mutableFloatStateOf(1f)}
 
     val density = LocalDensity.current
@@ -43,7 +44,7 @@ fun DrawingCanvas(
     }
 
     LaunchedEffect(key1 = background) {
-        scalableSize = if(backgroundAspect < 1){
+        drawingData.setCanvasSizePx(if(backgroundAspect < 1){
             Offset(
                 x = minScalableSizePx * (1 / backgroundAspect),
                 y = minScalableSizePx
@@ -53,7 +54,7 @@ fun DrawingCanvas(
                 x = minScalableSizePx,
                 y = minScalableSizePx * backgroundAspect
             )
-        }
+        })
     }
 
     ScalableInput(
@@ -68,7 +69,7 @@ fun DrawingCanvas(
                 }
             },
         drawingData = drawingData,
-        scalableSize = scalableSize,
+        scalableSize = scalableSize!!,
         defaultScale = defaultScale
     ) { scale, offset ->
         val scroll = rememberScrollState()
@@ -76,8 +77,8 @@ fun DrawingCanvas(
             modifier = Modifier
                 .horizontalScroll(scroll, false)
                 .verticalScroll(scroll, false)
-                .width(with(density) { scalableSize.x.toDp() })
-                .height(with(density) { scalableSize.y.toDp() })
+                .width(with(density) { scalableSize!!.x.toDp() })
+                .height(with(density) { scalableSize!!.y.toDp() })
                 .graphicsLayer(
                     scaleX = scale,
                     scaleY = scale,

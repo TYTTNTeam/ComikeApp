@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -14,8 +13,8 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
 import com.example.comikeapp.data.editorrendering.drawPath
 import com.example.comikeapp.data.editorrendering.mapMemoRendering
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
@@ -30,10 +29,9 @@ fun StaticCanvas(
     val points = remember { mutableListOf<Offset>() } // 新しく描かれた path を表示するためのPoints State
     var path by remember { mutableStateOf(Path()) } // 新しく描かれている一画State
 
-    var imageScale by remember { mutableFloatStateOf(1f) }
-
     val pathStyle by viewModel.pathStyle.observeAsState()
     val isZoomable by viewModel.isZoomable.observeAsState()
+    val canvasSizePx by viewModel.canvasSizePx.observeAsState()
 
     val paths by viewModel.paths.observeAsState()
 
@@ -58,28 +56,28 @@ fun StaticCanvas(
                                 path.lineTo(point.x, point.y)
                             }
                         }
-                        if(!change.pressed){
-                            if(!isZoomable!!) viewModel.addPath(Pair(path, pathStyle!!.copy()))
+                        if (!change.pressed) {
+                            if (!isZoomable!!) viewModel.addPath(Pair(path, pathStyle!!.copy()))
                             points.clear()
                             path = Path()
                         }
-                        if(isZoomable!!){
+                        if (isZoomable!!) {
                             points.clear()
                             path = Path()
                         }
                     }
                 }
             }
-            .onGloballyPositioned {
-                imageScale = it.size.width.toFloat() / image.width
-            },
     ) {
-        paths?.let { mapMemoRendering(paths = it, image = image, imageScale = imageScale) }
-
-        drawPath(
-            path = path,
-            style = pathStyle!!
-        )
+        drawIntoCanvas { c ->
+            c.apply {
+                paths?.let { mapMemoRendering(paths = it, image = image, imageScale = canvasSizePx!!.x / image.width) }
+                drawPath(
+                    path = path,
+                    pathStyle = pathStyle!!
+                )
+            }
+        }
 
     }
 }
