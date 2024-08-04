@@ -56,12 +56,13 @@ fun StaticCanvas(
                                 path.lineTo(point.x, point.y)
                             }
                         }
-                        if (!change.pressed) {
-                            if (!isZoomable!!) viewModel.addPath(Pair(path, pathStyle!!.copy()))
+
+                        if(!change.pressed){
+                            if(!isZoomable!!) viewModel.addPath(Pair(points, pathStyle!!.copy()))
                             points.clear()
                             path = Path()
                         }
-                        if (isZoomable!!) {
+                        if(isZoomable!!){
                             points.clear()
                             path = Path()
                         }
