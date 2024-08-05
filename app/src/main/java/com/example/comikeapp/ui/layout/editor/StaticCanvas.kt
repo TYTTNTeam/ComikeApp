@@ -1,5 +1,6 @@
 package com.example.comikeapp.ui.layout.editor
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -54,6 +55,11 @@ fun StaticCanvas(
                             } else {
                                 path.lineTo(point.x, point.y)
                             }
+                        }
+
+                        if(change.pressed && mode == 1){
+                            Log.d("test", Pair(change.previousPosition, change.position).toString()) //todo
+                            viewModel.erasePath(Pair(change.previousPosition, change.position))
                         }
 
                         if(!change.pressed){
