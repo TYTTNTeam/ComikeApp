@@ -86,7 +86,8 @@ fun DrawingCanvas(
                     translationY = offset.y
                 ),
             viewModel = drawingData,
-            image = background
+            image = background,
+            mode = penProperties.mode
         )
     }
 }
