@@ -6,23 +6,38 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun Top() {
     var screenID by remember { mutableStateOf(0) }
+    var selectedMapId by remember { mutableStateOf(0) }
+    val isEditorVisible = screenID == -1
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = BottomBarHeightDp)
+            .padding(bottom = if (isEditorVisible) 0.dp else BottomBarHeightDp)
     ) {
-        Content(screenID = screenID)
+        Content(screenID = screenID, selectedMapId = selectedMapId, onShowMemoEditor = { isVisible, mapId ->
+            if (isVisible) {
+                selectedMapId = mapId
+                screenID = -1
+            } else {
+                screenID = 0
+            }
+        })
     }
-    Box(
-        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter
-    ) {
-        BottomBar { index ->
-            screenID = index
+
+    // MemoEditorが表示されていない場合にのみボトムバーを表示
+    if (!isEditorVisible) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            BottomBar { index ->
+                screenID = index
+            }
         }
     }
 }

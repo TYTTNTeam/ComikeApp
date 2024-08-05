@@ -1,13 +1,18 @@
 package com.example.comikeapp.ui.layout.map
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.NoteAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun MapView() {
+fun MapView(onShowMemoEditor: (Boolean, Int) -> Unit) {
     val context = LocalContext.current
     val repository by remember {
         mutableStateOf(
@@ -44,6 +49,7 @@ fun MapView() {
     var showDialog by remember { mutableStateOf(false) }
     var imagePathState by remember { mutableStateOf<String?>(null) }
     var mapList: List<MapList>? by remember { mutableStateOf(null) }
+    var currentMapId by remember { mutableStateOf(0) }
 
     val didNotRegistration = "dnr"
 
@@ -56,15 +62,15 @@ fun MapView() {
             if (data.isNotEmpty()) {
                 mapList = data
                 imagePathState = data[0].imagePath
+                currentMapId = data[0].mapId
             } else {
                 mapList = emptyList()
                 imagePathState = didNotRegistration
             }
         }
     }
-
     imagePathState?.let {
-        if (imagePathState.equals(didNotRegistration)) {
+        if (imagePathState == didNotRegistration) {
             Box {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
@@ -75,8 +81,9 @@ fun MapView() {
         } else {
             RotatableMap(imagePath = it)
         }
-    };if(imagePathState == null){
-        Box(Modifier.fillMaxSize()){
+    }
+    if (imagePathState == null) {
+        Box(Modifier.fillMaxSize()) {
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
     }
@@ -84,6 +91,34 @@ fun MapView() {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .size(100.dp)
+                .padding(12.dp)
+                .background(MaterialTheme.colorScheme.secondary)
+        )
+        Button(
+            onClick = {
+                onShowMemoEditor(true, currentMapId)
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .zIndex(1f)
+                .padding(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent
+            ),
+            contentPadding = PaddingValues(0.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.NoteAlt,
+                contentDescription = "MemoEditorIcon",
+                modifier = Modifier.size(75.dp),
+                tint = MaterialTheme.colorScheme.onSecondary
+            )
+        }
+
         Button(
             onClick = {
                 showDialog = true
@@ -108,6 +143,7 @@ fun MapView() {
                 onNo = { showDialog = false },
                 passImagePath = { newImagePath ->
                     imagePathState = newImagePath
+                    currentMapId = mapList?.find { it.imagePath == newImagePath }?.mapId ?: 0
                     showDialog = false
                 }
             )
