@@ -1,6 +1,5 @@
 package com.example.comikeapp.ui.layout.editor
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -57,17 +56,21 @@ fun StaticCanvas(
                             }
                         }
 
-                        if(change.pressed && mode == 1){
-                            Log.d("test", Pair(change.previousPosition, change.position).toString()) //todo
+                        if (change.pressed && mode == 1) {
                             viewModel.erasePath(Pair(change.previousPosition, change.position))
                         }
 
-                        if(!change.pressed){
-                            if(!isZoomable!! && mode == 0) viewModel.addPath(Pair(points.toList(), pathStyle!!.copy()))
+                        if (!change.pressed) {
+                            if (!isZoomable!! && mode == 0) viewModel.addPath(
+                                Pair(
+                                    points.toList(),
+                                    pathStyle!!.copy()
+                                )
+                            )
                             points.clear()
                             path = Path()
                         }
-                        if(isZoomable!!){
+                        if (isZoomable!!) {
                             points.clear()
                             path = Path()
                         }
@@ -77,9 +80,15 @@ fun StaticCanvas(
     ) {
         drawIntoCanvas { c ->
             c.apply {
-                paths?.let { mapMemoRendering(paths = it, image = image, imageScale = canvasSizePx!!.x / image.width) }
+                paths?.let {
+                    mapMemoRendering(
+                        paths = it,
+                        image = image,
+                        imageScale = canvasSizePx!!.x / image.width
+                    )
+                }
 
-                if(mode == 0) {
+                if (mode == 0) {
                     drawPath(
                         path = path,
                         pathStyle = pathStyle!!
