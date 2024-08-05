@@ -1,7 +1,5 @@
 package com.example.comikeapp.data.viewmodel.editor
 
-import android.graphics.Bitmap
-import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -24,7 +22,6 @@ class DrawingViewModel : ViewModel() {
         mutableListOf<Pair<List<Offset>, PathStyle>>()
     )
 
-    private val _background = MutableLiveData<Bitmap?>(null)
     private val _canvasSizePx = MutableLiveData(Offset.Zero)
 
     private val _isZoomable = MutableLiveData(false)
