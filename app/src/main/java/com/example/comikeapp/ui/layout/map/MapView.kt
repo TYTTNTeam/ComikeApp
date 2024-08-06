@@ -36,7 +36,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun MapView(onShowMemoEditor: (Boolean) -> Unit, onMapIdSelected: (Int) -> Unit) {
+fun MapView(
+    currentMapId: Int, // 現在の地図ID
+    onMapIdChange: (Int) -> Unit, // 地図ID変更イベント
+    onShowMemoEditor: (Boolean) -> Unit // 編集モードイベント
+) {
     val context = LocalContext.current
     val repository by remember {
         mutableStateOf(
@@ -49,7 +53,6 @@ fun MapView(onShowMemoEditor: (Boolean) -> Unit, onMapIdSelected: (Int) -> Unit)
     var showDialog by remember { mutableStateOf(false) }
     var imagePathState by remember { mutableStateOf<String?>(null) }
     var mapList: List<MapList>? by remember { mutableStateOf(null) }
-    var currentMapId by remember { mutableStateOf(0) }
 
     val didNotRegistration = "dnr"
 
@@ -61,9 +64,9 @@ fun MapView(onShowMemoEditor: (Boolean) -> Unit, onMapIdSelected: (Int) -> Unit)
             }
             if (data.isNotEmpty()) {
                 mapList = data
-                imagePathState = data[0].imagePath
-                currentMapId = data[0].mapId
-                onMapIdSelected(currentMapId) // 初期選択状態を更新
+                val initialMap = data.find { it.mapId == currentMapId } ?: data[0]
+                imagePathState = initialMap.imagePath
+                onMapIdChange(initialMap.mapId) // 初期地図IDを設定
             } else {
                 mapList = emptyList()
                 imagePathState = didNotRegistration
@@ -71,8 +74,14 @@ fun MapView(onShowMemoEditor: (Boolean) -> Unit, onMapIdSelected: (Int) -> Unit)
         }
     }
 
+    LaunchedEffect(currentMapId) {
+        mapList?.find { it.mapId == currentMapId }?.let {
+            imagePathState = it.imagePath
+        }
+    }
+
     imagePathState?.let {
-        if (imagePathState == didNotRegistration) {
+        if (it == didNotRegistration) {
             Box {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
@@ -104,7 +113,6 @@ fun MapView(onShowMemoEditor: (Boolean) -> Unit, onMapIdSelected: (Int) -> Unit)
         Button(
             onClick = {
                 onShowMemoEditor(true)
-                onMapIdSelected(currentMapId)
             },
             modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -147,8 +155,8 @@ fun MapView(onShowMemoEditor: (Boolean) -> Unit, onMapIdSelected: (Int) -> Unit)
                 onNo = { showDialog = false },
                 passImagePath = { newImagePath ->
                     imagePathState = newImagePath
-                    currentMapId = mapList?.find { it.imagePath == newImagePath }?.mapId ?: 0
-                    onMapIdSelected(currentMapId)
+                    val newMapId = mapList?.find { it.imagePath == newImagePath }?.mapId ?: 0
+                    onMapIdChange(newMapId) // 地図ID変更イベント
                     showDialog = false
                 }
             )

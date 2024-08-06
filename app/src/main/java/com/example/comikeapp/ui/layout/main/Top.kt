@@ -25,13 +25,12 @@ fun Top() {
             onShowMemoEditor = { isVisible ->
                 screenID = if (isVisible) -1 else 0
             },
-            onMapIdSelected = { mapId ->
+            onMapIdChange = { mapId -> // 追加：地図ID変更時の処理
                 selectedMapId = mapId
             }
         )
     }
 
-    // MemoEditorが表示されていない場合にのみボトムバーを表示
     if (!isEditorVisible) {
         Box(
             modifier = Modifier.fillMaxSize(),
