@@ -50,7 +50,7 @@ class MapRegistrationSequencer {
             onComplete(list)
 
             scope.launch {
-                val paths = list.map { it.imagePath!! }
+                val paths = list.map { it.imagePath }
                 val cleaner = MapImageCleaner(appContext)
                 cleaner.clean(paths)
             }
