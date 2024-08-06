@@ -36,7 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun MapView(onShowMemoEditor: (Boolean, Int) -> Unit) {
+fun MapView(onShowMemoEditor: (Boolean) -> Unit, onMapIdSelected: (Int) -> Unit) {
     val context = LocalContext.current
     val repository by remember {
         mutableStateOf(
@@ -63,12 +63,14 @@ fun MapView(onShowMemoEditor: (Boolean, Int) -> Unit) {
                 mapList = data
                 imagePathState = data[0].imagePath
                 currentMapId = data[0].mapId
+                onMapIdSelected(currentMapId) // 初期選択状態を更新
             } else {
                 mapList = emptyList()
                 imagePathState = didNotRegistration
             }
         }
     }
+
     imagePathState?.let {
         if (imagePathState == didNotRegistration) {
             Box {
@@ -82,6 +84,7 @@ fun MapView(onShowMemoEditor: (Boolean, Int) -> Unit) {
             RotatableMap(imagePath = it)
         }
     }
+
     if (imagePathState == null) {
         Box(Modifier.fillMaxSize()) {
             CircularProgressIndicator(Modifier.align(Alignment.Center))
@@ -100,7 +103,8 @@ fun MapView(onShowMemoEditor: (Boolean, Int) -> Unit) {
         )
         Button(
             onClick = {
-                onShowMemoEditor(true, currentMapId)
+                onShowMemoEditor(true)
+                onMapIdSelected(currentMapId)
             },
             modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -144,6 +148,7 @@ fun MapView(onShowMemoEditor: (Boolean, Int) -> Unit) {
                 passImagePath = { newImagePath ->
                     imagePathState = newImagePath
                     currentMapId = mapList?.find { it.imagePath == newImagePath }?.mapId ?: 0
+                    onMapIdSelected(currentMapId)
                     showDialog = false
                 }
             )

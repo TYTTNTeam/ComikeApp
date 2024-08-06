@@ -6,13 +6,13 @@ import com.example.comikeapp.ui.layout.menu.MapList
 import com.example.comikeapp.ui.layout.map.MapView
 
 @Composable
-fun Content(screenID: Int, selectedMapId: Int, onShowMemoEditor: (Boolean, Int) -> Unit) {
+fun Content(screenID: Int, selectedMapId: Int, onShowMemoEditor: (Boolean) -> Unit, onMapIdSelected: (Int) -> Unit) {
     when (screenID) {
-        0 -> MapView(onShowMemoEditor = onShowMemoEditor)
+        0 -> MapView(onShowMemoEditor = onShowMemoEditor, onMapIdSelected = onMapIdSelected)
         1 -> MapList()
         -1 -> MemoEditor(
             mapId = selectedMapId, // Topから受け取ったmapIdを渡す
-            onClose = { onShowMemoEditor(false, 0) } // MemoEditorを閉じる
+            onClose = { onShowMemoEditor(false) } // MemoEditorを閉じる
         )
     }
 }

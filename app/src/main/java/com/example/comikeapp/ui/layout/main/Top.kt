@@ -19,14 +19,16 @@ fun Top() {
             .fillMaxSize()
             .padding(bottom = if (isEditorVisible) 0.dp else BottomBarHeightDp)
     ) {
-        Content(screenID = screenID, selectedMapId = selectedMapId, onShowMemoEditor = { isVisible, mapId ->
-            if (isVisible) {
+        Content(
+            screenID = screenID,
+            selectedMapId = selectedMapId,
+            onShowMemoEditor = { isVisible ->
+                screenID = if (isVisible) -1 else 0
+            },
+            onMapIdSelected = { mapId ->
                 selectedMapId = mapId
-                screenID = -1
-            } else {
-                screenID = 0
             }
-        })
+        )
     }
 
     // MemoEditorが表示されていない場合にのみボトムバーを表示
