@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.example.comikeapp.data.fileoperate.manager.ByFileReserve
 import com.example.comikeapp.data.fileoperate.manager.FileTypeDefinition
+import com.example.comikeapp.data.fileoperate.manager.FileTypes
 import com.example.comikeapp.data.fileoperate.reserve.ConvertingImage
 import com.example.comikeapp.data.fileoperate.reserve.Deleting
 import com.example.comikeapp.data.mapimagefile.MapImageCleaner
@@ -14,6 +15,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.util.UUID
 
 class MapRegistrationSequencer {
@@ -26,11 +28,10 @@ class MapRegistrationSequencer {
         onComplete: (List<MapList>) -> Unit
     ) {
         val mapUUID = UUID.randomUUID().toString()
-        val fileTypeDefinition = FileTypeDefinition("raw_image")
         val convertingImage = ConvertingImage(pdf, appContext)
 
         val imageFilePath = scope.async {
-            val byFileReserve = ByFileReserve(fileTypeDefinition, convertingImage)
+            val byFileReserve = ByFileReserve(FileTypes.rawImage, convertingImage)
             val result = byFileReserve.execute(appContext, mapUUID)
             if (result) {
                 convertingImage.accessedFile?.toFile()?.absolutePath
@@ -38,14 +39,17 @@ class MapRegistrationSequencer {
                 null
             }
         }.await()
+        if (imageFilePath == null){
+            throw IOException("MapRegistrationSequencer: Failed to create image file from PDF.")
+        }
 
         val name = this.confirmName.await()
         if (name == null) {
-            val cleaner = ByFileReserve(fileTypeDefinition, Deleting())
+            val cleaner = ByFileReserve(FileTypes.rawImage, Deleting())
             cleaner.execute(appContext, mapUUID)
         } else {
             val db = MapListRepository(MapListDatabaseProvider.getDatabase(appContext).mapListDao())
-            val list = db.insertAndGetAll(name, imageFilePath ?: "")
+            val list = db.insertAndGetAll(name, imageFilePath)
 
             onComplete(list)
 
