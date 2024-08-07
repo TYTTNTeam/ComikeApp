@@ -3,7 +3,6 @@ package com.example.comikeapp.ui.layout.menu
 import android.content.Context
 import android.net.Uri
 import com.example.comikeapp.data.fileoperate.manager.ByFileReserve
-import com.example.comikeapp.data.fileoperate.manager.FileTypeDefinition
 import com.example.comikeapp.data.fileoperate.manager.FileTypes
 import com.example.comikeapp.data.fileoperate.reserve.ConvertingImage
 import com.example.comikeapp.data.fileoperate.reserve.Deleting
@@ -31,7 +30,7 @@ class MapRegistrationSequencer {
         val convertingImage = ConvertingImage(pdf, appContext)
 
         val imageFilePath = scope.async {
-            val byFileReserve = ByFileReserve(FileTypes.rawImage, convertingImage)
+            val byFileReserve = ByFileReserve(FileTypes.image, convertingImage)
             val result = byFileReserve.execute(appContext, mapUUID)
             if (result) {
                 convertingImage.accessedFile?.toFile()?.absolutePath
@@ -45,7 +44,7 @@ class MapRegistrationSequencer {
 
         val name = this.confirmName.await()
         if (name == null) {
-            val cleaner = ByFileReserve(FileTypes.rawImage, Deleting())
+            val cleaner = ByFileReserve(FileTypes.image, Deleting())
             cleaner.execute(appContext, mapUUID)
         } else {
             val db = MapListRepository(MapListDatabaseProvider.getDatabase(appContext).mapListDao())
