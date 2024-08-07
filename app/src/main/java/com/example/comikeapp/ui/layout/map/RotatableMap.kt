@@ -1,6 +1,5 @@
 package com.example.comikeapp.ui.layout.map
 
-import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.comikeapp.ui.layout.map.ImageLoadingStatus.Error
 import com.example.comikeapp.ui.layout.map.ImageLoadingStatus.ImageLoaded
@@ -32,8 +31,11 @@ import com.example.comikeapp.ui.layout.map.ImageLoadingStatus.Loading
 import kotlinx.coroutines.flow.MutableStateFlow
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
-import java.io.File
 import java.io.FileNotFoundException
+import com.example.comikeapp.data.fileoperate.manager.ByFileReserve
+import com.example.comikeapp.data.fileoperate.manager.FileTypes
+import com.example.comikeapp.data.fileoperate.reserve.ReadingImage
+
 
 enum class ImageLoadingStatus {
     Loading, // 画像読み込み中状態
@@ -43,7 +45,8 @@ enum class ImageLoadingStatus {
 
 @Composable
 fun RotatableMap(imagePath: String) {
-    val imageBitmap = remember { mutableStateOf<ImageBitmap?>(null) }
+    val appContext = LocalContext.current
+    var readImage: ImageBitmap? by remember { mutableStateOf(null)}
     val snackBarHostState = remember { SnackbarHostState() }
     SnackbarHost(hostState = snackBarHostState) { snackbarData ->
         Snackbar(
@@ -64,10 +67,13 @@ fun RotatableMap(imagePath: String) {
         val currentState = imageLoadingStatus
         uiStateFlow.value = currentState
         try {
-            val file = File(imagePath)
-            if (file.exists()) {
-                val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-                imageBitmap.value = bitmap?.asImageBitmap()
+            val readingRawImage = ReadingImage()
+            ByFileReserve(
+                FileTypes.image,
+                readingRawImage
+            ).execute(appContext, imagePath)
+            readImage = readingRawImage.getData()
+            if (readImage != null) {
                 imageLoadingStatus = ImageLoaded
             } else {
                 throw FileNotFoundException("")
@@ -85,7 +91,7 @@ fun RotatableMap(imagePath: String) {
                 }
             }
         } finally {
-            if (imageBitmap.value != null) {
+            if (readImage != null) {
                 imageLoadingStatus = ImageLoaded
             } else {
                 imageLoadingStatus = Error
@@ -112,9 +118,9 @@ fun RotatableMap(imagePath: String) {
             ImageLoaded -> {
                 val zoomState = rememberZoomState( maxScale = 50f)
                 // 画像の表示
-                if (imageBitmap.value != null) {
+                if (readImage != null) {
                     Image(
-                        bitmap = imageBitmap.value!!,
+                        bitmap = readImage!!,
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
