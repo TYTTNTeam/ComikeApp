@@ -49,7 +49,7 @@ class MapRegistrationSequencer {
             cleaner.execute(appContext, mapUUID)
         } else {
             val db = MapListRepository(MapListDatabaseProvider.getDatabase(appContext).mapListDao())
-            val list = db.insertAndGetAll(name, imageFilePath)
+            val list = db.insertAndGetAll(name, mapUUID)
 
             onComplete(list)
 
