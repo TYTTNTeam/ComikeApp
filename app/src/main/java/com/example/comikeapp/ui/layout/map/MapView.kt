@@ -1,5 +1,6 @@
 package com.example.comikeapp.ui.layout.map
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -51,12 +52,9 @@ fun MapView(
     }
 
     var showDialog by remember { mutableStateOf(false) }
-    var imagePathState by remember { mutableStateOf<String?>(null) }
     var mapList: List<MapList>? by remember { mutableStateOf(null) }
 
-    val didNotRegistration = "dnr"
-
-    LaunchedEffect(mapList, Dispatchers.Main) {
+    LaunchedEffect(Unit) {
         if (mapList == null) {
             var data: List<MapList>
             withContext(Dispatchers.IO) {
@@ -65,23 +63,16 @@ fun MapView(
             if (data.isNotEmpty()) {
                 mapList = data
                 val initialMap = data.find { it.mapId == currentMapId } ?: data[0]
-                imagePathState = initialMap.imagePath
                 onMapIdChange(initialMap.mapId) // 初期地図IDを設定
             } else {
                 mapList = emptyList()
-                imagePathState = didNotRegistration
             }
         }
     }
 
-    LaunchedEffect(currentMapId) {
-        mapList?.find { it.mapId == currentMapId }?.let {
-            imagePathState = it.imagePath
-        }
-    }
-
-    imagePathState?.let {
-        if (it == didNotRegistration) {
+    mapList?.let {
+        m ->
+        if (m.isEmpty()) {
             Box {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
@@ -90,11 +81,11 @@ fun MapView(
                 )
             }
         } else {
-            RotatableMap(imagePath = it)
+            RotatableMap(imagePath = m.find{it.mapId == currentMapId}!!.imagePath)
         }
     }
 
-    if (imagePathState == null) {
+    if (mapList == null) {
         Box(Modifier.fillMaxSize()) {
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
@@ -154,7 +145,6 @@ fun MapView(
                 mapList = mapList,
                 onNo = { showDialog = false },
                 passImagePath = { newImagePath ->
-                    imagePathState = newImagePath
                     val newMapId = mapList?.find { it.imagePath == newImagePath }?.mapId ?: 0
                     onMapIdChange(newMapId) // 地図ID変更イベント
                     showDialog = false
