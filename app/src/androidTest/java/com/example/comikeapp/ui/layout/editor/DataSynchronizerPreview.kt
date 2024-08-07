@@ -92,11 +92,13 @@ fun DataSynchronizerPreview() {
                 .fillMaxSize()
         ) {
             mapId?.let {
-                MemoEditor(
-                    modifier = Modifier.size(350.dp),
-                    mapId = it,
-                    onClose = { saving = true }
-                )
+                if(!saving) {
+                    MemoEditor(
+                        modifier = Modifier.size(350.dp),
+                        mapId = it,
+                        onClose = { saving = true }
+                    )
+                }
             }
             readImage?.let {
                 Image(
