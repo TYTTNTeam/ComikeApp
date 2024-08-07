@@ -20,7 +20,20 @@ class ConvertingImage(
                 val renderer = PdfRenderer(pfd)
                 val page = renderer.openPage(0)
 
-                val bitmap = Bitmap.createBitmap(page.width, page.height, Bitmap.Config.ARGB_8888)
+                val width = page.width
+                val height = page.height
+                val maxSize = 4800.0
+                val bitmapScale: Double = if (width < height) {
+                    maxSize / height
+                } else {
+                    maxSize / width
+                }
+                val bitmap = Bitmap.createBitmap(
+                    (width * bitmapScale).toInt(),
+                    (height * bitmapScale).toInt(),
+                    Bitmap.Config.ARGB_8888
+                )
+
                 page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
                 page.close()
 

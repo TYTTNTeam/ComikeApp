@@ -29,7 +29,7 @@ class SynthesizingMap(
 
         val scale: Float
 
-        val maxSizePx = 2400
+        val maxSizePx = 4800
         val aspect = canvasSizePx.x / canvasSizePx.y
         scale = if(aspect < 1) {
             maxSizePx / canvasSizePx.x
