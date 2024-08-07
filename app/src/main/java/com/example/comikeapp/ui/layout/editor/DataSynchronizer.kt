@@ -177,6 +177,7 @@ fun DataSynchronizer(
                 }
             }
             snackBarHostState.showSnackbar(message = text, duration = SnackbarDuration.Indefinite)
+            errorList.clear()
         }
     }
 
