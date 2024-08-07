@@ -23,9 +23,9 @@ import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
 fun StaticCanvas(
     modifier: Modifier = Modifier,
     viewModel: DrawingViewModel,
-    image: ImageBitmap
+    image: ImageBitmap,
+    mode: Int
 ) {
-    var point by remember { mutableStateOf(Offset.Zero) } // point位置追跡のためのState
     val points = remember { mutableListOf<Offset>() } // 新しく描かれた path を表示するためのPoints State
     var path by remember { mutableStateOf(Path()) } // 新しく描かれている一画State
 
@@ -39,14 +39,13 @@ fun StaticCanvas(
         modifier = modifier
             .fillMaxSize()
             .clipToBounds()
-            .pointerInput(Unit) {
+            .pointerInput(mode) {
                 awaitPointerEventScope {
                     while (true) {
                         val event = awaitPointerEvent()
                         val change = event.changes[0]
 
-                        point = change.position
-                        points.add(point)
+                        points.add(change.position)
 
                         path = Path()
                         points.forEachIndexed { index, point ->
@@ -57,12 +56,21 @@ fun StaticCanvas(
                             }
                         }
 
-                        if(!change.pressed){
-                            if(!isZoomable!!) viewModel.addPath(Pair(points, pathStyle!!.copy()))
+                        if (change.pressed && mode == 1) {
+                            viewModel.erasePath(Pair(change.previousPosition, change.position))
+                        }
+
+                        if (!change.pressed) {
+                            if (!isZoomable!! && mode == 0) viewModel.addPath(
+                                Pair(
+                                    points.toList(),
+                                    pathStyle!!.copy()
+                                )
+                            )
                             points.clear()
                             path = Path()
                         }
-                        if(isZoomable!!){
+                        if (isZoomable!!) {
                             points.clear()
                             path = Path()
                         }
@@ -72,11 +80,20 @@ fun StaticCanvas(
     ) {
         drawIntoCanvas { c ->
             c.apply {
-                paths?.let { mapMemoRendering(paths = it, image = image, imageScale = canvasSizePx!!.x / image.width) }
-                drawPath(
-                    path = path,
-                    pathStyle = pathStyle!!
-                )
+                paths?.let {
+                    mapMemoRendering(
+                        paths = it,
+                        image = image,
+                        imageScale = canvasSizePx!!.x / image.width
+                    )
+                }
+
+                if (mode == 0) {
+                    drawPath(
+                        path = path,
+                        pathStyle = pathStyle!!
+                    )
+                }
             }
         }
 
