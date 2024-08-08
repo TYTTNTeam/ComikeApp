@@ -39,7 +39,7 @@ fun DrawingCanvas(
 
     LaunchedEffect(key1 = penProperties) {
         drawingData.updateAlpha(penProperties.intensity)
-        drawingData.updateWidth((penProperties.thickness + 1).pow(6f) * minScalableSizePx * 0.0002f)
+        drawingData.updateWidth((penProperties.thickness + 1).pow(6f) * minScalableSizePx * 0.0005f)
         drawingData.updateColor(penProperties.color)
     }
 

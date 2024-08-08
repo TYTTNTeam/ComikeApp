@@ -30,7 +30,7 @@ class SynthesizingMap(
         val scale: Float
 
         // 長編が一定サイズを超えないようにしている。
-        val maxSizePx = 2400
+        val maxSizePx = 3600
         val aspect = canvasSizePx.y / canvasSizePx.x
         scale = if(aspect < 1) {
             maxSizePx / canvasSizePx.x
