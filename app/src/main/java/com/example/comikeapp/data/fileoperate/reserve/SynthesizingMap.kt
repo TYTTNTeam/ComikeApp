@@ -24,13 +24,14 @@ class SynthesizingMap(
         Canvas(bitmap.asImageBitmap()).mapMemoRendering(
             drawing.paths.value!!.toList(),
             image,
-            drawing.canvasSizePx.value!!.x / image.width
+            canvasSizePx.x / image.width
         )
 
         val scale: Float
 
-        val maxSizePx = 4800
-        val aspect = canvasSizePx.x / canvasSizePx.y
+        // 長編が一定サイズを超えないようにしている。
+        val maxSizePx = 3600
+        val aspect = canvasSizePx.y / canvasSizePx.x
         scale = if(aspect < 1) {
             maxSizePx / canvasSizePx.x
         }else{
