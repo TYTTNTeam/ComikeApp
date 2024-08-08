@@ -1,5 +1,6 @@
 package com.example.comikeapp.ui.layout.editor
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -55,11 +57,6 @@ fun MemoEditor(
                     drawingData = drawing,
                     penProperties = penProperties
                 )
-            } else {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center).size(100.dp),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
             }
         }
 
@@ -87,6 +84,21 @@ fun MemoEditor(
             }else{
                 ControlPanel(onChange = {penProperties = penProperties.copy(mode = 0)})
             }
+        }
+    }
+
+    if(saving) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.5f))
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .width(64.dp)
+                    .align(Alignment.Center),
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
     }
 }
