@@ -9,16 +9,25 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 
+
+
 @Entity
 data class MapList(
-    @PrimaryKey(autoGenerate = true) val mapId: Int = 0,
-    @ColumnInfo(name = "名前") val mapName: String?,
-    @ColumnInfo(name = "画像パス") val imagePath: String?
+    @PrimaryKey(autoGenerate  = true) @ColumnInfo(name = MapListColumns.MAP_ID) val mapId: Int = 0,
+    @ColumnInfo(name = MapListColumns.MAP_NAME) val mapName: String,
+    @ColumnInfo(name = MapListColumns.IMAGE_PATH) val imagePath: String
 )
+
 @Dao
 interface MapListDao {
     @Query("SELECT * FROM maplist")
     fun getAll(): List<MapList>
+
+    @Query("SELECT * FROM mapList WHERE mapId = :mapId")
+    fun selectById(mapId: Int): MapList
+
+    @Query("SELECT imagePath FROM mapList WHERE mapId = :mapId")
+    fun getImagePath(mapId: Int): String
 
     @Query("UPDATE maplist SET 名前 = :newName WHERE mapId = :mapId")
     fun updateMapNameById(mapId: Int, newName: String)

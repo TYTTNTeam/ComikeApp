@@ -1,13 +1,18 @@
 package com.example.comikeapp.ui.layout.map
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.NoteAlt
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,15 +28,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.example.comikeapp.R
 import com.example.comikeapp.data.maplist.MapList
 import com.example.comikeapp.data.maplist.MapListDatabaseProvider
 import com.example.comikeapp.data.maplist.MapListRepository
-import com.example.comikeapp.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun MapView() {
+fun MapView(
+    currentMapId: Int, // 現在の地図ID
+    onMapIdChange: (Int) -> Unit, // 地図ID変更イベント
+    onShowMemoEditor: (Boolean) -> Unit // 編集モードイベント
+) {
     val context = LocalContext.current
     val repository by remember {
         mutableStateOf(
@@ -42,12 +51,9 @@ fun MapView() {
     }
 
     var showDialog by remember { mutableStateOf(false) }
-    var imagePathState by remember { mutableStateOf<String?>(null) }
     var mapList: List<MapList>? by remember { mutableStateOf(null) }
 
-    val didNotRegistration = "dnr"
-
-    LaunchedEffect(mapList, Dispatchers.Main) {
+    LaunchedEffect(Unit) {
         if (mapList == null) {
             var data: List<MapList>
             withContext(Dispatchers.IO) {
@@ -55,16 +61,17 @@ fun MapView() {
             }
             if (data.isNotEmpty()) {
                 mapList = data
-                imagePathState = data[0].imagePath
+                val initialMap = data.find { it.mapId == currentMapId } ?: data[0]
+                onMapIdChange(initialMap.mapId) // 初期地図IDを設定
             } else {
                 mapList = emptyList()
-                imagePathState = didNotRegistration
             }
         }
     }
 
-    imagePathState?.let {
-        if (imagePathState.equals(didNotRegistration)) {
+    mapList?.let {
+        m ->
+        if (m.isEmpty()) {
             Box {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
@@ -73,10 +80,12 @@ fun MapView() {
                 )
             }
         } else {
-            RotatableMap(imagePath = it)
+            RotatableMap(imagePath = m.find{it.mapId == currentMapId}!!.imagePath)
         }
-    };if(imagePathState == null){
-        Box(Modifier.fillMaxSize()){
+    }
+
+    if (mapList == null) {
+        Box(Modifier.fillMaxSize()) {
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
     }
@@ -84,6 +93,35 @@ fun MapView() {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+        if(!mapList.isNullOrEmpty()) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .size(100.dp)
+                    .padding(12.dp)
+                    .background(MaterialTheme.colorScheme.secondary)
+            )
+            Button(
+                onClick = {
+                    onShowMemoEditor(true)
+                },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .zIndex(1f)
+                    .padding(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent
+                ),
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.NoteAlt,
+                    contentDescription = "MemoEditorIcon",
+                    modifier = Modifier.size(75.dp),
+                    tint = MaterialTheme.colorScheme.onSecondary
+                )
+            }
+        }
         Button(
             onClick = {
                 showDialog = true
@@ -107,7 +145,8 @@ fun MapView() {
                 mapList = mapList,
                 onNo = { showDialog = false },
                 passImagePath = { newImagePath ->
-                    imagePathState = newImagePath
+                    val newMapId = mapList?.find { it.imagePath == newImagePath }?.mapId ?: 0
+                    onMapIdChange(newMapId) // 地図ID変更イベント
                     showDialog = false
                 }
             )

@@ -1,15 +1,16 @@
 package com.example.comikeapp
 
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.example.comikeapp.data.maplist.MapList
-import com.example.comikeapp.data.maplist.MapListDatabaseProvider
+import com.example.comikeapp.data.maplist.MapListDatabase
 import com.example.comikeapp.data.maplist.MapListRepository
-
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -18,12 +19,23 @@ import org.junit.Assert.*
  */
 @RunWith(AndroidJUnit4::class)
 class MapListControllerInstrumentedConsistencyTest {
-    private val db: MapListRepository
-    init {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        db = MapListRepository(
-            MapListDatabaseProvider.getDatabase(appContext).mapListDao()
-        )
+    private lateinit var database: MapListDatabase
+    private lateinit var db: MapListRepository
+
+    @Before
+    fun setUp() {
+        // In-memory database for testing
+        database = Room.inMemoryDatabaseBuilder(
+            InstrumentationRegistry.getInstrumentation().targetContext,
+            MapListDatabase::class.java
+        ).build()
+        db = MapListRepository(database.mapListDao())
+    }
+
+    @After
+    fun tearDown() {
+        // Close the database after each test
+        database.close()
     }
 
     @Test
