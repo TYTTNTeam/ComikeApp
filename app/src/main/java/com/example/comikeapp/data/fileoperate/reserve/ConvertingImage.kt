@@ -22,7 +22,7 @@ class ConvertingImage(
 
                 val width = page.width
                 val height = page.height
-                val maxSize = 4800.0
+                val maxSize = 2400.0
                 val bitmapScale: Double = if (width < height) {
                     maxSize / height
                 } else {
