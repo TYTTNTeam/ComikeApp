@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.comikeapp.data.fileoperate.manager.ByFileReserve
 import com.example.comikeapp.data.fileoperate.manager.FileTypeDefinition
 import com.example.comikeapp.data.fileoperate.manager.FileTypes
@@ -34,7 +33,6 @@ import com.example.comikeapp.data.maplist.MapList
 import com.example.comikeapp.data.maplist.MapListDatabaseProvider
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
@@ -53,7 +51,6 @@ fun DataSynchronizer(
 
     val appContext = LocalContext.current
     val db = MapListDatabaseProvider.getDatabase(appContext).mapListDao()
-    val emptyViewModel: DrawingViewModel = viewModel()
     val snackBarHostState = remember { SnackbarHostState() }
 
     fun writingHelper(
@@ -79,18 +76,23 @@ fun DataSynchronizer(
             val saveData = readingDrawing.getData()
 
             // セーブデータが見つかったときは読み込み、そうでないときは書き込み
-            if (saveData != null) {
-                withContext(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                val emptyViewModel = DrawingViewModel()
+
+                if (saveData != null) {
                     emptyViewModel.restoreSaveData(saveData)
+                } else {
+                    withContext(Dispatchers.IO){
+                        writingHelper(
+                            FileTypes.drawingData,
+                            WritingDrawingViewModel(emptyViewModel.getSaveData()),
+                            currentUUID
+                        )
+                    }
                 }
-            } else {
-                writingHelper(
-                    FileTypes.drawingData,
-                    WritingDrawingViewModel(emptyViewModel.getSaveData()),
-                    currentUUID
-                )
+
+                drawing = emptyViewModel
             }
-            drawing = emptyViewModel
         } else {
             writingHelper(
                 FileTypes.drawingData,
@@ -100,7 +102,7 @@ fun DataSynchronizer(
         }
     }
 
-    fun synchronizeImages(currentUUID: String) {
+    suspend fun synchronizeImages(currentUUID: String) {
         if (imageBitmap == null) {
             val readingRawImage = ReadingImage()
             ByFileReserve(
@@ -133,7 +135,9 @@ fun DataSynchronizer(
                 }
             }
 
-            imageBitmap = readRawImage
+            withContext(Dispatchers.Main) {
+                imageBitmap = readRawImage
+            }
         } else {
             drawing?.let {
                 writingHelper(
@@ -147,7 +151,7 @@ fun DataSynchronizer(
 
     LaunchedEffect(key1 = saving) {
         if (saving) {
-            launch(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 val mapData: MapList = if (map != null){
                     map!!
                 }else{
