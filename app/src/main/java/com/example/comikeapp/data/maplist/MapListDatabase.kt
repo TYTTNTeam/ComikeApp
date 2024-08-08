@@ -39,7 +39,7 @@ interface MapListDao {
     fun deleteById(mapId: Int)
 }
 
-@Database(entities = [MapList::class], version = 2)
+@Database(entities = [MapList::class], version = 3)
 abstract class MapListDatabase : RoomDatabase() {
     abstract fun mapListDao(): MapListDao
 
