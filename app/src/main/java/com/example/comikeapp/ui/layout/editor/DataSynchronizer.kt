@@ -33,7 +33,6 @@ import com.example.comikeapp.data.maplist.MapList
 import com.example.comikeapp.data.maplist.MapListDatabaseProvider
 import com.example.comikeapp.data.viewmodel.editor.DrawingViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
