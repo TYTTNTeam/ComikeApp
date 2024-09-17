@@ -6,7 +6,7 @@
 
 # 使用技術
 
-<img src="https://img.shields.io/badge/-Kotlin-000000.svg?logo=kotlin&style=for-the-badge"> <img src="https://img.shields.io/badge/-Android_Studio-000000.svg?logo=androidstudio&logoColor=3DDC84&style=for-the-badge"> <img src="https://img.shields.io/badge/-Jetpack_Compose-000000.svg?logo=jetpackcompose&logoColor=4285F4&style=for-the-badge">
+<img src="https://img.shields.io/badge/-Kotlin-000000.svg?logo=kotlin&style=for-the-badge" alt="Kotlin"> <img src="https://img.shields.io/badge/-Android_Studio-000000.svg?logo=androidstudio&logoColor=3DDC84&style=for-the-badge" alt="Android Studio"> <img src="https://img.shields.io/badge/-Jetpack_Compose-000000.svg?logo=jetpackcompose&logoColor=4285F4&style=for-the-badge" alt="Jetpack Compose">
 
 # 機能一覧
 
