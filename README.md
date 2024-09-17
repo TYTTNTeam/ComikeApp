@@ -1,7 +1,8 @@
-# こみっぷ
+# <img width="50" src="https://github.com/user-attachments/assets/fbb556f7-6234-4293-b388-b4a3cb9e3fac" alt="こみっぷのアイコン">&nbsp;&nbsp;こみっぷ
 
 アンドロイドスタジオで作成したアンドロイドアプリです。  
 コミックマーケットでの使用を想定した地図追加・閲覧アプリです。
+
 
 # 使用技術
 
